@@ -21,5 +21,12 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             var floor = new Floor(0);
         }
 
+        [TestMethod]
+        public void ShouldDefaultToUnlocked()
+        {
+            var floor = new Floor(5);
+
+            Assert.IsFalse(floor.IsLocked);
+        }
     }
 }

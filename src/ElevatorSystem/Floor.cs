@@ -6,6 +6,8 @@ namespace IntrepidProducts.ElevatorSystem
     {
         int Number { get; }
         string Name { get; }
+
+        bool IsLocked { get; set; }
     }
 
     public class Floor : IFloor
@@ -24,5 +26,6 @@ namespace IntrepidProducts.ElevatorSystem
 
         public string Name { get; }
         public int Number { get; }
+        public bool IsLocked { get; set; }
     }
 }
