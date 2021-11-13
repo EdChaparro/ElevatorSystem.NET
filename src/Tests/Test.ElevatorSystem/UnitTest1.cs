@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Test.ElevatorSystem
+namespace IntrepidProducts.ElevatorSystem.Tests
 {
     [TestClass]
     public class UnitTest1

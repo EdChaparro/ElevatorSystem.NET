@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ElevatorSystem
+﻿namespace IntrepidProducts.ElevatorSystem
 {
     public class Class1
     {

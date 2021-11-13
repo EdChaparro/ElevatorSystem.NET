@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>IntrepidProducts.ElevatorSystem.Tests</AssemblyName>
+
+    <RootNamespace>IntrepidProducts.ElevatorSystem.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
