@@ -39,5 +39,10 @@ namespace IntrepidProducts.ElevatorSystem
         }
 
         public int NumberOfFloors => _floors.Count;
+
+        public override string ToString()
+        {
+            return $"Number of Floors: {NumberOfFloors}";
+        }
     }
 }
