@@ -28,5 +28,16 @@ namespace IntrepidProducts.ElevatorSystem.Tests
 
             Assert.IsFalse(floor.IsLocked);
         }
+
+        [TestMethod]
+        public void ShouldConsiderFloorsWithIdenticalNumbersEqual()
+        {
+            var floor1 = new Floor(5, name: "XXX");
+            var floor2 = new Floor(5, name: "YYY");
+            var floor3 = new Floor(3, "ABC");
+
+            Assert.AreEqual(floor1, floor2);
+            Assert.AreNotEqual(floor1, floor3);
+        }
     }
 }
