@@ -15,7 +15,7 @@
     }
 
 
-    public interface IElevator : IElevatorStatus
+    public interface IElevator : IHasId, IElevatorStatus
     {
         Direction Direction { get; set; }
         DoorStatus DoorStatus { get; set; }
@@ -23,7 +23,7 @@
         //TODO: Add Weight Capacity
     }
 
-    public class Elevator : IElevator
+    public class Elevator : AbstractEntity, IElevator
     {
         public Direction Direction { get; set; } = Direction.Stationary;
         public DoorStatus DoorStatus { get; set; } = DoorStatus.Closed;
