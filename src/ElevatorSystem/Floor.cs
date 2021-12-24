@@ -28,6 +28,28 @@ namespace IntrepidProducts.ElevatorSystem
         public int Number { get; }
         public bool IsLocked { get; set; }
 
+        #region Operators
+        public static bool operator > (Floor floor1, Floor floor2)
+        {
+            return floor1.Number > floor2.Number;
+        }
+
+        public static bool operator < (Floor floor1, Floor floor2)
+        {
+            return floor1.Number < floor2.Number;
+        }
+
+        public static bool operator ==(Floor floor1, Floor floor2)
+        {
+            return floor1.Equals(floor2);
+        }
+
+        public static bool operator !=(Floor floor1, Floor floor2)
+        {
+            return !floor1.Equals(floor2);
+        }
+        #endregion
+
         #region Equality
         public override bool Equals(object obj)
         {
