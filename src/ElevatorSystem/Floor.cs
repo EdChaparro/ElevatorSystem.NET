@@ -12,7 +12,7 @@ namespace IntrepidProducts.ElevatorSystem
 
     public class Floor : IFloor
     {
-        public Floor(int number, string name = null)
+        public Floor(int number, string? name = null)
         {
             Number = number;
 

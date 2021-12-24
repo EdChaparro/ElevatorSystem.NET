@@ -8,6 +8,12 @@
     <AssemblyName>IntrepidProducts.ElevatorSystem.Tests</AssemblyName>
 
     <RootNamespace>IntrepidProducts.ElevatorSystem.Tests</RootNamespace>
+
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
