@@ -9,5 +9,10 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         }
 
         public IButton Button { get; }
+
+        public T? GetButton<T>() where T : class, IButton
+        {
+            return Button as T;
+        }
     }
 }

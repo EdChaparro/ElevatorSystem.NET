@@ -91,7 +91,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
             button.IsPressed = true;    //This should generate an event
 
-            var eventButton = receivedEvent.Button as TestButton;
+            var eventButton = receivedEvent.GetButton<TestButton>();
             Assert.IsNotNull(eventButton);
             Assert.AreEqual(button.Id, eventButton.Id);
         }
