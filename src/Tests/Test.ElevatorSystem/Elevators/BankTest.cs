@@ -2,7 +2,7 @@ using System;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IntrepidProducts.ElevatorSystem.Tests
+namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 {
     [TestClass]
     public class BankTest
