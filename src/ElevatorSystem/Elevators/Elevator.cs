@@ -17,6 +17,7 @@
 
     public interface IElevator : IHasId, IElevatorStatus
     {
+        string? Name { get; }
         Direction Direction { get; set; }
         DoorStatus DoorStatus { get; set; }
 
@@ -25,6 +26,11 @@
 
     public class Elevator : AbstractEntity, IElevator
     {
+        public Elevator(string? name = null)
+        {
+            Name = name;
+        }
+        public string? Name { get; }
         public Direction Direction { get; set; } = Direction.Stationary;
         public DoorStatus DoorStatus { get; set; } = DoorStatus.Closed;
         public bool IsEnabled { get; set; } = true;
