@@ -1,3 +1,4 @@
+using System;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -6,6 +7,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
     [TestClass]
     public class BankTest
     {
+        #region Elevators
         [TestMethod]
         public void ShouldKeepElevatorCount()
         {
@@ -53,5 +55,26 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             Assert.IsTrue(elevatorBank.Add(e1, e2, e3));
             Assert.AreEqual(3, elevatorBank.NumberOfElevators);
         }
+        #endregion
+
+        #region Floors
+        [TestMethod]
+        public void ShouldKeepFloorCount()
+        {
+            var bankWithNoFloors = new Bank();
+            Assert.AreEqual(0, bankWithNoFloors.NumberOfFloors);
+
+            var bankWithFloors = new Bank(new Floor(1), new Floor(2));
+            Assert.AreEqual(2, bankWithFloors.NumberOfFloors);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ShouldRejectNonUniqueFloors()
+        {
+            var bankWithFloors = new Bank(
+                new Floor(1), new Floor(2), new Floor(1));
+        }
+        #endregion
     }
 }

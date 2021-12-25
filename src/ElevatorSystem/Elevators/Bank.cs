@@ -8,11 +8,23 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     {
         bool Add(params IElevator[] elevators);
         int NumberOfElevators { get; }
+        int NumberOfFloors { get; }
     }
 
     public class Bank : IBank
     {
+        public Bank(params IFloor[] floors)
+        {
+            var result = Add(floors);
+
+            if (result == false)
+            {
+                throw new ArgumentException("Invalid floor set specified");
+            }
+        }
+
         private readonly Dictionary<Guid, IElevator> _elevators = new Dictionary<Guid, IElevator>();
+        private readonly Dictionary<int, IFloor> _floors = new Dictionary<int, IFloor>();
 
         public bool Add(params IElevator[] elevators)
         {
@@ -41,9 +53,36 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public int NumberOfElevators => _elevators.Count;
 
+        private bool Add(params IFloor[] floors)
+        {
+            var itemsToAdd = new Dictionary<int, IFloor>();
+
+            foreach (var floor in floors)
+            {
+                if (_floors.ContainsKey(floor.Number))
+                {
+                    return false;
+                }
+
+                if (itemsToAdd.ContainsKey(floor.Number))
+                {
+                    return false;
+                }
+
+                itemsToAdd[floor.Number] = floor;
+            }
+
+            itemsToAdd.ToList().ForEach
+                (x => _floors.Add(x.Key, x.Value));
+
+            return true;
+        }
+
+        public int NumberOfFloors => _floors.Count;
+
         public override string ToString()
         {
-            return $"Number of Elevators: {NumberOfElevators}";
+            return $"{NumberOfFloors} serviced by {NumberOfElevators} Elevators";
         }
     }
 }
