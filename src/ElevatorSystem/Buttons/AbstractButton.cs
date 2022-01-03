@@ -7,7 +7,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         bool IsEnabled { get; set; }
         bool IsPressed { get; set; }
 
-        event EventHandler<ButtonPressedEventArgs> ButtonPressedEvent;
+        event EventHandler<ButtonPressedEventArgs>? ButtonPressedEvent;
     }
 
     public abstract class AbstractButton : IButton
@@ -49,4 +49,5 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
                 new ButtonPressedEventArgs(this));
         }
     }
+
 }
