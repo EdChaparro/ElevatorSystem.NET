@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {
-    public class TestButton : AbstractButton
-    {
-        public Guid Id = new Guid();
-    }
-
     [TestClass]
     public class AbstractButtonTest
     {
