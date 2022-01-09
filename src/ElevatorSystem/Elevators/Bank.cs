@@ -86,7 +86,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public int NumberOfFloors => _floors.Count;
         public IEnumerable<int> OrderedFloorNumbers => _floors.Keys.OrderBy(x => x);
 
-
         public int LowestFloorNbr => _floors.Any() ? _floors.Keys.Min() : 0;
         public int HighestFloorNbr => _floors.Any() ? _floors.Keys.Max() : 0;
 

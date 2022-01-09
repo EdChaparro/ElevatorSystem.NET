@@ -1,48 +1,59 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem
 {
     public interface IBuilding
     {
-        bool Add(params IFloor[] floors);
-        int NumberOfFloors { get; }
+        int NumberOfBanks { get; }
     }
 
     public class Building : IBuilding
     {
-        private readonly Dictionary<int, IFloor> _floors = new Dictionary<int, IFloor>();
-
-        public bool Add(params IFloor[] floors)
+        public Building(params IBank[] banks)
         {
-            var itemsToAdd = new Dictionary<int, IFloor>();
+            var result = Add(banks);
 
-            foreach (var floor in floors)
+            if (result == false)
             {
-                if (_floors.ContainsKey(floor.Number))
+                throw new ArgumentException("Invalid elevator bank set specified");
+            }
+        }
+
+        private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
+
+        private bool Add(params IBank[] banks)
+        {
+            var itemsToAdd = new Dictionary<Guid, IBank>();
+
+            foreach (var bank in banks)
+            {
+                if (_banks.ContainsKey(bank.Id))
                 {
                     return false;
                 }
 
-                if (itemsToAdd.ContainsKey(floor.Number))
+                if (itemsToAdd.ContainsKey(bank.Id))
                 {
                     return false;
                 }
 
-                itemsToAdd[floor.Number] = floor;
+                itemsToAdd[bank.Id] = bank;
             }
 
             itemsToAdd.ToList().ForEach
-                (x => _floors.Add(x.Key, x.Value));
+                (x => _banks.Add(x.Key, x.Value));
 
             return true;
         }
 
-        public int NumberOfFloors => _floors.Count;
+        public int NumberOfBanks => _banks.Count;
 
         public override string ToString()
         {
-            return $"Number of Floors: {NumberOfFloors}";
+            return $"Number of Banks: {NumberOfBanks}";
         }
     }
 }
