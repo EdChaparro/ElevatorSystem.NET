@@ -4,16 +4,10 @@ using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IBank : IHasId
+    public interface IBank : IHasId, IHasFloors
     {
         bool Add(params IElevator[] elevators);
         int NumberOfElevators { get; }
-        int NumberOfFloors { get; }
-        IEnumerable<int> OrderedFloorNumbers { get; }
-
-        int LowestFloorNbr { get; }
-        int HighestFloorNbr { get; }
-
     }
 
     public class Bank : AbstractEntity, IBank
