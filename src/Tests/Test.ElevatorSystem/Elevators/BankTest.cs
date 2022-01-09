@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -86,6 +87,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             var bankWithFloors = new Bank(new Floor(1), new Floor(7), new Floor(5));
             Assert.AreEqual(7, bankWithFloors.HighestFloorNbr);
+        }
+
+        [TestMethod]
+        public void ShouldReportOrderedCollectionOfFloorNumbers()
+        {
+            var bank = new Bank(new Floor(1), new Floor(7), new Floor(5));
+
+            var expectedFloorList = new int[] { 1, 5, 7 };
+            Assert.IsTrue(expectedFloorList.SequenceEqual(bank.OrderedFloorNumbers));
         }
 
         [TestMethod]

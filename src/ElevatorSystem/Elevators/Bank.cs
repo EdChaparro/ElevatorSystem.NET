@@ -9,9 +9,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         bool Add(params IElevator[] elevators);
         int NumberOfElevators { get; }
         int NumberOfFloors { get; }
+        IEnumerable<int> OrderedFloorNumbers { get; }
 
         int LowestFloorNbr { get; }
         int HighestFloorNbr { get; }
+
     }
 
     public class Bank : AbstractEntity, IBank
@@ -82,6 +84,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         public int NumberOfFloors => _floors.Count;
+        public IEnumerable<int> OrderedFloorNumbers => _floors.Keys.OrderBy(x => x);
+
 
         public int LowestFloorNbr => _floors.Any() ? _floors.Keys.Min() : 0;
         public int HighestFloorNbr => _floors.Any() ? _floors.Keys.Max() : 0;
