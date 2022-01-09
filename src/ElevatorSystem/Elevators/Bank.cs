@@ -4,14 +4,13 @@ using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IBank
+    public interface IBank : IHasId, IHasFloors
     {
         bool Add(params IElevator[] elevators);
         int NumberOfElevators { get; }
-        int NumberOfFloors { get; }
     }
 
-    public class Bank : IBank
+    public class Bank : AbstractEntity, IBank
     {
         public Bank(params IFloor[] floors)
         {
@@ -78,7 +77,13 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return true;
         }
 
+        #region IHasFloor
         public int NumberOfFloors => _floors.Count;
+        public IEnumerable<int> OrderedFloorNumbers => _floors.Keys.OrderBy(x => x);
+
+        public int LowestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Min() : 0;
+        public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
+        #endregion
 
         public override string ToString()
         {
