@@ -9,6 +9,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         bool Add(params IElevator[] elevators);
         int NumberOfElevators { get; }
         int NumberOfFloors { get; }
+
+        int LowestFloorNbr { get; }
+        int HighestFloorNbr { get; }
     }
 
     public class Bank : IBank
@@ -79,6 +82,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         public int NumberOfFloors => _floors.Count;
+
+        public int LowestFloorNbr => _floors.Any() ? _floors.Keys.Min() : 0;
+        public int HighestFloorNbr => _floors.Any() ? _floors.Keys.Max() : 0;
 
         public override string ToString()
         {

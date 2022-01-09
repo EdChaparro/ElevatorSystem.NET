@@ -69,6 +69,26 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         [TestMethod]
+        public void ShouldReportLowestFloorNumber()
+        {
+            var bankWithNoFloors = new Bank();
+            Assert.AreEqual(0, bankWithNoFloors.LowestFloorNbr);
+
+            var bankWithFloors = new Bank(new Floor(1), new Floor(7), new Floor(5));
+            Assert.AreEqual(1, bankWithFloors.LowestFloorNbr);
+        }
+
+        [TestMethod]
+        public void ShouldReportHighestFloorNumber()
+        {
+            var bankWithNoFloors = new Bank();
+            Assert.AreEqual(0, bankWithNoFloors.HighestFloorNbr);
+
+            var bankWithFloors = new Bank(new Floor(1), new Floor(7), new Floor(5));
+            Assert.AreEqual(7, bankWithFloors.HighestFloorNbr);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueFloors()
         {
