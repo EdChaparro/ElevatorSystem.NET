@@ -5,7 +5,7 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem
 {
-    public interface IBuilding
+    public interface IBuilding : IHasFloors
     {
         int NumberOfBanks { get; }
     }
@@ -50,6 +50,28 @@ namespace IntrepidProducts.ElevatorSystem
         }
 
         public int NumberOfBanks => _banks.Count;
+
+        #region IHasFloor
+        public int NumberOfFloors => OrderedFloorNumbers.Max();
+
+        public IEnumerable<int> OrderedFloorNumbers
+        {
+            get
+            {
+                var floorNbrs = new List<int>();
+
+                foreach (var bank in _banks.Values)
+                {
+                    floorNbrs.AddRange(bank.OrderedFloorNumbers);
+                }
+
+                return floorNbrs.Distinct().OrderBy(x => x);
+            }
+        }
+
+        public int LowestFloorNbr => OrderedFloorNumbers.Min();
+        public int HighestFloorNbr => OrderedFloorNumbers.Max();
+        #endregion
 
         public override string ToString()
         {

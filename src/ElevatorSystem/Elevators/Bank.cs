@@ -77,11 +77,13 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return true;
         }
 
+        #region IHasFloor
         public int NumberOfFloors => _floors.Count;
         public IEnumerable<int> OrderedFloorNumbers => _floors.Keys.OrderBy(x => x);
 
-        public int LowestFloorNbr => OrderedFloorNumbers.Min();
-        public int HighestFloorNbr => OrderedFloorNumbers.Max();
+        public int LowestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Min() : 0;
+        public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
+        #endregion
 
         public override string ToString()
         {
