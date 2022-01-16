@@ -4,6 +4,6 @@
     {
         Stationary = 0,
         Up = 1,
-        Down
+        Down = 2
     }
 }
