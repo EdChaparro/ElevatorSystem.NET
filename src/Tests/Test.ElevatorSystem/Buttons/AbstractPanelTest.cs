@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {
     [TestClass]
-    public class PanelTest
+    public class AbstractPanelTest
     {
         [TestMethod]
         public void ShouldKeepButtonCount()

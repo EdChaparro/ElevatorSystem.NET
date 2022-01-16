@@ -8,7 +8,6 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         string? Description { get; set; }
         bool IsEnabled { get; set; }
 
-        bool Add(params IButton[] buttons);
         int NumberOfButtons { get; }
 
         event EventHandler<PanelButtonPressedEventArgs>? PanelButtonPressedEvent;
@@ -34,7 +33,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         private readonly List<IButton> _buttons = new List<IButton>();
 
-        public bool Add(params IButton[] buttons)
+        protected bool Add(params IButton[] buttons)
         {
             foreach (var button in buttons)
             {

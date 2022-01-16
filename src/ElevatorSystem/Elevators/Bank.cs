@@ -25,6 +25,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         private readonly Dictionary<Guid, IElevator> _elevators = new Dictionary<Guid, IElevator>();
         private readonly Dictionary<int, IFloor> _floors = new Dictionary<int, IFloor>();
 
+        #region Elevators
         public bool Add(params IElevator[] elevators)
         {
             var itemsToAdd = new Dictionary<Guid, IElevator>();
@@ -51,7 +52,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         public int NumberOfElevators => _elevators.Count;
+        #endregion
 
+        #region Floors
         private bool Add(params IFloor[] floors)
         {
             var itemsToAdd = new Dictionary<int, IFloor>();
@@ -76,6 +79,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             return true;
         }
+        #endregion
 
         #region IHasFloor
         public int NumberOfFloors => _floors.Count;
@@ -84,7 +88,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public int LowestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Min() : 0;
         public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
         #endregion
-
         public override string ToString()
         {
             return $"{NumberOfFloors} serviced by {NumberOfElevators} Elevators";

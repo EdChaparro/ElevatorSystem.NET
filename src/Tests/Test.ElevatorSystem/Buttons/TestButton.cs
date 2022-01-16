@@ -7,7 +7,4 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
     {
         public Guid Id = new Guid();
     }
-
-    public class TestPanel : AbstractPanel
-    {}
 }
