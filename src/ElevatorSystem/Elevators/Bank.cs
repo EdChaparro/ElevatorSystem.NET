@@ -13,7 +13,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
     public class Bank : AbstractEntity, IBank
     {
-        public Bank(params IFloor[] floors)
+        public Bank(params Floor[] floors)
         {
             var result = Add(floors);
 
@@ -24,7 +24,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         private readonly Dictionary<Guid, IElevator> _elevators = new Dictionary<Guid, IElevator>();
-        private readonly SortedDictionary<int, IFloor> _floors = new SortedDictionary<int, IFloor>();
+        private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
         #region Elevators
         public bool Add(params IElevator[] elevators)
@@ -56,14 +56,14 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
         #region Floors
-        private bool Add(params IFloor[] floors)
+        private bool Add(params Floor[] floors)
         {
             if (floors.Length < 2)
             {
                 return false;   //Must have at least two floors
             }
 
-            var itemsToAdd = new Dictionary<int, IFloor>();
+            var itemsToAdd = new Dictionary<int, Floor>();
 
             foreach (var floor in floors)
             {
@@ -87,7 +87,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return true;
         }
 
-        private void AddCallButtonsTo(SortedDictionary<int, IFloor> floors)
+        private void AddCallButtonsTo(SortedDictionary<int, Floor> floors)
         {
             var lowestFloor = floors.First().Value;
             var highestFloor = floors.Last().Value;

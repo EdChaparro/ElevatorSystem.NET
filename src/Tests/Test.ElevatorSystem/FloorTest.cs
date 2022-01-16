@@ -43,8 +43,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldSupportFloorOperatorComparisons()
         {
-            IFloor floor1 = new Floor(1, name: "XXX");
-            IFloor floor2 = new Floor(2, name: "YYY");
+            Floor floor1 = new Floor(1, name: "XXX");
+            Floor floor2 = new Floor(2, name: "YYY");
 
             Assert.IsTrue(floor1 < floor2);
             Assert.IsTrue(floor2 > floor1);
