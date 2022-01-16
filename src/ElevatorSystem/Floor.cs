@@ -1,4 +1,5 @@
 ﻿using System;
+using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem
 {
@@ -8,6 +9,8 @@ namespace IntrepidProducts.ElevatorSystem
         string Name { get; }
 
         bool IsLocked { get; set; }
+
+        FloorPanel? Panel { get; set; }
 
         #region Operators
         public static bool operator >(IFloor floor1, IFloor floor2)
@@ -39,6 +42,8 @@ namespace IntrepidProducts.ElevatorSystem
         public string Name { get; }
         public int Number { get; }
         public bool IsLocked { get; set; }
+
+        public FloorPanel? Panel { get; set; }
 
         #region Equality
         public override bool Equals(object obj)
