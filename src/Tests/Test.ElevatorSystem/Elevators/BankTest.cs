@@ -9,10 +9,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     public class BankTest
     {
         #region Elevators
+
         [TestMethod]
         public void ShouldKeepElevatorCount()
         {
-            var bank = new Bank();
+            var bank = new Bank(new Floor(1), new Floor(2));
             Assert.AreEqual(0, bank.NumberOfElevators);
 
             bank.Add(new Elevator(), new Elevator());
@@ -28,7 +29,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var e2 = new Elevator();
             var e3 = new Elevator();
 
-            var elevatorBank = new Bank();
+            var elevatorBank = new Bank(new Floor(1), new Floor(2));
 
             Assert.IsTrue(elevatorBank.Add(e1));
             Assert.IsFalse(elevatorBank.Add(dup));
@@ -48,23 +49,22 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var e2 = new Elevator();
             var e3 = new Elevator();
 
-            var elevatorBank = new Bank();
+            var elevatorBank = new Bank(new Floor(1), new Floor(2));
 
             Assert.IsFalse(elevatorBank.Add(e1, dup1, e2, e3));
-            Assert.AreEqual(0, elevatorBank.NumberOfElevators);    //Entire collection rejected
+            Assert.AreEqual(0, elevatorBank.NumberOfElevators); //Entire collection rejected
 
             Assert.IsTrue(elevatorBank.Add(e1, e2, e3));
             Assert.AreEqual(3, elevatorBank.NumberOfElevators);
         }
+
         #endregion
 
         #region Floors
+
         [TestMethod]
         public void ShouldKeepFloorCount()
         {
-            var bankWithNoFloors = new Bank();
-            Assert.AreEqual(0, bankWithNoFloors.NumberOfFloors);
-
             var bankWithFloors = new Bank(new Floor(1), new Floor(2));
             Assert.AreEqual(2, bankWithFloors.NumberOfFloors);
         }
@@ -72,9 +72,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldReportLowestFloorNumber()
         {
-            var bankWithNoFloors = new Bank();
-            Assert.AreEqual(0, bankWithNoFloors.LowestFloorNbr);
-
             var bankWithFloors = new Bank(new Floor(1), new Floor(7), new Floor(5));
             Assert.AreEqual(1, bankWithFloors.LowestFloorNbr);
         }
@@ -82,11 +79,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldReportHighestFloorNumber()
         {
-            var bankWithNoFloors = new Bank();
-            Assert.AreEqual(0, bankWithNoFloors.HighestFloorNbr);
-
-            var bankWithFloors = new Bank(new Floor(1), new Floor(7), new Floor(5));
-            Assert.AreEqual(7, bankWithFloors.HighestFloorNbr);
+            var bank = new Bank(new Floor(1), new Floor(7), new Floor(5));
+            Assert.AreEqual(7, bank.HighestFloorNbr);
         }
 
         [TestMethod]
@@ -94,7 +88,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var bank = new Bank(new Floor(1), new Floor(7), new Floor(5));
 
-            var expectedFloorList = new int[] { 1, 5, 7 };
+            var expectedFloorList = new [] { 1, 5, 7 };
             Assert.IsTrue(expectedFloorList.SequenceEqual(bank.OrderedFloorNumbers));
         }
 
@@ -102,9 +96,71 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueFloors()
         {
-            var bankWithFloors = new Bank(
+            var bank = new Bank(
                 new Floor(1), new Floor(2), new Floor(1));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ShouldNotAcceptBanksWithLessThanTwoFloors()
+        {
+            var bank = new Bank(new Floor(1));
+        }
+
+        [TestMethod]
+        public void ShouldOnlyIncludeAppropriateCallButtonForEachFloor()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+
+            Assert.IsNull(floor1.Panel);
+            Assert.IsNull(floor2.Panel);
+            Assert.IsNull(floor3.Panel);
+
+            var bank = new Bank(floor1, floor2, floor3);
+
+            Assert.IsNotNull(floor1.Panel);
+            Assert.IsNotNull(floor2.Panel);
+            Assert.IsNotNull(floor3.Panel);
+
+            Assert.IsNotNull(floor1.Panel.UpButton);
+            Assert.IsNull(floor1.Panel.DownButton);
+
+            Assert.IsNotNull(floor2.Panel.UpButton);
+            Assert.IsNotNull(floor2.Panel.DownButton);
+
+            Assert.IsNull(floor3.Panel.UpButton);
+            Assert.IsNotNull(floor2.Panel.DownButton);
+        }
+
+        [TestMethod]
+        public void ShouldUseFloorNumberToDetermineRequiredCallButtons()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+
+            Assert.IsNull(floor1.Panel);
+            Assert.IsNull(floor2.Panel);
+            Assert.IsNull(floor3.Panel);
+
+            var bank = new Bank(floor2, floor3, floor1); //Order doesn't matter
+
+            Assert.IsNotNull(floor1.Panel);
+            Assert.IsNotNull(floor2.Panel);
+            Assert.IsNotNull(floor3.Panel);
+
+            Assert.IsNotNull(floor1.Panel.UpButton);
+            Assert.IsNull(floor1.Panel.DownButton);
+
+            Assert.IsNotNull(floor2.Panel.UpButton);
+            Assert.IsNotNull(floor2.Panel.DownButton);
+
+            Assert.IsNull(floor3.Panel.UpButton);
+            Assert.IsNotNull(floor2.Panel.DownButton);
+        }
+
         #endregion
     }
 }

@@ -1,28 +1,9 @@
 ﻿using System;
+using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem
 {
-    public interface IFloor
-    {
-        int Number { get; }
-        string Name { get; }
-
-        bool IsLocked { get; set; }
-
-        #region Operators
-        public static bool operator >(IFloor floor1, IFloor floor2)
-        {
-            return floor1.Number > floor2.Number;
-        }
-
-        public static bool operator <(IFloor floor1, IFloor floor2)
-        {
-            return floor1.Number < floor2.Number;
-        }
-        #endregion
-    }
-
-    public class Floor : IFloor
+    public class Floor 
     {
         public Floor(int number, string? name = null)
         {
@@ -39,6 +20,20 @@ namespace IntrepidProducts.ElevatorSystem
         public string Name { get; }
         public int Number { get; }
         public bool IsLocked { get; set; }
+
+        public FloorPanel? Panel { get; set; }
+
+        #region Operators
+        public static bool operator >(Floor floor1, Floor floor2)
+        {
+            return floor1.Number > floor2.Number;
+        }
+
+        public static bool operator <(Floor floor1, Floor floor2)
+        {
+            return floor1.Number < floor2.Number;
+        }
+        #endregion
 
         #region Equality
         public override bool Equals(object obj)

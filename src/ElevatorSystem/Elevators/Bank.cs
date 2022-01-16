@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
@@ -12,7 +13,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
     public class Bank : AbstractEntity, IBank
     {
-        public Bank(params IFloor[] floors)
+        public Bank(params Floor[] floors)
         {
             var result = Add(floors);
 
@@ -23,7 +24,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         private readonly Dictionary<Guid, IElevator> _elevators = new Dictionary<Guid, IElevator>();
-        private readonly Dictionary<int, IFloor> _floors = new Dictionary<int, IFloor>();
+        private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
         #region Elevators
         public bool Add(params IElevator[] elevators)
@@ -55,9 +56,14 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
         #region Floors
-        private bool Add(params IFloor[] floors)
+        private bool Add(params Floor[] floors)
         {
-            var itemsToAdd = new Dictionary<int, IFloor>();
+            if (floors.Length < 2)
+            {
+                return false;   //Must have at least two floors
+            }
+
+            var itemsToAdd = new Dictionary<int, Floor>();
 
             foreach (var floor in floors)
             {
@@ -77,7 +83,31 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             itemsToAdd.ToList().ForEach
                 (x => _floors.Add(x.Key, x.Value));
 
+            AddCallButtonsTo(_floors);
             return true;
+        }
+
+        private void AddCallButtonsTo(SortedDictionary<int, Floor> floors)
+        {
+            var lowestFloor = floors.First().Value;
+            var highestFloor = floors.Last().Value;
+
+            foreach (var floor in floors.Values)
+            {
+                if (floor.Equals(lowestFloor))
+                {
+                    floor.Panel = new FloorPanel(false, true);
+                    continue;
+                }
+
+                if (floor.Equals(highestFloor))
+                {
+                    floor.Panel = new FloorPanel(true, false);
+                    continue;
+                }
+
+                floor.Panel = new FloorPanel(true, true);
+            }
         }
         #endregion
 
