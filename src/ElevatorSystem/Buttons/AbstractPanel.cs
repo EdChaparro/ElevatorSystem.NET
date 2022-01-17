@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public interface IPanel
+    public interface IPanel<T> where T : IButton
     {
         string? Description { get; set; }
         bool IsEnabled { get; set; }
 
         int NumberOfButtons { get; }
 
-        event EventHandler<PanelButtonPressedEventArgs>? PanelButtonPressedEvent;
+        event EventHandler<PanelButtonPressedEventArgs<T>>? PanelButtonPressedEvent;
     }
 
-    public abstract class AbstractPanel : AbstractEntity, IPanel
+    public abstract class AbstractPanel<T> : AbstractEntity, IPanel<T> where T : IButton
     {
         public string? Description { get; set; }
         public bool IsEnabled { get; set; } = true;
 
-        public event EventHandler<PanelButtonPressedEventArgs>? PanelButtonPressedEvent;
+        public event EventHandler<PanelButtonPressedEventArgs<T>>? PanelButtonPressedEvent;
 
         private void RaisePanelButtonPressedEvent(ButtonPressedEventArgs e)
         {
@@ -28,12 +28,14 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             }
 
             PanelButtonPressedEvent?.Invoke(this,
-                new PanelButtonPressedEventArgs(this, e.Button));
+                new PanelButtonPressedEventArgs<T>(this, e.Button));
         }
 
-        private readonly List<IButton> _buttons = new List<IButton>();
+        private readonly List<T> _buttons = new List<T>();
 
-        protected bool Add(params IButton[] buttons)
+        protected IEnumerable<T> Buttons => _buttons;
+
+        protected bool Add(params T[] buttons)
         {
             foreach (var button in buttons)
             {

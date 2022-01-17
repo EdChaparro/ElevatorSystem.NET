@@ -14,7 +14,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             var panel = new TestPanel();
             Assert.AreEqual(0, panel.NumberOfButtons);
 
-            panel.Add(new TestButton(), new TestButton());
+            panel.AddButton(new TestButton(), new TestButton());
             Assert.AreEqual(2, panel.NumberOfButtons);
         }
 
@@ -23,7 +23,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var panel = new TestPanel();
 
-            var receivedEvents = new List<PanelButtonPressedEventArgs>();
+            var receivedEvents = new List<PanelButtonPressedEventArgs<TestButton>>();
 
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
@@ -32,7 +32,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             var button2 = new TestButton();
             var button3 = new TestButton();
 
-            panel.Add(button1, button2, button3);
+            panel.AddButton(button1, button2, button3);
 
             button2.IsPressed = true;   
             Assert.AreEqual(1, receivedEvents.Count);
@@ -46,7 +46,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var panel = new TestPanel { IsEnabled = false };
 
-            var receivedEvents = new List<PanelButtonPressedEventArgs>();
+            var receivedEvents = new List<PanelButtonPressedEventArgs<TestButton>>();
 
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
@@ -55,7 +55,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             var button2 = new TestButton();
             var button3 = new TestButton();
 
-            panel.Add(button1, button2, button3);
+            panel.AddButton(button1, button2, button3);
 
             button2.IsPressed = true;
             Assert.AreEqual(0, receivedEvents.Count);
