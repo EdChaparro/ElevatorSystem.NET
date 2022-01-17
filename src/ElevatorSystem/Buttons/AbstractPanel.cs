@@ -33,6 +33,8 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         private readonly List<T> _buttons = new List<T>();
 
+        protected IEnumerable<T> Buttons => _buttons;
+
         protected bool Add(params T[] buttons)
         {
             foreach (var button in buttons)

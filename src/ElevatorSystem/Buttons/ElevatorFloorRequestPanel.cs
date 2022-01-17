@@ -15,6 +15,11 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             }
         }
 
+        public ElevatorFloorRequestButton? GetButtonForFloorNumber(int nbr)
+        {
+            return Buttons.FirstOrDefault(x => x.FloorNbr == nbr);
+        }
+
         private void ValidateFloorArguments(params int[] floorNbrs)
         {
             if (floorNbrs.Length < 2)
