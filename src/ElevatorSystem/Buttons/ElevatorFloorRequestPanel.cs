@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public class ElevatorFloorRequestPanel : AbstractPanel
+    public class ElevatorFloorRequestPanel : AbstractPanel<ElevatorFloorRequestButton>
     {
         public ElevatorFloorRequestPanel(params int[] floorNbrs)
         {

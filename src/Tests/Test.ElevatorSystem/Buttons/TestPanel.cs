@@ -2,11 +2,10 @@
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {
-    public class TestPanel : AbstractPanel
+    public class TestPanel : AbstractPanel<TestButton>
     {
-        public bool Add(params TestButton[] buttons)
+        public bool AddButton(params TestButton[] buttons)
         {
-            // ReSharper disable once CoVariantArrayConversion
             return base.Add(buttons);
         }
     }

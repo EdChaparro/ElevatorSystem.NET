@@ -13,7 +13,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         event EventHandler<PanelButtonPressedEventArgs>? PanelButtonPressedEvent;
     }
 
-    public abstract class AbstractPanel : AbstractEntity, IPanel
+    public abstract class AbstractPanel<T> : AbstractEntity, IPanel where T : IButton
     {
         public string? Description { get; set; }
         public bool IsEnabled { get; set; } = true;
@@ -31,9 +31,9 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
                 new PanelButtonPressedEventArgs(this, e.Button));
         }
 
-        private readonly List<IButton> _buttons = new List<IButton>();
+        private readonly List<T> _buttons = new List<T>();
 
-        protected bool Add(params IButton[] buttons)
+        protected bool Add(params T[] buttons)
         {
             foreach (var button in buttons)
             {
