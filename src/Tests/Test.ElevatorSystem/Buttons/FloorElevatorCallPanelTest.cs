@@ -53,7 +53,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var panel = new FloorElevatorCallPanel(true, true);
 
-            var receivedEvents = new List<PanelButtonPressedEventArgs>();
+            var receivedEvents =
+                new List<PanelButtonPressedEventArgs<FloorElevatorCallButton>>();
 
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);

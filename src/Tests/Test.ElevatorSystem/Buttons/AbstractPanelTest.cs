@@ -23,7 +23,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var panel = new TestPanel();
 
-            var receivedEvents = new List<PanelButtonPressedEventArgs>();
+            var receivedEvents = new List<PanelButtonPressedEventArgs<TestButton>>();
 
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
@@ -46,7 +46,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var panel = new TestPanel { IsEnabled = false };
 
-            var receivedEvents = new List<PanelButtonPressedEventArgs>();
+            var receivedEvents = new List<PanelButtonPressedEventArgs<TestButton>>();
 
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
