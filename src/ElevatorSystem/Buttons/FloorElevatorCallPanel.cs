@@ -2,9 +2,9 @@
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public class FloorPanel : AbstractPanel
+    public class FloorElevatorCallPanel : AbstractPanel
     {
-        public FloorPanel(bool hasDownButton, bool hasUpButton)
+        public FloorElevatorCallPanel(bool hasDownButton, bool hasUpButton)
         {
             if (hasDownButton)
             {

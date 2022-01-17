@@ -21,7 +21,7 @@ namespace IntrepidProducts.ElevatorSystem
         public int Number { get; }
         public bool IsLocked { get; set; }
 
-        public FloorPanel? Panel { get; set; }
+        public FloorElevatorCallPanel? Panel { get; set; }
 
         #region Operators
         public static bool operator >(Floor floor1, Floor floor2)
