@@ -7,21 +7,17 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     public class ElevatorTest
     {
         [TestMethod]
-        public void ShouldReportDirectionCorrectly()
+        public void ShouldInstantiateFloorRequestPanel()
         {
-            var elevator = new Elevator();
-            Assert.IsFalse(elevator.IsMoving);
+            var e = new Elevator(1, 2);
+            Assert.IsNotNull(e.FloorRequestPanel);
+        }
 
-            elevator.Direction = Direction.Up;
-            Assert.IsTrue(elevator.IsMovingUp);
-            Assert.IsTrue(elevator.IsMoving);
-
-            elevator.Direction = Direction.Down;
-            Assert.IsTrue(elevator.IsMovingDown);
-            Assert.IsTrue(elevator.IsMoving);
-
-            elevator.Direction = Direction.Stationary;
-            Assert.IsFalse(elevator.IsMoving);
+        [TestMethod]
+        public void ShouldInstantiateFloorRequestPanelWithCorrectNumberOfButtons()
+        {
+            var e = new Elevator(3, 5, 7);
+            Assert.AreEqual(3, e.FloorRequestPanel.NumberOfButtons);
         }
     }
 }
