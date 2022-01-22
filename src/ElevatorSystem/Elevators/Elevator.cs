@@ -1,19 +1,26 @@
-﻿namespace IntrepidProducts.ElevatorSystem.Elevators
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+
+namespace IntrepidProducts.ElevatorSystem.Elevators
 {
 
     public interface IElevator : IHasId
     {
-        string? Name { get; }
+        string? Name { get; set; }
 
         //TODO: Add Weight Capacity
+
+        ElevatorFloorRequestPanel FloorRequestPanel { get; }
     }
 
     public class Elevator : AbstractEntity, IElevator
     {
-        public Elevator(string? name = null)
+        public Elevator(params int[] floorNbrs)
         {
-            Name = name;
+            FloorRequestPanel = new ElevatorFloorRequestPanel(floorNbrs);
         }
-        public string? Name { get; }
+
+        public ElevatorFloorRequestPanel FloorRequestPanel { get; }
+
+        public string? Name { get; set; }
     }
 }

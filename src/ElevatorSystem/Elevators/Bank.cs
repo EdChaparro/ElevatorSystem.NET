@@ -7,13 +7,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 {
     public interface IBank : IHasId, IHasFloors
     {
-        bool Add(params IElevator[] elevators);
         int NumberOfElevators { get; }
     }
 
     public class Bank : AbstractEntity, IBank
     {
-        public Bank(params Floor[] floors)
+        public Bank(int nbrOfElevators, params Floor[] floors)
         {
             var result = Add(floors);
 
@@ -21,35 +20,26 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             {
                 throw new ArgumentException("Invalid floor set specified");
             }
+
+            AddElevators(nbrOfElevators);
         }
 
         private readonly Dictionary<Guid, IElevator> _elevators = new Dictionary<Guid, IElevator>();
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
         #region Elevators
-        public bool Add(params IElevator[] elevators)
+        private void AddElevators(int nbrOfElevators)
         {
             var itemsToAdd = new Dictionary<Guid, IElevator>();
 
-            foreach (var elevator in elevators)
+            for (int i = 0; i < nbrOfElevators; i++)
             {
-                if (_elevators.ContainsKey(elevator.Id))
-                {
-                    return false;
-                }
-
-                if (itemsToAdd.ContainsKey(elevator.Id))
-                {
-                    return false;
-                }
-
-                itemsToAdd[elevator.Id] = elevator;
+                var e = new Elevator(OrderedFloorNumbers.ToArray());
+                itemsToAdd[e.Id] = e;
             }
 
             itemsToAdd.ToList().ForEach
                 (x => _elevators.Add(x.Key, x.Value));
-
-            return true;
         }
 
         public int NumberOfElevators => _elevators.Count;
