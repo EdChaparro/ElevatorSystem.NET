@@ -30,7 +30,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             var receivedEvents = new List<ElevatorDoorEventArgs>();
 
-            elevator.DoorEvent += (sender, e)
+            elevator.DoorStateChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
             elevator.DoorStatus = DoorStatus.Closed; //No event generated; door already closed
@@ -54,7 +54,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             var receivedEvents = new List<ElevatorDirectionChangedEventArgs>();
 
-            elevator.DirectionEvent += (sender, e)
+            elevator.DirectionChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
             elevator.Direction = Direction.Stationary; //No event generated; direction not changed
@@ -81,7 +81,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
 
-            elevator.FloorEvent += (sender, e)
+            elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
             elevator.FloorNumber = null; //No event generated; direction not changed

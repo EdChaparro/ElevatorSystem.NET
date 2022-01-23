@@ -5,12 +5,7 @@ using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IBank : IHasId, IHasFloors
-    {
-        int NumberOfElevators { get; }
-    }
-
-    public class Bank : AbstractEntity, IBank
+    public class Bank : AbstractEntity
     {
         public Bank(int nbrOfElevators, params Floor[] floors)
         {
@@ -24,25 +19,28 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             AddElevators(nbrOfElevators);
         }
 
-        private readonly Dictionary<Guid, Elevator> _elevators = new Dictionary<Guid, Elevator>();
+        private readonly Dictionary<Guid, IElevatorCommandAdapter> _elevatorCommandAdapters =
+            new Dictionary<Guid, IElevatorCommandAdapter>();
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
         #region Elevators
         private void AddElevators(int nbrOfElevators)
         {
-            var itemsToAdd = new Dictionary<Guid, Elevator>();
+            var itemsToAdd = new Dictionary<Guid, IElevatorCommandAdapter>();
 
             for (int i = 0; i < nbrOfElevators; i++)
             {
-                var e = new Elevator(OrderedFloorNumbers.ToArray());
-                itemsToAdd[e.Id] = e;
+
+                var eAdapter = new FauxElevatorCommandAdapter
+                                    (new Elevator(OrderedFloorNumbers.ToArray()));
+                itemsToAdd[eAdapter.ElevatorId] = eAdapter;
             }
 
             itemsToAdd.ToList().ForEach
-                (x => _elevators.Add(x.Key, x.Value));
+                (x => _elevatorCommandAdapters.Add(x.Key, x.Value));
         }
 
-        public int NumberOfElevators => _elevators.Count;
+        public int NumberOfElevators => _elevatorCommandAdapters.Count;
         #endregion
 
         #region Floors
