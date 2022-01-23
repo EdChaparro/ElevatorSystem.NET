@@ -22,12 +22,6 @@
             return false;   //TODO: Finish me
         }
 
-        public ElevatorStatus Status
-        {
-            get
-            {
-                return _status;
-            }
-        }
+        public ElevatorStatus Status => _status;
     }
 }
