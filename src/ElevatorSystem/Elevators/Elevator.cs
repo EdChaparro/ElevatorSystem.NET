@@ -2,17 +2,7 @@
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-
-    public interface IElevator : IHasId
-    {
-        string? Name { get; set; }
-
-        //TODO: Add Weight Capacity
-
-        ElevatorFloorRequestPanel FloorRequestPanel { get; }
-    }
-
-    public class Elevator : AbstractEntity, IElevator
+    public class Elevator : AbstractEntity
     {
         public Elevator(params int[] floorNbrs)
         {
