@@ -24,13 +24,13 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             AddElevators(nbrOfElevators);
         }
 
-        private readonly Dictionary<Guid, IElevator> _elevators = new Dictionary<Guid, IElevator>();
+        private readonly Dictionary<Guid, Elevator> _elevators = new Dictionary<Guid, Elevator>();
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
         #region Elevators
         private void AddElevators(int nbrOfElevators)
         {
-            var itemsToAdd = new Dictionary<Guid, IElevator>();
+            var itemsToAdd = new Dictionary<Guid, Elevator>();
 
             for (int i = 0; i < nbrOfElevators; i++)
             {

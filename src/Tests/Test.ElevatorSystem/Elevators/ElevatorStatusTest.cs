@@ -12,15 +12,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var eStatus = new ElevatorStatus();
             Assert.IsFalse(eStatus.IsMoving);
 
-            eStatus.Direction = Direction.Up;
+            eStatus = new ElevatorStatus(Direction.Up);
             Assert.IsTrue(eStatus.IsMovingUp);
             Assert.IsTrue(eStatus.IsMoving);
 
-            eStatus.Direction = Direction.Down;
+            eStatus = new ElevatorStatus(Direction.Down);
             Assert.IsTrue(eStatus.IsMovingDown);
             Assert.IsTrue(eStatus.IsMoving);
 
-            eStatus.Direction = Direction.Stationary;
+            eStatus = new ElevatorStatus(Direction.Stationary);
             Assert.IsFalse(eStatus.IsMoving);
         }
     }
