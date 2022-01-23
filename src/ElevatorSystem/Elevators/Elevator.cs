@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlTypes;
 using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
@@ -13,6 +14,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
 
         public string? Name { get; set; }
+
+        public bool IsEnabled { get; set; } = true;
 
         #region Door
         private DoorStatus _doorStatus = DoorStatus.Closed;
@@ -29,15 +32,15 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 }
 
                 _doorStatus = value;
-                RaiseDoorEvent(value);
+                RaiseDoorStateChangedEvent(value);
             }
         }
 
-        public event EventHandler<ElevatorDoorEventArgs>? DoorEvent;
+        public event EventHandler<ElevatorDoorEventArgs>? DoorStateChangedEvent;
 
-        private void RaiseDoorEvent(DoorStatus doorStatus)
+        private void RaiseDoorStateChangedEvent(DoorStatus doorStatus)
         {
-            DoorEvent?.Invoke(this,
+            DoorStateChangedEvent?.Invoke(this,
                 new ElevatorDoorEventArgs(Id, doorStatus));
         }
         #endregion
@@ -61,11 +64,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public event EventHandler<ElevatorDirectionChangedEventArgs>? DirectionEvent;
+        public event EventHandler<ElevatorDirectionChangedEventArgs>? DirectionChangedEvent;
 
         private void RaiseDirectionChangedEvent(Direction direction)
         {
-            DirectionEvent?.Invoke(this,
+            DirectionChangedEvent?.Invoke(this,
                 new ElevatorDirectionChangedEventArgs(Id, direction));
         }
         #endregion
@@ -89,11 +92,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorEvent;
+        public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorNumberChangedEvent;
 
         private void RaiseFloorNumberChangedEvent(int? floorNumber)
         {
-            FloorEvent?.Invoke(this,
+            FloorNumberChangedEvent?.Invoke(this,
                 new ElevatorFloorNumberChangedEventArgs(Id, floorNumber));
         }
         #endregion
