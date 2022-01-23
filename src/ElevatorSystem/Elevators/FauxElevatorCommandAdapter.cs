@@ -1,4 +1,6 @@
-﻿namespace IntrepidProducts.ElevatorSystem.Elevators
+﻿using System;
+
+namespace IntrepidProducts.ElevatorSystem.Elevators
 {
     public class FauxElevatorCommandAdapter : IElevatorCommandAdapter
     {
@@ -11,6 +13,8 @@
 
         private readonly Elevator _elevator;
         private readonly ElevatorStatus _status;
+
+        public Guid ElevatorId => _elevator.Id;
 
         public bool StopAt(int floorNbr)
         {
