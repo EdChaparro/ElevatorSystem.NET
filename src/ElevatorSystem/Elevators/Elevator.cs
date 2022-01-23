@@ -14,14 +14,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public string? Name { get; set; }
 
+        #region Door
         private DoorStatus _doorStatus = DoorStatus.Closed;
 
         public DoorStatus DoorStatus
         {
-            get
-            {
-                return _doorStatus;
-            }
+            get => _doorStatus;
 
             set
             {
@@ -31,16 +29,45 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 }
 
                 _doorStatus = value;
-                RaiseButtonPressedEvent(value);
+                RaiseDoorEvent(value);
             }
         }
 
         public event EventHandler<ElevatorDoorEventArgs>? DoorEvent;
 
-        private void RaiseButtonPressedEvent(DoorStatus doorStatus)
+        private void RaiseDoorEvent(DoorStatus doorStatus)
         {
             DoorEvent?.Invoke(this,
                 new ElevatorDoorEventArgs(Id, doorStatus));
         }
+        #endregion
+
+        #region Direction
+        private Direction _direction = Direction.Stationary;
+
+        public Direction Direction
+        {
+            get => _direction;
+
+            set
+            {
+                if (value == _direction)
+                {
+                    return;
+                }
+
+                _direction = value;
+                RaiseDirectionChangedEvent(value);
+            }
+        }
+
+        public event EventHandler<ElevatorDirectionChangedEventArgs>? DirectionEvent;
+
+        private void RaiseDirectionChangedEvent(Direction direction)
+        {
+            DirectionEvent?.Invoke(this,
+                new ElevatorDirectionChangedEventArgs(Id, direction));
+        }
+        #endregion
     }
 }

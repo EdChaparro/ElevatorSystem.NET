@@ -33,10 +33,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.DoorEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            elevator.DoorStatus = DoorStatus.Closed;  //No event generated; door already closed
+            elevator.DoorStatus = DoorStatus.Closed; //No event generated; door already closed
             Assert.AreEqual(0, receivedEvents.Count);
 
-            elevator.DoorStatus = DoorStatus.Open;  //No event generated; door already closed
+            elevator.DoorStatus = DoorStatus.Open;
             Assert.AreEqual(1, receivedEvents.Count);
 
             var doorEvent = receivedEvents.First();
@@ -45,5 +45,30 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.AreEqual(elevator.Id, doorEvent.ElevatorId);
         }
+
+        [TestMethod]
+        public void ShouldRaiseDirectionChangedEvent()
+        {
+            var elevator = new Elevator(1, 2)
+                { DoorStatus = DoorStatus.Closed, Direction = Direction.Stationary };
+
+            var receivedEvents = new List<ElevatorDirectionChangedEventArgs>();
+
+            elevator.DirectionEvent += (sender, e)
+                => receivedEvents.Add(e);
+
+            elevator.Direction = Direction.Stationary; //No event generated; direction not changed
+            Assert.AreEqual(0, receivedEvents.Count);
+
+            elevator.Direction = Direction.Up;
+            Assert.AreEqual(1, receivedEvents.Count);
+
+            var directionEvent = receivedEvents.First();
+
+            Assert.AreEqual(Direction.Up, directionEvent.Direction);
+
+            Assert.AreEqual(elevator.Id, directionEvent.ElevatorId);
+        }
+
     }
 }

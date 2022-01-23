@@ -2,9 +2,10 @@
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class ElevatorMoveEventArgs : ElevatorEventArgs
+    public class ElevatorDirectionChangedEventArgs : ElevatorEventArgs
     {
-        public ElevatorMoveEventArgs(Guid elevatorId, Direction direction, int floorNbr)
+        public ElevatorDirectionChangedEventArgs
+            (Guid elevatorId, Direction direction, int? floorNbr = null)
             : base(elevatorId)
         {
             Direction = direction;
@@ -12,6 +13,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         public Direction Direction { get; }
-        public int CurrentFloorNbr { get; }
+        public int? CurrentFloorNbr { get; }
     }
 }
