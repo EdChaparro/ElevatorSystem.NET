@@ -12,5 +12,7 @@
 
         public bool IsDoorOpen => DoorStatus == DoorStatus.Open;
         public bool IsDoorClosed => DoorStatus == DoorStatus.Closed;
+
+        public int? CurrentFloorNumber { get; }
     }
 }
