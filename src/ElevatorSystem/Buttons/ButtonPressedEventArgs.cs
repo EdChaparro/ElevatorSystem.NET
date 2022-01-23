@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public class ButtonPressedEventArgs
+    public class ButtonPressedEventArgs : EventArgs
     {
         public ButtonPressedEventArgs(IButton button)
         {
