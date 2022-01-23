@@ -1,22 +1,5 @@
 ﻿namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IElevatorStatus
-    {
-        bool IsEnabled { get; set; }
-
-        Direction Direction { get; set; }
-        DoorStatus DoorStatus { get; set; }
-
-        public bool IsMoving { get; }
-        public bool IsMovingUp { get; }
-        public bool IsMovingDown { get; }
-
-        public bool IsDoorOpen { get; }
-        public bool IsDoorClosed { get; }
-
-        //TODO: Add Weight Capacity
-    }
-
     public class ElevatorStatus
     {
         public Direction Direction { get; set; } = Direction.Stationary;
