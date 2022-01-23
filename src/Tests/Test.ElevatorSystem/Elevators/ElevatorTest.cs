@@ -70,5 +70,31 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(elevator.Id, directionEvent.ElevatorId);
         }
 
+        [TestMethod]
+        public void ShouldRaiseFloorChangedEvent()
+        {
+            var elevator = new Elevator(1, 2)
+                { DoorStatus = DoorStatus.Closed,
+                    Direction = Direction.Stationary,
+                    FloorNumber = null
+                };
+
+            var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
+
+            elevator.FloorEvent += (sender, e)
+                => receivedEvents.Add(e);
+
+            elevator.FloorNumber = null; //No event generated; direction not changed
+            Assert.AreEqual(0, receivedEvents.Count);
+
+            elevator.FloorNumber = 2;
+            Assert.AreEqual(1, receivedEvents.Count);
+
+            var floorEvent = receivedEvents.First();
+
+            Assert.AreEqual(2, floorEvent.CurrentFloorNbr);
+
+            Assert.AreEqual(elevator.Id, floorEvent.ElevatorId);
+        }
     }
 }

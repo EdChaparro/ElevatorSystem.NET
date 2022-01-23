@@ -69,5 +69,33 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 new ElevatorDirectionChangedEventArgs(Id, direction));
         }
         #endregion
+
+        #region Floor
+        private int? _floorNumber;
+
+        public int? FloorNumber
+        {
+            get => _floorNumber;
+
+            set
+            {
+                if (value == _floorNumber)
+                {
+                    return;
+                }
+
+                _floorNumber = value;
+                RaiseFloorNumberChangedEvent(value);
+            }
+        }
+
+        public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorEvent;
+
+        private void RaiseFloorNumberChangedEvent(int? floorNumber)
+        {
+            FloorEvent?.Invoke(this,
+                new ElevatorFloorNumberChangedEventArgs(Id, floorNumber));
+        }
+        #endregion
     }
 }
