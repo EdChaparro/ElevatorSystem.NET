@@ -5,12 +5,7 @@ using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IBank : IHasId, IHasFloors
-    {
-        int NumberOfElevators { get; }
-    }
-
-    public class Bank : AbstractEntity, IBank
+    public class Bank : AbstractEntity
     {
         public Bank(int nbrOfElevators, params Floor[] floors)
         {

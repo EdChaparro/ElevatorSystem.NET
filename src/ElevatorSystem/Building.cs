@@ -12,7 +12,7 @@ namespace IntrepidProducts.ElevatorSystem
 
     public class Building : IBuilding
     {
-        public Building(params IBank[] banks)
+        public Building(params Bank[] banks)
         {
             var result = Add(banks);
 
@@ -22,11 +22,11 @@ namespace IntrepidProducts.ElevatorSystem
             }
         }
 
-        private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
+        private readonly Dictionary<Guid, Bank> _banks = new Dictionary<Guid, Bank>();
 
-        private bool Add(params IBank[] banks)
+        private bool Add(params Bank[] banks)
         {
-            var itemsToAdd = new Dictionary<Guid, IBank>();
+            var itemsToAdd = new Dictionary<Guid, Bank>();
 
             foreach (var bank in banks)
             {
