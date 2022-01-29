@@ -32,16 +32,23 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
                     return; //nothing to change
                 }
 
-                _isPressed = value;
-
-                if (_isPressed)
+                if (!value)
                 {
+                    _isPressed = value;
+                    return;
+                }
+
+                if (IsOkToProceedWithButtonPress())
+                {
+                    _isPressed = value;
                     RaiseButtonPressedEvent();
                 }
             }
         }
 
         public event EventHandler<ButtonPressedEventArgs>? ButtonPressedEvent;
+
+        protected virtual bool IsOkToProceedWithButtonPress() => true;
 
         private void RaiseButtonPressedEvent()
         {

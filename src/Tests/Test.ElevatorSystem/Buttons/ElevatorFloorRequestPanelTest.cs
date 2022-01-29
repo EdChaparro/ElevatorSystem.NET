@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
@@ -12,7 +13,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldHaveButtonForEachFloor()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(1, 2, 3);
+            var floorRequestPanel = new ElevatorFloorRequestPanel
+                (new Elevator(1, 2, 3));
 
             Assert.AreEqual(3, floorRequestPanel.NumberOfButtons);
         }
@@ -20,7 +22,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldReturnCorrectFloorNumberButton()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(1, 2, 3);
+            var floorRequestPanel = new ElevatorFloorRequestPanel
+                (new Elevator(1, 2, 3));
 
             var buttonForFloor1 = floorRequestPanel.GetButtonForFloorNumber(1);
             var buttonForFloor2 = floorRequestPanel.GetButtonForFloorNumber(2);
@@ -38,7 +41,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldRaiseButtonPressedEvent()
         {
-            var panel = new ElevatorFloorRequestPanel(1, 2, 3);
+            var panel = new ElevatorFloorRequestPanel
+                (new Elevator(1, 2, 3));
 
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<ElevatorFloorRequestButton>>();
@@ -74,21 +78,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRequreAtLeastTwoFloors()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel();
+            var floorRequestPanel = new ElevatorFloorRequestPanel(new Elevator());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectFloorNumbersLessThanOne()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(0, 1, 2);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void ShouldRequireUniqueFloorNumbers()
-        {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(1, 2, 2, 3);
+            var floorRequestPanel = new ElevatorFloorRequestPanel
+                (new Elevator(0, 1, 2));
         }
     }
 }

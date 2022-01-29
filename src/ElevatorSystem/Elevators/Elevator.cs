@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
@@ -7,7 +9,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     {
         public Elevator(params int[] floorNbrs)
         {
-            FloorRequestPanel = new ElevatorFloorRequestPanel(floorNbrs);
+            _floorNbrs = floorNbrs;
+            FloorRequestPanel = new ElevatorFloorRequestPanel(this);
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
@@ -31,6 +34,20 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 }
 
                 _doorStatus = value;
+
+                if (_doorStatus == DoorStatus.Open)
+                {
+                    if (FloorNumber != null)
+                    {
+                        var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(FloorNumber.Value);
+
+                        if (floorRequestButton != null)
+                        {
+                            floorRequestButton.IsPressed = false;
+                        }
+                    }
+                }
+
                 RaiseDoorStateChangedEvent(value);
             }
         }
@@ -73,6 +90,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
         #region Floor
+
+        private readonly int[] _floorNbrs;
+        public IEnumerable<int> OrderedFloorNumbers => _floorNbrs.OrderBy(x => x);
+
         private int? _floorNumber;
 
         public int? FloorNumber
