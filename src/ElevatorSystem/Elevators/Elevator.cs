@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlTypes;
 using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
