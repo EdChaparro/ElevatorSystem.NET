@@ -5,7 +5,7 @@ using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Bank : AbstractEntity
+    public class Bank : AbstractEntity, IHasFloors
     {
         public Bank(int nbrOfElevators, params Floor[] floors)
         {
@@ -23,6 +23,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             new Dictionary<Guid, IElevatorCommandAdapter>();
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
+        public IEnumerable<IElevatorCommandAdapter> ElevatorCommandAdapters
+            => _elevatorCommandAdapters.Values.ToList();
+
         #region Elevators
         private void AddElevators(int nbrOfElevators)
         {
@@ -30,20 +33,53 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             for (int i = 0; i < nbrOfElevators; i++)
             {
-
-                var eAdapter = new FauxElevatorCommandAdapter
-                                    (new Elevator(OrderedFloorNumbers.ToArray()));
+                var elevator = new Elevator(OrderedFloorNumbers.ToArray());
+                var eAdapter = new FauxElevatorCommandAdapter(this, elevator);
                 itemsToAdd[eAdapter.ElevatorId] = eAdapter;
+                SetObservabilityFor(elevator);
             }
 
             itemsToAdd.ToList().ForEach
                 (x => _elevatorCommandAdapters.Add(x.Key, x.Value));
         }
 
+        private void SetObservabilityFor(Elevator elevator)
+        {
+            elevator.DoorStateChangedEvent += OnDoorStateChangedEvent;
+        }
+
+        private void OnDoorStateChangedEvent(object sender, ElevatorDoorEventArgs e)
+        {
+            if (e.DoorStatus != DoorStatus.Open)
+            {
+                return;
+            }
+
+            var floorPanel = GetFloorElevatorCallPanelFor(e.FloorNumber);
+
+            if (floorPanel != null) //Should never happen, makes compiler happy
+            {
+                floorPanel.ResetButtonForElevatorArrival(e.Direction);
+            }
+        }
+
+
         public int NumberOfElevators => _elevatorCommandAdapters.Count;
         #endregion
 
         #region Floors
+
+        public FloorElevatorCallPanel? GetFloorElevatorCallPanelFor(int floorNbr)
+        {
+            if (_floors.ContainsKey(floorNbr))
+            {
+                var floor = _floors[floorNbr];
+                return floor.Panel;
+            }
+
+            return null;
+        }
+
         private bool Add(params Floor[] floors)
         {
             if (floors.Length < 2)
@@ -84,17 +120,17 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             {
                 if (floor.Equals(lowestFloor))
                 {
-                    floor.Panel = new FloorElevatorCallPanel(false, true);
+                    floor.Panel = new FloorElevatorCallPanel(this, false, true);
                     continue;
                 }
 
                 if (floor.Equals(highestFloor))
                 {
-                    floor.Panel = new FloorElevatorCallPanel(true, false);
+                    floor.Panel = new FloorElevatorCallPanel(this, true, false);
                     continue;
                 }
 
-                floor.Panel = new FloorElevatorCallPanel(true, true);
+                floor.Panel = new FloorElevatorCallPanel(this, true, true);
             }
         }
         #endregion

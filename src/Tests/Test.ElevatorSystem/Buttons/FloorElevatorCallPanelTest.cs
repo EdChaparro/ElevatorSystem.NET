@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
@@ -12,7 +13,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignDownButton()
         {
-            var floorPanel = new FloorElevatorCallPanel(true, false);
+            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var floorPanel = new FloorElevatorCallPanel(bank, true, false);
 
             Assert.IsNotNull(floorPanel.DownButton);
             Assert.AreEqual(Direction.Down, floorPanel.DownButton.Direction);
@@ -22,7 +24,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignUpButton()
         {
-            var floorPanel = new FloorElevatorCallPanel(false, true);
+            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var floorPanel = new FloorElevatorCallPanel(bank, false, true);
 
             Assert.IsNotNull(floorPanel.UpButton);
             Assert.AreEqual(Direction.Up, floorPanel.UpButton.Direction);
@@ -32,7 +35,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignUpAndDownButton()
         {
-            var floorPanel = new FloorElevatorCallPanel(true, true);
+            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var floorPanel = new FloorElevatorCallPanel(bank, true, true);
 
             Assert.IsNotNull(floorPanel.DownButton);
             Assert.IsNotNull(floorPanel.UpButton);
@@ -45,13 +49,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldIncludeAtLeastOneButton()
         {
-            new FloorElevatorCallPanel(false, false);
+            var bank = new Bank(2, new Floor(1), new Floor(2));
+            new FloorElevatorCallPanel(bank, false, false);
         }
 
         [TestMethod]
         public void ShouldRaiseButtonPressedEvent()
         {
-            var panel = new FloorElevatorCallPanel(true, true);
+            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var panel = new FloorElevatorCallPanel(bank, true, true);
 
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<FloorElevatorCallButton>>();
