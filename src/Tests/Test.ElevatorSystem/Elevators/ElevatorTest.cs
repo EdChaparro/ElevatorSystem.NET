@@ -50,22 +50,22 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseDirectionChangedEvent()
         {
             var elevator = new Elevator(1, 2)
-                { DoorStatus = DoorStatus.Closed, Direction = Direction.Stationary };
+                { DoorStatus = DoorStatus.Closed, Direction = Direction.Up };
 
             var receivedEvents = new List<ElevatorDirectionChangedEventArgs>();
 
             elevator.DirectionChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            elevator.Direction = Direction.Stationary; //No event generated; direction not changed
+            elevator.Direction = Direction.Up; //No event generated; direction not changed
             Assert.AreEqual(0, receivedEvents.Count);
 
-            elevator.Direction = Direction.Up;
+            elevator.Direction = Direction.Down;
             Assert.AreEqual(1, receivedEvents.Count);
 
             var directionEvent = receivedEvents.First();
 
-            Assert.AreEqual(Direction.Up, directionEvent.Direction);
+            Assert.AreEqual(Direction.Down, directionEvent.Direction);
 
             Assert.AreEqual(elevator.Id, directionEvent.ElevatorId);
         }
@@ -75,8 +75,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var elevator = new Elevator(1, 2)
                 { DoorStatus = DoorStatus.Closed,
-                    Direction = Direction.Stationary,
-                    FloorNumber = null
+                    Direction = Direction.Up,
+                    FloorNumber = 1
                 };
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
@@ -84,7 +84,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            elevator.FloorNumber = null; //No event generated; direction not changed
+            elevator.FloorNumber = 1; //No event generated; direction not changed
             Assert.AreEqual(0, receivedEvents.Count);
 
             elevator.FloorNumber = 2;
@@ -120,7 +120,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             e.FloorNumber = 3;
             Assert.IsTrue(floor3RequestButton.IsPressed);
 
-            e.Direction = Direction.Stationary;
+            e.Direction = Direction.Up;
             e.DoorStatus = DoorStatus.Open;                 // Door Opened on requested floor
             Assert.IsFalse(floor3RequestButton.IsPressed);  //      Should reset button
         }

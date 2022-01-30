@@ -4,6 +4,7 @@ using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Direction = IntrepidProducts.ElevatorSystem.Elevators.Direction;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {
@@ -41,8 +42,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldRaiseButtonPressedEvent()
         {
-            var panel = new ElevatorFloorRequestPanel
-                (new Elevator(1, 2, 3));
+            var elevator = new Elevator(1, 2, 3);
+            var panel = new ElevatorFloorRequestPanel(elevator);
 
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<ElevatorFloorRequestButton>>();
@@ -67,6 +68,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(2, firstButton.FloorNbr);
             Assert.AreEqual(3, secondButton.FloorNbr);
 
+            elevator.FloorNumber = 3;
+            elevator.Direction = Direction.Down;
             Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
             Assert.AreEqual(3, receivedEvents.Count);
             var thirdEvent = receivedEvents.Last();
@@ -78,15 +81,14 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRequreAtLeastTwoFloors()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(new Elevator());
+            new ElevatorFloorRequestPanel(new Elevator());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectFloorNumbersLessThanOne()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel
-                (new Elevator(0, 1, 2));
+            new ElevatorFloorRequestPanel(new Elevator(0, 1, 2));
         }
     }
 }
