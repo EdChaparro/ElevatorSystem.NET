@@ -84,17 +84,17 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             {
                 if (floor.Equals(lowestFloor))
                 {
-                    floor.Panel = new FloorElevatorCallPanel(false, true);
+                    floor.Panel = new FloorElevatorCallPanel(this, false, true);
                     continue;
                 }
 
                 if (floor.Equals(highestFloor))
                 {
-                    floor.Panel = new FloorElevatorCallPanel(true, false);
+                    floor.Panel = new FloorElevatorCallPanel(this, true, false);
                     continue;
                 }
 
-                floor.Panel = new FloorElevatorCallPanel(true, true);
+                floor.Panel = new FloorElevatorCallPanel(this, true, true);
             }
         }
         #endregion

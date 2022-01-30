@@ -1,20 +1,21 @@
 ﻿using System;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
     public class FloorElevatorCallPanel : AbstractPanel<FloorElevatorCallButton>
     {
-        public FloorElevatorCallPanel(bool hasDownButton, bool hasUpButton)
+        public FloorElevatorCallPanel(Bank bank, bool hasDownButton, bool hasUpButton)
         {
             if (hasDownButton)
             {
-                DownButton = new FloorElevatorCallButton(Direction.Down);
+                DownButton = new FloorElevatorCallButton(bank, Direction.Down);
                 Add(DownButton);
             }
 
             if (hasUpButton)
             {
-                UpButton = new FloorElevatorCallButton(Direction.Up);
+                UpButton = new FloorElevatorCallButton(bank, Direction.Up);
                 Add(UpButton);
             }
 
