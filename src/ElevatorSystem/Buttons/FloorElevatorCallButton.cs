@@ -8,5 +8,6 @@
         }
 
         public Direction Direction { get; }
+
     }
 }

@@ -16,7 +16,26 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
     public abstract class AbstractPanel<T> : AbstractEntity, IPanel<T> where T : IButton
     {
         public string? Description { get; set; }
-        public bool IsEnabled { get; set; } = true;
+
+        private bool _isEnabled = true;
+
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                _isEnabled = value;
+                SetButtonEnabledStatusTo(value);
+            }
+        }
+
+        private void SetButtonEnabledStatusTo(bool value)
+        {
+            foreach (var button in Buttons)
+            {
+                button.IsEnabled = value;
+            }
+        }
 
         public event EventHandler<PanelButtonPressedEventArgs<T>>? PanelButtonPressedEvent;
 
@@ -42,6 +61,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
                 button.ButtonPressedEvent += (sender, e)
                     => RaisePanelButtonPressedEvent(e);
 
+                button.IsEnabled = IsEnabled;
                 _buttons.Add(button);
             }
 

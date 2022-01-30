@@ -1,17 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
     public class ElevatorFloorRequestPanel : AbstractPanel<ElevatorFloorRequestButton>
     {
-        public ElevatorFloorRequestPanel(params int[] floorNbrs)
+        public ElevatorFloorRequestPanel(Elevator elevator)
         {
-            ValidateFloorArguments(floorNbrs);
+            var floorNbrs = elevator.OrderedFloorNumbers;
+
+            ValidateFloorArguments(elevator.OrderedFloorNumbers);
 
             foreach (var nbr in floorNbrs)
             {
-                Add(new ElevatorFloorRequestButton(nbr));
+                Add(new ElevatorFloorRequestButton(elevator, nbr));
             }
         }
 
@@ -20,21 +24,23 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             return Buttons.FirstOrDefault(x => x.FloorNbr == nbr);
         }
 
-        private void ValidateFloorArguments(params int[] floorNbrs)
+        private void ValidateFloorArguments(IEnumerable<int> floorNbrs)
         {
-            if (floorNbrs.Length < 2)
+            var floorNumbers = floorNbrs.ToList();
+
+            if (floorNumbers.Count() < 2)
             {
                 throw new ArgumentException
                     ("Floor Request Panel must have at least two floors");
             }
 
-            if (floorNbrs.Min() < 1)
+            if (floorNumbers.Min() < 1)
             {
                 throw new ArgumentException
                     ("Floor numbers must be positive");
             }
 
-            if (floorNbrs.Distinct().Count() != floorNbrs.Length)
+            if (floorNumbers.Distinct().Count() != floorNumbers.Count())
             {
                 throw new ArgumentException
                     ("Floor numbers must be unique");

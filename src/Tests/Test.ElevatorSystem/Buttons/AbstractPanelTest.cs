@@ -34,7 +34,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
             panel.AddButton(button1, button2, button3);
 
-            button2.IsPressed = true;   
+            Assert.IsTrue(button2.SetPressedTo(true));
             Assert.AreEqual(1, receivedEvents.Count);
 
             var e = receivedEvents.First();
@@ -57,13 +57,37 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
             panel.AddButton(button1, button2, button3);
 
-            button2.IsPressed = true;
+            Assert.IsFalse(button2.SetPressedTo(true)); //False because panel is disabled
             Assert.AreEqual(0, receivedEvents.Count);
 
             panel.IsEnabled = true;
-            button2.IsPressed = false;  //reset button
-            button2.IsPressed = true;
+            Assert.IsTrue(button2.SetPressedTo(true));
             Assert.AreEqual(1, receivedEvents.Count);
+        }
+
+        [TestMethod]
+        public void ShouldSetButtonEnabledStateToMatchPanel()
+        {
+            var panel = new TestPanel();
+
+            var button1 = new TestButton();
+            var button2 = new TestButton();
+            var button3 = new TestButton();
+            panel.AddButton(button1, button2, button3);
+
+            Assert.IsTrue(button1.IsEnabled);
+            Assert.IsTrue(button2.IsEnabled);
+            Assert.IsTrue(button3.IsEnabled);
+
+            panel.IsEnabled = false;
+            Assert.IsFalse(button1.IsEnabled);
+            Assert.IsFalse(button2.IsEnabled);
+            Assert.IsFalse(button3.IsEnabled);
+
+            panel.IsEnabled = true;
+            Assert.IsTrue(button1.IsEnabled);
+            Assert.IsTrue(button2.IsEnabled);
+            Assert.IsTrue(button3.IsEnabled);
         }
     }
 }

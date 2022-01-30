@@ -59,8 +59,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            panel.DownButton.IsPressed = true;
-            panel.UpButton.IsPressed = true;
+            Assert.IsTrue(panel.DownButton.SetPressedTo(true));
+            Assert.IsTrue(panel.UpButton.SetPressedTo(true));
             Assert.AreEqual(2, receivedEvents.Count);
 
             var firstEvent = receivedEvents.First();

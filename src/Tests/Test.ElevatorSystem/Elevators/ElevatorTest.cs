@@ -96,5 +96,52 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.AreEqual(elevator.Id, floorEvent.ElevatorId);
         }
+
+        #region Updates Floor Request Buttons
+
+        [TestMethod]
+        public void ShouldResetFloorRequestButtonWhenDoorOpens()
+        {
+            var e = new Elevator(1, 2, 3, 4, 5)
+            {
+                DoorStatus = DoorStatus.Closed,
+                Direction = Direction.Up,
+                FloorNumber = 1
+            };
+
+            var ePanel = e.FloorRequestPanel;
+            var floor3RequestButton = ePanel.GetButtonForFloorNumber(3);
+            Assert.IsFalse(floor3RequestButton.IsPressed);
+
+            Assert.IsTrue(floor3RequestButton.SetPressedTo(true));
+            e.FloorNumber = 2;
+            Assert.IsTrue(floor3RequestButton.IsPressed);
+
+            e.FloorNumber = 3;
+            Assert.IsTrue(floor3RequestButton.IsPressed);
+
+            e.Direction = Direction.Stationary;
+            e.DoorStatus = DoorStatus.Open;                 // Door Opened on requested floor
+            Assert.IsFalse(floor3RequestButton.IsPressed);  //      Should reset button
+        }
+
+        [TestMethod]
+        public void ShouldIgnoreFloorRequestButtonWhenNotCongruentWithDirection()
+        {
+            var e = new Elevator(1, 2, 3, 4, 5)
+            {
+                DoorStatus = DoorStatus.Closed,
+                Direction = Direction.Down,
+                FloorNumber = 4
+            };
+
+            var ePanel = e.FloorRequestPanel;
+            var floor5RequestButton = ePanel.GetButtonForFloorNumber(5);
+            Assert.IsFalse(floor5RequestButton.IsPressed);
+
+            Assert.IsFalse(floor5RequestButton.SetPressedTo(true));
+            Assert.IsFalse(floor5RequestButton.IsPressed);
+        }
+        #endregion
     }
 }

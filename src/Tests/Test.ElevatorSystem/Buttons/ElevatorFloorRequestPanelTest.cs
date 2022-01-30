@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
@@ -12,7 +13,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldHaveButtonForEachFloor()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(1, 2, 3);
+            var floorRequestPanel = new ElevatorFloorRequestPanel
+                (new Elevator(1, 2, 3));
 
             Assert.AreEqual(3, floorRequestPanel.NumberOfButtons);
         }
@@ -20,7 +22,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldReturnCorrectFloorNumberButton()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(1, 2, 3);
+            var floorRequestPanel = new ElevatorFloorRequestPanel
+                (new Elevator(1, 2, 3));
 
             var buttonForFloor1 = floorRequestPanel.GetButtonForFloorNumber(1);
             var buttonForFloor2 = floorRequestPanel.GetButtonForFloorNumber(2);
@@ -38,7 +41,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldRaiseButtonPressedEvent()
         {
-            var panel = new ElevatorFloorRequestPanel(1, 2, 3);
+            var panel = new ElevatorFloorRequestPanel
+                (new Elevator(1, 2, 3));
 
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<ElevatorFloorRequestButton>>();
@@ -50,8 +54,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             var buttonForFloor2 = panel.GetButtonForFloorNumber(2);
             var buttonForFloor3 = panel.GetButtonForFloorNumber(3);
 
-            buttonForFloor2.IsPressed = true;
-            buttonForFloor3.IsPressed = true;
+            Assert.IsTrue(buttonForFloor2.SetPressedTo(true));
+            Assert.IsTrue(buttonForFloor3.SetPressedTo(true));
             Assert.AreEqual(2, receivedEvents.Count);
 
             var firstEvent = receivedEvents.First();
@@ -63,7 +67,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(2, firstButton.FloorNbr);
             Assert.AreEqual(3, secondButton.FloorNbr);
 
-            buttonForFloor1.IsPressed = true;
+            Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
             Assert.AreEqual(3, receivedEvents.Count);
             var thirdEvent = receivedEvents.Last();
             var thirdButton = thirdEvent.GetButton<ElevatorFloorRequestButton>();
@@ -74,21 +78,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRequreAtLeastTwoFloors()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel();
+            var floorRequestPanel = new ElevatorFloorRequestPanel(new Elevator());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectFloorNumbersLessThanOne()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(0, 1, 2);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void ShouldRequireUniqueFloorNumbers()
-        {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(1, 2, 2, 3);
+            var floorRequestPanel = new ElevatorFloorRequestPanel
+                (new Elevator(0, 1, 2));
         }
     }
 }
