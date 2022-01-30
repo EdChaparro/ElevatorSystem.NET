@@ -9,10 +9,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     {
         public Elevator(params int[] floorNbrs)
         {
-            _floorNbrs = floorNbrs;
+            OrderedFloorNumbers = floorNbrs.OrderBy(x => x);
             FloorRequestPanel = new ElevatorFloorRequestPanel(this);
 
-            FloorNumber = _floorNbrs.Min();
+            SetFloorNumberTo(OrderedFloorNumbers.Min());
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
@@ -89,26 +89,29 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
         #region Floor
-
-        private readonly int[] _floorNbrs;
-        public IEnumerable<int> OrderedFloorNumbers => _floorNbrs.OrderBy(x => x);
+        public readonly IEnumerable<int> OrderedFloorNumbers;
 
         private int _floorNumber;
 
-        public int FloorNumber
+        public int FloorNumber => _floorNumber;
+
+        public bool SetFloorNumberTo(int value)
         {
-            get => _floorNumber;
-
-            set
+            if (value == _floorNumber)
             {
-                if (value == _floorNumber)
-                {
-                    return;
-                }
+                return false;
+            }
 
+            var isValidFloorNumber = OrderedFloorNumbers.Any(x => x == value);
+
+            if (isValidFloorNumber)
+            {
                 _floorNumber = value;
                 RaiseFloorNumberChangedEvent(value);
+                return true;
             }
+
+            return false;
         }
 
         public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorNumberChangedEvent;
