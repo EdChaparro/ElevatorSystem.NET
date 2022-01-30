@@ -45,7 +45,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldIncludeAtLeastOneButton()
         {
-            var floorPanel = new FloorElevatorCallPanel(false, false);
+            new FloorElevatorCallPanel(false, false);
         }
 
         [TestMethod]

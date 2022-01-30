@@ -54,7 +54,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueFloors()
         {
-            var bank = new Bank(3,
+            new Bank(3,
                 new Floor(1), new Floor(2), new Floor(1));
         }
 
@@ -62,7 +62,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldNotAcceptBanksWithLessThanTwoFloors()
         {
-            var bank = new Bank(1, new Floor(1));
+            new Bank(1, new Floor(1));
         }
 
         [TestMethod]
@@ -76,6 +76,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsNull(floor2.Panel);
             Assert.IsNull(floor3.Panel);
 
+            //TODO: Is this the best way to get the Floor Elevator Call Panel instantiated?
             var bank = new Bank(2, floor1, floor2, floor3);
 
             Assert.IsNotNull(floor1.Panel);
@@ -103,6 +104,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsNull(floor2.Panel);
             Assert.IsNull(floor3.Panel);
 
+            //TODO: Is this the best way to get the Floor Elevator Call Panel instantiated?
             var bank = new Bank(2, floor2, floor3, floor1); //Order doesn't matter
 
             Assert.IsNotNull(floor1.Panel);

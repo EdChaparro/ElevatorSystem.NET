@@ -81,15 +81,14 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRequreAtLeastTwoFloors()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel(new Elevator());
+            new ElevatorFloorRequestPanel(new Elevator());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectFloorNumbersLessThanOne()
         {
-            var floorRequestPanel = new ElevatorFloorRequestPanel
-                (new Elevator(0, 1, 2));
+            new ElevatorFloorRequestPanel(new Elevator(0, 1, 2));
         }
     }
 }

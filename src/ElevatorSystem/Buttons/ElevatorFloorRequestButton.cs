@@ -15,16 +15,12 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         protected override bool IsOkToProceedWithButtonPress()
         {
-            switch (_elevator.Direction)
+            return _elevator.Direction switch
             {
-                case Elevators.Direction.Down:
-                    return FloorNbr < _elevator.FloorNumber;
-
-                case Elevators.Direction.Up:
-                    return FloorNbr > _elevator.FloorNumber;
-            }
-
-            return false;   //Should never drop to here
+                Elevators.Direction.Down => FloorNbr < _elevator.FloorNumber,
+                Elevators.Direction.Up => FloorNbr > _elevator.FloorNumber,
+                _ => false //Should never drop to here
+            };
         }
     }
 }
