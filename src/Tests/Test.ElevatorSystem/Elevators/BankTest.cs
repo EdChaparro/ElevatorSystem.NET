@@ -120,6 +120,43 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsNull(floor3.Panel.UpButton);
             Assert.IsNotNull(floor2.Panel.DownButton);
         }
+
+        [TestMethod]
+        public void ShouldProvideElevatorCallPanelForAnyFloor()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+
+            var bank = new Bank(2,
+                floor1, floor2, floor3);
+
+            var floor1Panel = bank.GetFloorElevatorCallPanelFor(1);
+            Assert.IsNotNull(floor1Panel);
+            Assert.AreEqual(floor1.Panel, floor1Panel);
+
+            var floor2Panel = bank.GetFloorElevatorCallPanelFor(2);
+            Assert.IsNotNull(floor2Panel);
+            Assert.AreEqual(floor2.Panel, floor2Panel);
+
+            var floor3Panel = bank.GetFloorElevatorCallPanelFor(3);
+            Assert.IsNotNull(floor3Panel);
+            Assert.AreEqual(floor3.Panel, floor3Panel);
+        }
+
+        [TestMethod]
+        public void ShouldReturnNullWhenUnknownFloorPanelRequested()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+
+            var bank = new Bank(2,
+                floor1, floor2, floor3);
+
+            var floor4Panel = bank.GetFloorElevatorCallPanelFor(4);
+            Assert.IsNull(floor4Panel);
+        }
         #endregion
     }
 }

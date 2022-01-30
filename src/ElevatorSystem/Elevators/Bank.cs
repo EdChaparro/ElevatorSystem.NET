@@ -44,6 +44,18 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
         #region Floors
+
+        public FloorElevatorCallPanel? GetFloorElevatorCallPanelFor(int floorNbr)
+        {
+            if (_floors.ContainsKey(floorNbr))
+            {
+                var floor = _floors[floorNbr];
+                return floor.Panel;
+            }
+
+            return null;
+        }
+
         private bool Add(params Floor[] floors)
         {
             if (floors.Length < 2)
