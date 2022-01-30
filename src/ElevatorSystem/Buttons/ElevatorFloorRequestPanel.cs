@@ -26,19 +26,21 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         private void ValidateFloorArguments(IEnumerable<int> floorNbrs)
         {
-            if (floorNbrs.Count() < 2)
+            var floorNumbers = floorNbrs.ToList();
+
+            if (floorNumbers.Count() < 2)
             {
                 throw new ArgumentException
                     ("Floor Request Panel must have at least two floors");
             }
 
-            if (floorNbrs.Min() < 1)
+            if (floorNumbers.Min() < 1)
             {
                 throw new ArgumentException
                     ("Floor numbers must be positive");
             }
 
-            if (floorNbrs.Distinct().Count() != floorNbrs.Count())
+            if (floorNumbers.Distinct().Count() != floorNumbers.Count())
             {
                 throw new ArgumentException
                     ("Floor numbers must be unique");
