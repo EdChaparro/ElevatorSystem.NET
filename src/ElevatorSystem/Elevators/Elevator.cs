@@ -62,7 +62,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
         #region Direction
-        private Direction _direction = Direction.Stationary;
+        private Direction _direction = Direction.Up;
 
         public Direction Direction
         {
