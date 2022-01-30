@@ -17,9 +17,9 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             e.Direction = Direction.Down;
             Assert.AreEqual(e.Direction, adapter.Status.Direction);
 
-            e.FloorNumber = 1;
+            Assert.AreEqual(1, e.FloorNumber);
             Assert.AreEqual(e.FloorNumber, adapter.Status.CurrentFloorNumber);
-            e.FloorNumber = 2;
+            Assert.IsTrue(e.SetFloorNumberTo(2));
             Assert.AreEqual(e.FloorNumber, adapter.Status.CurrentFloorNumber);
 
             e.DoorStatus = DoorStatus.Open;
