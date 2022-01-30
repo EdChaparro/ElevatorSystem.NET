@@ -43,7 +43,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
                         if (floorRequestButton != null)
                         {
-                            floorRequestButton.IsPressed = false;
+                            floorRequestButton.SetPressedTo(false);
                         }
                     }
                 }

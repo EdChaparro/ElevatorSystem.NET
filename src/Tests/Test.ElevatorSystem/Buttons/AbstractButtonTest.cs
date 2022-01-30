@@ -24,10 +24,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            button.IsPressed = false;   //No event generated for false
+            Assert.IsFalse(button.SetPressedTo(false));  //No event generated for false
             Assert.AreEqual(0, receivedEvents.Count);
 
-            button.IsPressed = true;    //Expect event to be generated
+            Assert.IsTrue(button.SetPressedTo(true));    //Expect event to be generated
             Assert.AreEqual(1, receivedEvents.Count);
 
             var eventButton = receivedEvents.First().Button as TestButton;
@@ -46,14 +46,14 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            button.IsPressed = true;    //Expect event to be generated
+            Assert.IsTrue(button.SetPressedTo(true));   //Expect event to be generated
             Assert.AreEqual(1, receivedEvents.Count);
 
-            button.IsPressed = true;    //Redundant press event doesn't generate event
+            Assert.IsFalse(button.SetPressedTo(true));  //Redundant press event doesn't generate event
             Assert.AreEqual(1, receivedEvents.Count);
 
-            button.IsPressed = false;   //reset
-            button.IsPressed = true;    //This should generate a new event
+            Assert.IsTrue(button.SetPressedTo(false));  //reset
+            Assert.IsTrue(button.SetPressedTo(true));   //This should generate a new event
             Assert.AreEqual(2, receivedEvents.Count);
         }
 
@@ -68,7 +68,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
                 => receivedEvent = e;
 
             button.IsEnabled = false;
-            button.IsPressed = true; 
+            Assert.IsFalse(button.SetPressedTo(true));
             
             Assert.IsNull(receivedEvent);
         }
@@ -83,7 +83,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvent = e;
 
-            button.IsPressed = true;    //This should generate an event
+            Assert.IsTrue(button.SetPressedTo(true));   //This should generate an event
 
             var eventButton = receivedEvent.GetButton<TestButton>();
             Assert.IsNotNull(eventButton);

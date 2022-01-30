@@ -34,7 +34,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
             panel.AddButton(button1, button2, button3);
 
-            button2.IsPressed = true;   
+            Assert.IsTrue(button2.SetPressedTo(true));
             Assert.AreEqual(1, receivedEvents.Count);
 
             var e = receivedEvents.First();
@@ -57,12 +57,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
             panel.AddButton(button1, button2, button3);
 
-            button2.IsPressed = true;
+            Assert.IsFalse(button2.SetPressedTo(true)); //False because panel is disabled
             Assert.AreEqual(0, receivedEvents.Count);
 
             panel.IsEnabled = true;
-            button2.IsPressed = false;  //reset button
-            button2.IsPressed = true;
+            Assert.IsTrue(button2.SetPressedTo(true));
             Assert.AreEqual(1, receivedEvents.Count);
         }
     }

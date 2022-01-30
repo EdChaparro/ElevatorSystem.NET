@@ -113,7 +113,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var floor3RequestButton = ePanel.GetButtonForFloorNumber(3);
             Assert.IsFalse(floor3RequestButton.IsPressed);
 
-            floor3RequestButton.IsPressed = true;
+            Assert.IsTrue(floor3RequestButton.SetPressedTo(true));
             e.FloorNumber = 2;
             Assert.IsTrue(floor3RequestButton.IsPressed);
 
@@ -139,7 +139,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var floor5RequestButton = ePanel.GetButtonForFloorNumber(5);
             Assert.IsFalse(floor5RequestButton.IsPressed);
 
-            floor5RequestButton.IsPressed = true;
+            Assert.IsFalse(floor5RequestButton.SetPressedTo(true));
             Assert.IsFalse(floor5RequestButton.IsPressed);
         }
         #endregion

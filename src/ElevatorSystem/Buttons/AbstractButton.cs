@@ -5,7 +5,9 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
     public interface IButton
     {
         bool IsEnabled { get; set; }
-        bool IsPressed { get; set; }
+
+        bool IsPressed { get; }
+        bool SetPressedTo(bool value);
 
         event EventHandler<ButtonPressedEventArgs>? ButtonPressedEvent;
     }
@@ -16,34 +18,34 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         private bool _isPressed;
 
-        public bool IsPressed
+        public bool IsPressed => _isPressed;
+
+        public bool SetPressedTo(bool value)
         {
-            get => _isPressed;
-
-            set
+            if (!IsEnabled)
             {
-                if (!IsEnabled)
-                {
-                    return; //Ignore Press if button is disabled
-                }
-
-                if (IsPressed == value)
-                {
-                    return; //nothing to change
-                }
-
-                if (!value)
-                {
-                    _isPressed = value;
-                    return;
-                }
-
-                if (IsOkToProceedWithButtonPress())
-                {
-                    _isPressed = value;
-                    RaiseButtonPressedEvent();
-                }
+                return false; //Ignore Press if button is disabled
             }
+
+            if (IsPressed == value)
+            {
+                return false; //nothing to change
+            }
+
+            if (!value)
+            {
+                _isPressed = value;
+                return true;
+            }
+
+            if (IsOkToProceedWithButtonPress())
+            {
+                _isPressed = value;
+                RaiseButtonPressedEvent();
+                return true;
+            }
+
+            return false;
         }
 
         public event EventHandler<ButtonPressedEventArgs>? ButtonPressedEvent;

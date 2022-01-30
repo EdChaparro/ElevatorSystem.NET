@@ -54,8 +54,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             var buttonForFloor2 = panel.GetButtonForFloorNumber(2);
             var buttonForFloor3 = panel.GetButtonForFloorNumber(3);
 
-            buttonForFloor2.IsPressed = true;
-            buttonForFloor3.IsPressed = true;
+            Assert.IsTrue(buttonForFloor2.SetPressedTo(true));
+            Assert.IsTrue(buttonForFloor3.SetPressedTo(true));
             Assert.AreEqual(2, receivedEvents.Count);
 
             var firstEvent = receivedEvents.First();
@@ -67,7 +67,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(2, firstButton.FloorNbr);
             Assert.AreEqual(3, secondButton.FloorNbr);
 
-            buttonForFloor1.IsPressed = true;
+            Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
             Assert.AreEqual(3, receivedEvents.Count);
             var thirdEvent = receivedEvents.Last();
             var thirdButton = thirdEvent.GetButton<ElevatorFloorRequestButton>();
