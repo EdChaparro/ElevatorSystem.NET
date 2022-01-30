@@ -15,13 +15,6 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         protected override bool IsOkToProceedWithButtonPress()
         {
-            if (_elevator.FloorNumber == null)
-            {
-                return true;
-            }
-
-            int elevatorFloorNumber = _elevator.FloorNumber.Value;
-
             switch (_elevator.Direction)
             {
                 case Elevators.Direction.Down:
@@ -33,7 +26,5 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
             return false;   //Should never drop to here
         }
-
-
     }
 }

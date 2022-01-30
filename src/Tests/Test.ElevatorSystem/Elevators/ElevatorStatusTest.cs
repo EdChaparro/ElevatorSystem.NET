@@ -9,18 +9,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldReportDirectionCorrectly()
         {
-            var eStatus = new ElevatorStatus(Direction.Up, DoorStatus.Open);
+            var eStatus = new ElevatorStatus(1, Direction.Up, DoorStatus.Open);
             Assert.IsFalse(eStatus.IsMoving);
 
-            eStatus = new ElevatorStatus(Direction.Up, DoorStatus.Closed);
+            eStatus = new ElevatorStatus(1, Direction.Up, DoorStatus.Closed);
             Assert.IsTrue(eStatus.IsMovingUp);
             Assert.IsTrue(eStatus.IsMoving);
 
-            eStatus = new ElevatorStatus(Direction.Down, DoorStatus.Closed);
+            eStatus = new ElevatorStatus(5, Direction.Down, DoorStatus.Closed);
             Assert.IsTrue(eStatus.IsMovingDown);
             Assert.IsTrue(eStatus.IsMoving);
 
-            eStatus = new ElevatorStatus(Direction.Up, DoorStatus.Open);
+            eStatus = new ElevatorStatus(1, Direction.Up, DoorStatus.Open);
             Assert.IsFalse(eStatus.IsMoving);
         }
     }

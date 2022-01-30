@@ -76,7 +76,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var elevator = new Elevator(1, 2)
                 { DoorStatus = DoorStatus.Closed,
                     Direction = Direction.Up,
-                    FloorNumber = null
+                    FloorNumber = 1
                 };
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
@@ -84,7 +84,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            elevator.FloorNumber = null; //No event generated; direction not changed
+            elevator.FloorNumber = 1; //No event generated; direction not changed
             Assert.AreEqual(0, receivedEvents.Count);
 
             elevator.FloorNumber = 2;

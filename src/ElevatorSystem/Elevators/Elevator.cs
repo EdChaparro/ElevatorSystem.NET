@@ -11,6 +11,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             _floorNbrs = floorNbrs;
             FloorRequestPanel = new ElevatorFloorRequestPanel(this);
+
+            FloorNumber = _floorNbrs.Min();
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
@@ -37,14 +39,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
                 if (_doorStatus == DoorStatus.Open)
                 {
-                    if (FloorNumber != null)
-                    {
-                        var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(FloorNumber.Value);
+                    var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(FloorNumber);
 
-                        if (floorRequestButton != null)
-                        {
-                            floorRequestButton.SetPressedTo(false);
-                        }
+                    if (floorRequestButton != null)
+                    {
+                        floorRequestButton.SetPressedTo(false);
                     }
                 }
 
@@ -94,9 +93,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         private readonly int[] _floorNbrs;
         public IEnumerable<int> OrderedFloorNumbers => _floorNbrs.OrderBy(x => x);
 
-        private int? _floorNumber;
+        private int _floorNumber;
 
-        public int? FloorNumber
+        public int FloorNumber
         {
             get => _floorNumber;
 
@@ -114,7 +113,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorNumberChangedEvent;
 
-        private void RaiseFloorNumberChangedEvent(int? floorNumber)
+        private void RaiseFloorNumberChangedEvent(int floorNumber)
         {
             FloorNumberChangedEvent?.Invoke(this,
                 new ElevatorFloorNumberChangedEventArgs(Id, floorNumber));

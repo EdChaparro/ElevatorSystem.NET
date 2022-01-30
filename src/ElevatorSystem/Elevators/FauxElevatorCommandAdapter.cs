@@ -8,13 +8,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             int moveLatencyInMilliseconds = 1000)
         {
             _elevator = elevator;
-            _status = new ElevatorStatus();
-
             SetElevatorObservability();
         }
 
         private readonly Elevator _elevator;
-        private readonly ElevatorStatus _status;
 
         public Guid ElevatorId => _elevator.Id;
 
@@ -25,8 +22,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public ElevatorStatus Status =>
             new ElevatorStatus
-            (_elevator.Direction, _elevator.DoorStatus,
-                _elevator.FloorNumber, _elevator.IsEnabled);
+            (_elevator.FloorNumber,
+                _elevator.Direction,
+                _elevator.DoorStatus,
+                _elevator.IsEnabled);
 
         private void SetElevatorObservability()
         {
