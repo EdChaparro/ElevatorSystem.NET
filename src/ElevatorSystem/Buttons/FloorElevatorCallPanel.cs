@@ -25,6 +25,31 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             }
         }
 
+        public void ResetButtonForElevatorArrival(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Down:
+                    if (DownButton != null)
+                    {
+                        DownButton.SetPressedTo(false);
+                    }
+
+                    break;
+
+                case Direction.Up:
+                    if (UpButton != null)
+                    {
+                        UpButton.SetPressedTo(false);
+                    }
+
+                    break;
+            }
+        }
+
+        private bool HasDownButton => DownButton != null;
+        private bool HasUpButton => UpButton != null;
+
         public FloorElevatorCallButton? DownButton { get; }
         public FloorElevatorCallButton? UpButton { get; }
     }

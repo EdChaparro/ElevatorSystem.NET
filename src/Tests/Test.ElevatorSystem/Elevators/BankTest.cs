@@ -157,6 +157,72 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var floor4Panel = bank.GetFloorElevatorCallPanelFor(4);
             Assert.IsNull(floor4Panel);
         }
+
+        [TestMethod]
+        public void ShouldResetFloorElevatorCallDownButtonWhenElevatorArrives()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+            var floor4 = new Floor(4);
+            var floor5 = new Floor(5);
+
+            var bank = new Bank(2,
+                floor1, floor2, floor3, floor4, floor5);
+
+            var commandAdaptors = bank.ElevatorCommandAdapters;
+            Assert.AreEqual(2, commandAdaptors.Count());
+
+            var eAdaptor1 = commandAdaptors.First(); //Control Elevators
+            var eAdaptor2 = commandAdaptors.Last();  //  via Adaptors
+
+            eAdaptor1.StopAt(5);
+            eAdaptor2.StopAt(1);
+            Assert.AreEqual(5, eAdaptor1.Status.CurrentFloorNumber);
+            Assert.AreEqual(1, eAdaptor2.Status.CurrentFloorNumber);
+
+            var thirdFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(3);
+            Assert.IsNotNull(thirdFloorElevatorCallPanel);
+
+            Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.SetPressedTo(true));
+            Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.IsPressed);
+
+            eAdaptor1.StopAt(3);
+            Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton.IsPressed);
+        }
+
+        [TestMethod]
+        public void ShouldResetFloorElevatorCallUpButtonWhenElevatorArrives()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+            var floor4 = new Floor(4);
+            var floor5 = new Floor(5);
+
+            var bank = new Bank(2,
+                floor1, floor2, floor3, floor4, floor5);
+
+            var commandAdaptors = bank.ElevatorCommandAdapters;
+            Assert.AreEqual(2, commandAdaptors.Count());
+
+            var eAdaptor1 = commandAdaptors.First(); //Control Elevators
+            var eAdaptor2 = commandAdaptors.Last();  //  via Adaptors
+
+            eAdaptor1.StopAt(5);
+            eAdaptor2.StopAt(2);
+            Assert.AreEqual(5, eAdaptor1.Status.CurrentFloorNumber);
+            Assert.AreEqual(2, eAdaptor2.Status.CurrentFloorNumber);
+
+            var firstFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(1);
+            Assert.IsNotNull(firstFloorElevatorCallPanel);
+
+            Assert.IsTrue(firstFloorElevatorCallPanel.UpButton.SetPressedTo(true));
+
+            eAdaptor1.StopAt(1);
+            Assert.IsFalse(firstFloorElevatorCallPanel.UpButton.IsPressed);
+        }
+
         #endregion
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,23 +10,23 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldTrackStatusOfElevator()
         {
-            var e = new Elevator(1, 2);
-            var adapter = new FauxElevatorCommandAdapter(e);
+            var bank = new Bank(2,
+                new Floor(1), new Floor(2),
+                new Floor(3), new Floor(4));
 
-            e.Direction = Direction.Up;
-            Assert.AreEqual(e.Direction, adapter.Status.Direction);
-            e.Direction = Direction.Down;
-            Assert.AreEqual(e.Direction, adapter.Status.Direction);
+            var adapter = bank.ElevatorCommandAdapters.First();
 
-            Assert.AreEqual(1, e.FloorNumber);
-            Assert.AreEqual(e.FloorNumber, adapter.Status.CurrentFloorNumber);
-            Assert.IsTrue(e.SetFloorNumberTo(2));
-            Assert.AreEqual(e.FloorNumber, adapter.Status.CurrentFloorNumber);
+            Assert.AreEqual(DoorStatus.Closed, adapter.Status.DoorStatus);
 
-            e.DoorStatus = DoorStatus.Open;
-            Assert.AreEqual(e.DoorStatus, adapter.Status.DoorStatus);
-            e.DoorStatus = DoorStatus.Closed;
-            Assert.AreEqual(e.DoorStatus, adapter.Status.DoorStatus);
+            adapter.StopAt(3);
+            Assert.AreEqual(Direction.Up, adapter.Status.Direction);
+
+            adapter.StopAt(2);
+            Assert.AreEqual(Direction.Down, adapter.Status.Direction);
+
+            Assert.AreEqual(2, adapter.Status.CurrentFloorNumber);
+
+            Assert.AreEqual(DoorStatus.Open, adapter.Status.DoorStatus);
         }
     }
 }

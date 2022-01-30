@@ -4,7 +4,6 @@ using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Direction = IntrepidProducts.ElevatorSystem.Buttons.Direction;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {

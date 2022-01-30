@@ -4,20 +4,52 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 {
     public class FauxElevatorCommandAdapter : IElevatorCommandAdapter
     {
-        public FauxElevatorCommandAdapter(Elevator elevator, 
+        public FauxElevatorCommandAdapter(Bank bank, Elevator elevator,
             int moveLatencyInMilliseconds = 1000)
         {
+            _bank = bank;
             _elevator = elevator;
             SetElevatorObservability();
         }
 
+        private readonly Bank _bank;
         private readonly Elevator _elevator;
 
         public Guid ElevatorId => _elevator.Id;
 
+        private void SetDirectionToStopAt(int floorNbr)
+        {
+            if (floorNbr == _bank.LowestFloorNbr)
+            {
+                _elevator.Direction = Direction.Up;
+                return;
+            }
+
+            if (floorNbr == _bank.HighestFloorNbr)
+            {
+                _elevator.Direction = Direction.Down;
+                return;
+            }
+
+            _elevator.Direction = _elevator.FloorNumber < floorNbr
+                ? Direction.Up
+                : Direction.Down;
+        }
+
         public bool StopAt(int floorNbr)
         {
-            return false;   //TODO: Finish me
+            _elevator.DoorStatus = DoorStatus.Closed;
+
+            SetDirectionToStopAt(floorNbr);
+
+            //TODO: Modify to simulate elevator movement latency
+            if (_elevator.SetFloorNumberTo(floorNbr))
+            {
+                _elevator.DoorStatus = DoorStatus.Open;
+                return true;
+            }
+
+            return false;
         }
 
         public ElevatorStatus Status =>

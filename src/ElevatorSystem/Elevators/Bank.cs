@@ -5,7 +5,7 @@ using IntrepidProducts.ElevatorSystem.Buttons;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Bank : AbstractEntity
+    public class Bank : AbstractEntity, IHasFloors
     {
         public Bank(int nbrOfElevators, params Floor[] floors)
         {
@@ -23,6 +23,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             new Dictionary<Guid, IElevatorCommandAdapter>();
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
+        public IEnumerable<IElevatorCommandAdapter> ElevatorCommandAdapters
+            => _elevatorCommandAdapters.Values.ToList();
+
         #region Elevators
         private void AddElevators(int nbrOfElevators)
         {
@@ -30,15 +33,36 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             for (int i = 0; i < nbrOfElevators; i++)
             {
-
-                var eAdapter = new FauxElevatorCommandAdapter
-                                    (new Elevator(OrderedFloorNumbers.ToArray()));
+                var elevator = new Elevator(OrderedFloorNumbers.ToArray());
+                var eAdapter = new FauxElevatorCommandAdapter(this, elevator);
                 itemsToAdd[eAdapter.ElevatorId] = eAdapter;
+                SetObservabilityFor(elevator);
             }
 
             itemsToAdd.ToList().ForEach
                 (x => _elevatorCommandAdapters.Add(x.Key, x.Value));
         }
+
+        private void SetObservabilityFor(Elevator elevator)
+        {
+            elevator.DoorStateChangedEvent += OnDoorStateChangedEvent;
+        }
+
+        private void OnDoorStateChangedEvent(object sender, ElevatorDoorEventArgs e)
+        {
+            if (e.DoorStatus != DoorStatus.Open)
+            {
+                return;
+            }
+
+            var floorPanel = GetFloorElevatorCallPanelFor(e.FloorNumber);
+
+            if (floorPanel != null) //Should never happen, makes compiler happy
+            {
+                floorPanel.ResetButtonForElevatorArrival(e.Direction);
+            }
+        }
+
 
         public int NumberOfElevators => _elevatorCommandAdapters.Count;
         #endregion

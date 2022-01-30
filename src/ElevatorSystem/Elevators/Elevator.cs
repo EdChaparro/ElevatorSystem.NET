@@ -47,16 +47,17 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     }
                 }
 
-                RaiseDoorStateChangedEvent(value);
+                RaiseDoorStateChangedEvent(FloorNumber, Direction, value);
             }
         }
 
         public event EventHandler<ElevatorDoorEventArgs>? DoorStateChangedEvent;
 
-        private void RaiseDoorStateChangedEvent(DoorStatus doorStatus)
+        private void RaiseDoorStateChangedEvent
+            (int floorNbr, Direction direction, DoorStatus doorStatus)
         {
             DoorStateChangedEvent?.Invoke(this,
-                new ElevatorDoorEventArgs(Id, doorStatus));
+                new ElevatorDoorEventArgs(Id, floorNbr, direction, doorStatus));
         }
         #endregion
 
