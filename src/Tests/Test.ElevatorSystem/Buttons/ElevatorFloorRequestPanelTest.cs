@@ -79,7 +79,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void ShouldRequreAtLeastTwoFloors()
+        public void ShouldRequireAtLeastTwoFloors()
         {
             new ElevatorFloorRequestPanel(new Elevator());
         }
