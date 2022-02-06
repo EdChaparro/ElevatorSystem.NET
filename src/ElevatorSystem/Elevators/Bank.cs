@@ -74,7 +74,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-
         public int NumberOfElevators => _elevatorCommandAdapters.Count;
         #endregion
 
