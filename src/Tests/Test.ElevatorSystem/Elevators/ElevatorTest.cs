@@ -74,7 +74,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseFloorChangedEvent()
         {
             var elevator = new Elevator(1, 2)
-                { DoorStatus = DoorStatus.Closed,
+                { DoorStatus = DoorStatus.Open,
                     Direction = Direction.Up,
                 };
 
@@ -96,6 +96,30 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(2, floorEvent.CurrentFloorNbr);
 
             Assert.AreEqual(elevator.Id, floorEvent.ElevatorId);
+        }
+
+        [TestMethod]
+        public void ShouldNotRaiseFloorChangedEventWhenDisabled()
+        {
+            var elevator = new Elevator(1, 2, 3)
+            {
+                DoorStatus = DoorStatus.Open,
+                Direction = Direction.Up,
+            };
+
+            Assert.AreEqual(1, elevator.FloorNumber);
+
+            var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
+
+            elevator.FloorNumberChangedEvent += (sender, e)
+                => receivedEvents.Add(e);
+
+            Assert.IsTrue(elevator.SetFloorNumberTo(2));
+            Assert.AreEqual(1, receivedEvents.Count);
+
+            elevator.IsEnabled = false;
+            Assert.IsFalse(elevator.SetFloorNumberTo(3));           //Additional event
+            Assert.AreEqual(1, receivedEvents.Count);   // not raised
         }
 
         #region Updates Floor Request Buttons

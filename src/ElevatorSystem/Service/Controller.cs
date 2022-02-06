@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Service;
 
-namespace IntrepidProducts.ElevatorSystem
+namespace IntrepidProducts.ElevatorSystem.Service
 {
-    public class Building : IHasFloors
+    public interface IController : IEngine
+    {}
+
+    public class Controller : IController
     {
-        public Building(params Bank[] banks)
+        public Controller(params Bank[] banks)
         {
             var result = Add(banks);
 
@@ -16,8 +18,6 @@ namespace IntrepidProducts.ElevatorSystem
             {
                 throw new ArgumentException("Invalid elevator bank set specified");
             }
-
-            ElevatorController = new Controller(banks);
         }
 
         private readonly Dictionary<Guid, Bank> _banks = new Dictionary<Guid, Bank>();
@@ -47,35 +47,15 @@ namespace IntrepidProducts.ElevatorSystem
             return true;
         }
 
-        public IController ElevatorController { get; }
 
-        public int NumberOfBanks => _banks.Count;
-
-        #region IHasFloor
-        public int NumberOfFloors => OrderedFloorNumbers.Max();
-
-        public IEnumerable<int> OrderedFloorNumbers
+        public void Start()
         {
-            get
-            {
-                var floorNbrs = new List<int>();
-
-                foreach (var bank in _banks.Values)
-                {
-                    floorNbrs.AddRange(bank.OrderedFloorNumbers);
-                }
-
-                return floorNbrs.Distinct().OrderBy(x => x);
-            }
+            //TODO: Finish Me
         }
 
-        public int LowestFloorNbr => OrderedFloorNumbers.Min();
-        public int HighestFloorNbr => OrderedFloorNumbers.Max();
-        #endregion
-
-        public override string ToString()
+        public void Stop()
         {
-            return $"Number of Banks: {NumberOfBanks}";
+            //TODO: Finish Me
         }
     }
 }

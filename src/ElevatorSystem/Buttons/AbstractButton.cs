@@ -14,11 +14,24 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
     public abstract class AbstractButton : IButton
     {
-        public bool IsEnabled { get; set; } = true;
+        private bool _isEnabled = true;
 
-        private bool _isPressed;
+        public bool IsEnabled
+        {
+            get => _isEnabled;
 
-        public bool IsPressed => _isPressed;
+            set
+            {
+                _isEnabled = value;
+
+                if (!value)
+                {
+                    IsPressed = value;
+                }
+            }
+        }
+
+        public bool IsPressed { get; private set; }
 
         public bool SetPressedTo(bool value)
         {
@@ -34,13 +47,13 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
             if (!value)
             {
-                _isPressed = value;
+                IsPressed = value;
                 return true;
             }
 
             if (IsOkToProceedWithButtonPress())
             {
-                _isPressed = value;
+                IsPressed = value;
                 RaiseButtonPressedEvent();
                 return true;
             }

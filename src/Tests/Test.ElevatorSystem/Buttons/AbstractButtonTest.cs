@@ -89,5 +89,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.IsNotNull(eventButton);
             Assert.AreEqual(button.Id, eventButton.Id);
         }
+
+        [TestMethod]
+        public void ShouldResetButtonIsPressedStateWhenDisabled()
+        {
+            var button = new TestButton();
+
+            Assert.IsTrue(button.IsEnabled);
+            Assert.IsTrue(button.SetPressedTo(true));
+            Assert.IsTrue(button.IsPressed);
+
+            button.IsEnabled = false;
+            Assert.IsFalse(button.IsPressed);
+        }
     }
 }

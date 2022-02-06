@@ -22,6 +22,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         public bool IsEnabled
         {
             get => _isEnabled;
+
             set
             {
                 _isEnabled = value;

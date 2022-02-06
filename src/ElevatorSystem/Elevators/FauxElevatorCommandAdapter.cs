@@ -38,6 +38,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public bool StopAt(int floorNbr)
         {
+            if (!_elevator.IsEnabled)
+            {
+                return false;
+            }
+
             _elevator.DoorStatus = DoorStatus.Closed;
 
             SetDirectionToStopAt(floorNbr);
@@ -50,6 +55,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
 
             return false;
+        }
+
+        public void SetEnabledState(bool isEnabled)
+        {
+            _elevator.IsEnabled = isEnabled;
         }
 
         public ElevatorStatus Status =>

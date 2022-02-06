@@ -6,6 +6,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     {
         Guid ElevatorId { get; }
         bool StopAt(int floorNbr);
+        public void SetEnabledState(bool isEnabled);
+
         ElevatorStatus Status { get; }
     }
 }

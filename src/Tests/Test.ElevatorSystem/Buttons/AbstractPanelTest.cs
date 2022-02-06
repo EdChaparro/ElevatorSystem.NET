@@ -89,5 +89,29 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.IsTrue(button2.IsEnabled);
             Assert.IsTrue(button3.IsEnabled);
         }
+
+        [TestMethod]
+        public void ShouldResetButtonIsPressedStateWhenDisabled()
+        {
+            var panel = new TestPanel();
+
+            var button1 = new TestButton();
+            var button2 = new TestButton();
+            var button3 = new TestButton();
+            panel.AddButton(button1, button2, button3);
+
+            Assert.IsTrue(button1.SetPressedTo(true));
+            Assert.IsTrue(button2.SetPressedTo(true));
+            Assert.IsTrue(button3.SetPressedTo(true));
+
+            Assert.IsTrue(button1.IsPressed);
+            Assert.IsTrue(button2.IsPressed);
+            Assert.IsTrue(button3.IsPressed);
+
+            panel.IsEnabled = false;
+            Assert.IsFalse(button1.IsPressed);
+            Assert.IsFalse(button2.IsPressed);
+            Assert.IsFalse(button3.IsPressed);
+        }
     }
 }

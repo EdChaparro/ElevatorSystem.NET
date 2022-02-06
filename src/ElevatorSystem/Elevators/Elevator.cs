@@ -98,7 +98,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public bool SetFloorNumberTo(int value)
         {
-            if (value == _floorNumber)
+            if (!IsEnabled)
+            {
+                return false;
+            }
+
+            if ((value == _floorNumber) && (_doorStatus == DoorStatus.Open))
             {
                 return false;
             }
