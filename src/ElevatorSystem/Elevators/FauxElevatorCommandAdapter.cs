@@ -31,7 +31,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 return;
             }
 
-            _elevator.Direction = _elevator.FloorNumber < floorNbr
+            _elevator.Direction = _elevator.CurrentFloorNumber < floorNbr
                 ? Direction.Up
                 : Direction.Down;
         }
@@ -48,7 +48,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             SetDirectionToStopAt(floorNbr);
 
             //TODO: Modify to simulate elevator movement latency
-            if (_elevator.SetFloorNumberTo(floorNbr))
+            if (_elevator.MoveToFloorNumber(floorNbr))
             {
                 _elevator.DoorStatus = DoorStatus.Open;
                 return true;
@@ -64,7 +64,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public ElevatorStatus Status =>
             new ElevatorStatus
-            (_elevator.FloorNumber,
+            (_elevator.CurrentFloorNumber,
                 _elevator.Direction,
                 _elevator.DoorStatus,
                 _elevator.IsEnabled);
