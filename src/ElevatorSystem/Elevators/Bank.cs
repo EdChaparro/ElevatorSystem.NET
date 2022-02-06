@@ -8,6 +8,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 {
     public class Bank : AbstractEntity, IHasFloors, IEngine
     {
+        public Bank(int nbrOfElevators, Range floorRange) : this(nbrOfElevators,
+            Enumerable.Range
+                    (floorRange.Start.Value, floorRange.End.Value)
+                .Select(x => new Floor(x)).ToArray())
+        {}
+
         public Bank(int nbrOfElevators, params Floor[] floors)
         {
             var result = Add(floors);
