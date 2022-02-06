@@ -7,6 +7,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 {
     public class Elevator : AbstractEntity
     {
+        public Elevator(Range floorRange) : this(Enumerable.Range
+            (floorRange.Start.Value, floorRange.End.Value).ToArray())
+        { }
+
         public Elevator(params int[] floorNbrs)
         {
             OrderedFloorNumbers = floorNbrs.OrderBy(x => x);
