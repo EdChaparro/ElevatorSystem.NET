@@ -5,7 +5,7 @@ namespace IntrepidProducts.ElevatorSystem
 {
     public class Floor 
     {
-        public Floor(int number, string? name = null)
+        public Floor(int number)
         {
             Number = number;
 
@@ -14,10 +14,10 @@ namespace IntrepidProducts.ElevatorSystem
                 throw new ArgumentException("Floor number must be greater than 1");
             }
 
-            Name = name ?? number.ToString();
+            Name = number.ToString();
         }
 
-        public string Name { get; }
+        public string Name { get; set; }
         public int Number { get; }
         public bool IsLocked { get; set; }
 

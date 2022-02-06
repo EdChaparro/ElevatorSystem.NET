@@ -13,7 +13,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldKeepElevatorCount()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var bank = new Bank(2, 1..2);
+
             Assert.AreEqual(2, bank.NumberOfElevators);
         }
         #endregion
@@ -23,7 +24,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldKeepFloorCount()
         {
-            var bankWithFloors = new Bank(3, new Floor(1), new Floor(2));
+            var bankWithFloors = new Bank(3, 1..2);
             Assert.AreEqual(2, bankWithFloors.NumberOfFloors);
         }
 
@@ -147,12 +148,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldReturnNullWhenUnknownFloorPanelRequested()
         {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
-
-            var bank = new Bank(2,
-                floor1, floor2, floor3);
+            var bank = new Bank(2, 1..3);
 
             var floor4Panel = bank.GetFloorElevatorCallPanelFor(4);
             Assert.IsNull(floor4Panel);
@@ -161,14 +157,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldResetFloorElevatorCallDownButtonWhenElevatorArrives()
         {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
-            var floor4 = new Floor(4);
-            var floor5 = new Floor(5);
-
-            var bank = new Bank(2,
-                floor1, floor2, floor3, floor4, floor5);
+            var bank = new Bank(2, 1..5);
 
             var commandAdaptors = bank.ElevatorCommandAdapters;
             Assert.AreEqual(2, commandAdaptors.Count());
@@ -194,14 +183,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldResetFloorElevatorCallUpButtonWhenElevatorArrives()
         {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
-            var floor4 = new Floor(4);
-            var floor5 = new Floor(5);
-
-            var bank = new Bank(2,
-                floor1, floor2, floor3, floor4, floor5);
+            var bank = new Bank(2, 1..5);
 
             var commandAdaptors = bank.ElevatorCommandAdapters;
             Assert.AreEqual(2, commandAdaptors.Count());
@@ -224,5 +206,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         #endregion
+
+        [TestMethod]
+        public void ShouldPermitFloorNameToBeChanged()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+
+            Assert.AreEqual("3", floor3.Name);
+
+            var bank = new Bank(2, floor1, floor2, floor3);
+
+            bank.SetFloorName(3, "PH");
+            Assert.AreEqual("PH", floor3.Name);
+        }
     }
 }

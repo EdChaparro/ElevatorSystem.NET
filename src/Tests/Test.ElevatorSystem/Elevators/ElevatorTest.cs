@@ -11,7 +11,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldInstantiateFloorRequestPanel()
         {
-            var e = new Elevator(1, 2);
+            var e = new Elevator(1..2);
             Assert.IsNotNull(e.FloorRequestPanel);
         }
 
@@ -25,7 +25,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldRaiseDoorEventWhenStatusChanges()
         {
-            var elevator = new Elevator(1, 2)
+            var elevator = new Elevator(1..2)
                 { DoorStatus = DoorStatus.Closed };
 
             var receivedEvents = new List<ElevatorDoorEventArgs>();
@@ -49,7 +49,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldRaiseDirectionChangedEvent()
         {
-            var elevator = new Elevator(1, 2)
+            var elevator = new Elevator(1..2)
                 { DoorStatus = DoorStatus.Closed, Direction = Direction.Up };
 
             var receivedEvents = new List<ElevatorDirectionChangedEventArgs>();
@@ -73,7 +73,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldRaiseFloorChangedEvent()
         {
-            var elevator = new Elevator(1, 2)
+            var elevator = new Elevator(1..2)
                 { DoorStatus = DoorStatus.Open,
                     Direction = Direction.Up,
                 };
@@ -101,7 +101,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldNotRaiseFloorChangedEventWhenDisabled()
         {
-            var elevator = new Elevator(1, 2, 3)
+            var elevator = new Elevator(1..3)
             {
                 DoorStatus = DoorStatus.Open,
                 Direction = Direction.Up,
@@ -127,7 +127,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldResetFloorRequestButtonWhenDoorOpens()
         {
-            var e = new Elevator(1, 2, 3, 4, 5)
+            var e = new Elevator(1..5)
             {
                 DoorStatus = DoorStatus.Closed,
                 Direction = Direction.Up,
@@ -153,7 +153,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldIgnoreFloorRequestButtonWhenNotCongruentWithDirection()
         {
-            var e = new Elevator(1, 2, 3, 4, 5)
+            var e = new Elevator(1..5)
             {
                 DoorStatus = DoorStatus.Closed,
                 Direction = Direction.Down,
@@ -173,7 +173,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldOnlyAcceptValidFloorNumbers()
         {
-            var e = new Elevator(1, 2, 3, 4, 5);
+            var e = new Elevator(1..5);
 
             Assert.IsTrue(e.SetFloorNumberTo(3));
             Assert.IsFalse(e.SetFloorNumberTo(7));
@@ -182,7 +182,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldDefaultFloorNumberToLowestFloor()
         {
-            var e = new Elevator(3, 4, 5);
+            var e = new Elevator(3..5);
             Assert.AreEqual(3, e.FloorNumber);
         }
     }
