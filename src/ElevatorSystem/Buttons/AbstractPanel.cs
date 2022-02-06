@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
@@ -70,6 +71,8 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         }
 
         public int NumberOfButtons => _buttons.Count;
+
+        public IEnumerable<T> PressedButtons => Buttons.Where(x => x.IsPressed);
 
         public override string ToString()
         {
