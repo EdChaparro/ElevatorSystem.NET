@@ -17,8 +17,8 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         {
             return _elevator.Direction switch
             {
-                Elevators.Direction.Down => FloorNbr < _elevator.FloorNumber,
-                Elevators.Direction.Up => FloorNbr > _elevator.FloorNumber,
+                Elevators.Direction.Down => FloorNbr < _elevator.CurrentFloorNumber,
+                Elevators.Direction.Up => FloorNbr > _elevator.CurrentFloorNumber,
                 _ => false //Should never drop to here
             };
         }

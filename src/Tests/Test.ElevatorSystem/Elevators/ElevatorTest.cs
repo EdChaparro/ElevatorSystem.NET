@@ -78,17 +78,17 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                     Direction = Direction.Up,
                 };
 
-            Assert.AreEqual(1, elevator.FloorNumber);
+            Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
 
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            Assert.IsFalse(elevator.SetFloorNumberTo(1)); //No event generated; direction not changed
+            Assert.IsFalse(elevator.MoveToFloorNumber(1)); //No event generated; direction not changed
             Assert.AreEqual(0, receivedEvents.Count);
 
-            Assert.IsTrue(elevator.SetFloorNumberTo(2));
+            Assert.IsTrue(elevator.MoveToFloorNumber(2));
             Assert.AreEqual(1, receivedEvents.Count);
 
             var floorEvent = receivedEvents.First();
@@ -107,18 +107,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                 Direction = Direction.Up,
             };
 
-            Assert.AreEqual(1, elevator.FloorNumber);
+            Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
 
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            Assert.IsTrue(elevator.SetFloorNumberTo(2));
+            Assert.IsTrue(elevator.MoveToFloorNumber(2));
             Assert.AreEqual(1, receivedEvents.Count);
 
             elevator.IsEnabled = false;
-            Assert.IsFalse(elevator.SetFloorNumberTo(3));           //Additional event
+            Assert.IsFalse(elevator.MoveToFloorNumber(3));           //Additional event
             Assert.AreEqual(1, receivedEvents.Count);   // not raised
         }
 
@@ -133,16 +133,16 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                 Direction = Direction.Up,
             };
 
-            Assert.AreEqual(1, e.FloorNumber);
+            Assert.AreEqual(1, e.CurrentFloorNumber);
             var ePanel = e.FloorRequestPanel;
             var floor3RequestButton = ePanel.GetButtonForFloorNumber(3);
             Assert.IsFalse(floor3RequestButton.IsPressed);
 
             Assert.IsTrue(floor3RequestButton.SetPressedTo(true));
-            Assert.IsTrue(e.SetFloorNumberTo(2));
+            Assert.IsTrue(e.MoveToFloorNumber(2));
             Assert.IsTrue(floor3RequestButton.IsPressed);
 
-            Assert.IsTrue(e.SetFloorNumberTo(3));
+            Assert.IsTrue(e.MoveToFloorNumber(3));
             Assert.IsTrue(floor3RequestButton.IsPressed);
 
             e.Direction = Direction.Up;
@@ -159,7 +159,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                 Direction = Direction.Down,
             };
 
-            e.SetFloorNumberTo(4);
+            e.MoveToFloorNumber(4);
 
             var ePanel = e.FloorRequestPanel;
             var floor5RequestButton = ePanel.GetButtonForFloorNumber(5);
@@ -175,15 +175,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var e = new Elevator(1..5);
 
-            Assert.IsTrue(e.SetFloorNumberTo(3));
-            Assert.IsFalse(e.SetFloorNumberTo(7));
+            Assert.IsTrue(e.MoveToFloorNumber(3));
+            Assert.IsFalse(e.MoveToFloorNumber(7));
         }
 
         [TestMethod]
         public void ShouldDefaultFloorNumberToLowestFloor()
         {
             var e = new Elevator(3..5);
-            Assert.AreEqual(3, e.FloorNumber);
+            Assert.AreEqual(3, e.CurrentFloorNumber);
         }
     }
 }

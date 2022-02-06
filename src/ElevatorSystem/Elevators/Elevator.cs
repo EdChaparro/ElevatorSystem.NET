@@ -16,7 +16,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             OrderedFloorNumbers = floorNbrs.OrderBy(x => x);
             FloorRequestPanel = new ElevatorFloorRequestPanel(this);
 
-            SetFloorNumberTo(OrderedFloorNumbers.Min());
+            MoveToFloorNumber(OrderedFloorNumbers.Min());
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
@@ -43,7 +43,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
                 if (_doorStatus == DoorStatus.Open)
                 {
-                    var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(FloorNumber);
+                    var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(CurrentFloorNumber);
 
                     if (floorRequestButton != null)
                     {
@@ -51,7 +51,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     }
                 }
 
-                RaiseDoorStateChangedEvent(FloorNumber, Direction, value);
+                RaiseDoorStateChangedEvent(CurrentFloorNumber, Direction, value);
             }
         }
 
@@ -96,18 +96,17 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #region Floor
         public readonly IEnumerable<int> OrderedFloorNumbers;
 
-        private int _floorNumber;
+        public int CurrentFloorNumber { get; private set; }
+        public int NextStopFloorNumber { get; private set; }
 
-        public int FloorNumber => _floorNumber;
-
-        public bool SetFloorNumberTo(int value)
+        public bool MoveToFloorNumber(int value)
         {
             if (!IsEnabled)
             {
                 return false;
             }
 
-            if ((value == _floorNumber) && (_doorStatus == DoorStatus.Open))
+            if ((value == CurrentFloorNumber) && (_doorStatus == DoorStatus.Open))
             {
                 return false;
             }
@@ -116,7 +115,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             if (isValidFloorNumber)
             {
-                _floorNumber = value;
+                NextStopFloorNumber = value;    //TODO: Eventually, this will not always match CurrentFloorNumber
+                CurrentFloorNumber = value;
                 RaiseFloorNumberChangedEvent(value);
                 return true;
             }

@@ -68,7 +68,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(2, firstButton.FloorNbr);
             Assert.AreEqual(3, secondButton.FloorNbr);
 
-            Assert.IsTrue(elevator.SetFloorNumberTo(3));
+            Assert.IsTrue(elevator.MoveToFloorNumber(3));
             elevator.Direction = Direction.Down;
             Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
             Assert.AreEqual(3, receivedEvents.Count);
