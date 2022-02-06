@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Bank : AbstractEntity, IHasFloors
+    public class Bank : AbstractEntity, IHasFloors, IEngine
     {
         public Bank(int nbrOfElevators, params Floor[] floors)
         {
@@ -27,6 +28,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             => _elevatorCommandAdapters.Values.ToList();
 
         #region Elevators
+
+        public IEnumerable<ElevatorStatus> ElevatorStates
+        {
+            get => _elevatorCommandAdapters.Values.Select(x => x.Status);
+        }
+
         private void AddElevators(int nbrOfElevators)
         {
             var itemsToAdd = new Dictionary<Guid, IElevatorCommandAdapter>();
@@ -34,7 +41,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             for (int i = 0; i < nbrOfElevators; i++)
             {
                 var elevator = new Elevator(OrderedFloorNumbers.ToArray());
-                var eAdapter = new FauxElevatorCommandAdapter(this, elevator);
+                var eAdapter = new FauxElevatorCommandAdapter(this, elevator); //TODO: Use IoC
                 itemsToAdd[eAdapter.ElevatorId] = eAdapter;
                 SetObservabilityFor(elevator);
             }
@@ -141,6 +148,27 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public int LowestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Min() : 0;
         public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
+        #endregion
+
+        #region IEngine
+
+        public void Start()
+        {
+            SendAllElevatorsToHomeFloor();
+        }
+
+        public void Stop()
+        {
+            SendAllElevatorsToHomeFloor();
+        }
+
+        private void SendAllElevatorsToHomeFloor()
+        {
+            foreach (var adapter in ElevatorCommandAdapters)
+            {
+                adapter.StopAt(LowestFloorNbr);
+            }
+        }
         #endregion
         public override string ToString()
         {

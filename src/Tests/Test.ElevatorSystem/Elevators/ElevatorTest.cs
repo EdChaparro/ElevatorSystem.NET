@@ -74,7 +74,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseFloorChangedEvent()
         {
             var elevator = new Elevator(1, 2)
-                { DoorStatus = DoorStatus.Closed,
+                { DoorStatus = DoorStatus.Open,
                     Direction = Direction.Up,
                 };
 
