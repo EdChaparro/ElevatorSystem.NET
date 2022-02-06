@@ -30,9 +30,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #region Elevators
 
         public IEnumerable<ElevatorStatus> ElevatorStates
-        {
-            get => _elevatorCommandAdapters.Values.Select(x => x.Status);
-        }
+            => _elevatorCommandAdapters.Values.Select(x => x.Status);
 
         private void AddElevators(int nbrOfElevators)
         {
