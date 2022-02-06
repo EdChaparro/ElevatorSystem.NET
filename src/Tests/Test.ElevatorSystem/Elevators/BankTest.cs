@@ -224,5 +224,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         #endregion
+
+        [TestMethod]
+        public void ShouldPermitFloorNameToBeChanged()
+        {
+            var floor1 = new Floor(1);
+            var floor2 = new Floor(2);
+            var floor3 = new Floor(3);
+
+            Assert.AreEqual("3", floor3.Name);
+
+            var bank = new Bank(2, floor1, floor2, floor3);
+
+            bank.SetFloorName(3, "PH");
+            Assert.AreEqual("PH", floor3.Name);
+        }
     }
 }

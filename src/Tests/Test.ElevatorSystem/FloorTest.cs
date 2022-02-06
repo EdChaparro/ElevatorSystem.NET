@@ -32,9 +32,9 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldConsiderFloorsWithIdenticalNumbersEqual()
         {
-            var floor1 = new Floor(5, name: "XXX");
-            var floor2 = new Floor(5, name: "YYY");
-            var floor3 = new Floor(3, "ABC");
+            var floor1 = new Floor(5) { Name = "XXX" };
+            var floor2 = new Floor(5) { Name = "YYY" };
+            var floor3 = new Floor(3) { Name = "ABC" };
 
             Assert.AreEqual(floor1, floor2);
             Assert.AreNotEqual(floor1, floor3);
@@ -43,8 +43,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldSupportFloorOperatorComparisons()
         {
-            Floor floor1 = new Floor(1, name: "XXX");
-            Floor floor2 = new Floor(2, name: "YYY");
+            var floor1 = new Floor(1) { Name = "XXX" };
+            var floor2 = new Floor(2) { Name = "YYY" };
 
             Assert.IsTrue(floor1 < floor2);
             Assert.IsTrue(floor2 > floor1);
