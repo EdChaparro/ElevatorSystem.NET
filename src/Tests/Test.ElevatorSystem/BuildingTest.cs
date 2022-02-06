@@ -25,7 +25,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             var bank = new Bank(1, new Floor(1), new Floor(2));
             var dup = bank;
 
-            var building = new Building(bank, dup);
+            new Building(bank, dup);
         }
 
         #region Floors
