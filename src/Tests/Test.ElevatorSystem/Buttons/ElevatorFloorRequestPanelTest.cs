@@ -90,5 +90,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             new ElevatorFloorRequestPanel(new Elevator(0, 1, 2));
         }
+
+        [TestMethod]
+        public void ShouldProvidedRequestedFloorStops()
+        {
+            var elevator = new Elevator(1, 2, 3, 4, 5, 6, 7);
+            var panel = new ElevatorFloorRequestPanel(elevator);
+
+            Assert.IsFalse(panel.RequestedFloorStops.Any());
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(6).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 2, 4, 6 }, panel.RequestedFloorStops.ToList());
+        }
     }
 }
