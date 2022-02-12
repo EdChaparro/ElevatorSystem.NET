@@ -19,6 +19,10 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             }
         }
 
+        public IEnumerable<int> RequestedFloorStops
+            => Buttons.Where(x=> x.IsPressed)
+                .Select(x => x.FloorNbr);
+
         public ElevatorFloorRequestButton? GetButtonForFloorNumber(int nbr)
         {
             return Buttons.FirstOrDefault(x => x.FloorNbr == nbr);
