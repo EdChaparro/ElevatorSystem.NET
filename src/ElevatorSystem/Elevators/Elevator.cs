@@ -113,6 +113,13 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #region Floor
         public readonly IEnumerable<int> OrderedFloorNumbers;
 
+        public bool PressButtonForFloorNumber(int value)
+        {
+            var button = FloorRequestPanel.GetButtonForFloorNumber(value);
+
+            return button?.SetPressedTo(true) ?? false;
+        }
+
         private int _currentFloorNumber;
 
         public int CurrentFloorNumber
@@ -134,8 +141,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 _currentFloorNumber = value;
             }
         }
-
-        public int NextStopFloorNumber { get; private set; }
 
         public bool RequestStopAtFloorNumber(int value)
         {
