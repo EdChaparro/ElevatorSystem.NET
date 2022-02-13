@@ -185,12 +185,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var e = new Elevator(1..10);
             Assert.IsFalse(e.RequestedFloorStops.Any());
 
-            var panel = e.FloorRequestPanel;
-
-            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(6).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(8).SetPressedTo(true));
+            Assert.IsTrue(e.PressButtonForFloorNumber(2));
+            Assert.IsTrue(e.PressButtonForFloorNumber(4));
+            Assert.IsTrue(e.PressButtonForFloorNumber(6));
+            Assert.IsTrue(e.PressButtonForFloorNumber(8));
 
             CollectionAssert.AreEqual(new[] { 2, 4, 6, 8 }, e.RequestedFloorStops.ToList());
         }
@@ -201,12 +199,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var e = new Elevator(1..10);
             Assert.IsFalse(e.RequestedFloorStops.Any());
 
-            var panel = e.FloorRequestPanel;
-
-            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
-            Assert.IsFalse(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(5).SetPressedTo(true));
-            Assert.IsFalse(panel.GetButtonForFloorNumber(5).SetPressedTo(true));
+            Assert.IsTrue(e.PressButtonForFloorNumber(2));
+            Assert.IsFalse(e.PressButtonForFloorNumber(2));
+            Assert.IsTrue(e.PressButtonForFloorNumber(5));
+            Assert.IsFalse(e.PressButtonForFloorNumber(5));
 
             CollectionAssert.AreEqual(new[] { 2, 5 }, e.RequestedFloorStops.ToList());
         }
@@ -215,12 +211,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldUpdateRequestedFloorStopsListOnDoorOpen()
         {
             var e = new Elevator(1..7);
-            var panel = e.FloorRequestPanel;
+            Assert.IsFalse(e.RequestedFloorStops.Any());
 
-            Assert.IsFalse(panel.RequestedFloorStops.Any());
-
-            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(7).SetPressedTo(true));
+            Assert.IsTrue(e.PressButtonForFloorNumber(4));
+            Assert.IsTrue(e.PressButtonForFloorNumber(7));
 
             CollectionAssert.AreEqual(new[] { 4, 7 }, e.RequestedFloorStops.ToList());
 
