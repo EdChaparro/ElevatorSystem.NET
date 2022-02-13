@@ -18,10 +18,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.AreEqual(DoorStatus.Closed, adapter.Status.DoorStatus);
 
-            adapter.StopAt(3);
+            adapter.RequestStopAtFloorNumber(3);
             Assert.AreEqual(Direction.Up, adapter.Status.Direction);
 
-            adapter.StopAt(2);
+            adapter.RequestStopAtFloorNumber(2);
             Assert.AreEqual(Direction.Down, adapter.Status.Direction);
 
             Assert.AreEqual(2, adapter.Status.CurrentFloorNumber);

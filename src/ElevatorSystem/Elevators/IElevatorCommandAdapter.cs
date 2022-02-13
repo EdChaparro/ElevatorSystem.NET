@@ -5,7 +5,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     public interface IElevatorCommandAdapter
     {
         Guid ElevatorId { get; }
-        bool StopAt(int floorNbr);
+        bool RequestStopAtFloorNumber(int floorNbr);
         public void SetEnabledState(bool isEnabled);
 
         ElevatorStatus Status { get; }

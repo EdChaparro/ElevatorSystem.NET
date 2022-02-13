@@ -186,7 +186,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             foreach (var adapter in ElevatorCommandAdapters)
             {
-                adapter.StopAt(LowestFloorNbr);
+                adapter.RequestStopAtFloorNumber(LowestFloorNbr);
             }
         }
         #endregion

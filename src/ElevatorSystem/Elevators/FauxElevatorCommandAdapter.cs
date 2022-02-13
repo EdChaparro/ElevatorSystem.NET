@@ -17,44 +17,15 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public Guid ElevatorId => _elevator.Id;
 
-        private void SetDirectionToStopAt(int floorNbr)
-        {
-            if (floorNbr == _bank.LowestFloorNbr)
-            {
-                _elevator.Direction = Direction.Up;
-                return;
-            }
-
-            if (floorNbr == _bank.HighestFloorNbr)
-            {
-                _elevator.Direction = Direction.Down;
-                return;
-            }
-
-            _elevator.Direction = _elevator.CurrentFloorNumber < floorNbr
-                ? Direction.Up
-                : Direction.Down;
-        }
-
-        public bool StopAt(int floorNbr)
+        public bool RequestStopAtFloorNumber(int floorNbr)
         {
             if (!_elevator.IsEnabled)
             {
                 return false;
             }
 
-            _elevator.DoorStatus = DoorStatus.Closed;
-
-            SetDirectionToStopAt(floorNbr);
-
             //TODO: Modify to simulate elevator movement latency
-            if (_elevator.RequestStopAtFloorNumber(floorNbr))
-            {
-                _elevator.DoorStatus = DoorStatus.Open;
-                return true;
-            }
-
-            return false;
+            return _elevator.RequestStopAtFloorNumber(floorNbr);
         }
 
         public void SetEnabledState(bool isEnabled)
