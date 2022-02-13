@@ -135,8 +135,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public int NextStopFloorNumber { get; private set; }
-
         public bool RequestStopAtFloorNumber(int value)
         {
             if (!IsEnabled)
