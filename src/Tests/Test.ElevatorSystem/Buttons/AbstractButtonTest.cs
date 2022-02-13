@@ -19,7 +19,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var button = new TestButton();
 
-            var receivedEvents = new List<ButtonPressedEventArgs>();
+            var receivedEvents = new List<ButtonPressedEventArgs<IButton>>();
 
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
@@ -41,7 +41,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var button = new TestButton();
 
-            var receivedEvents = new List<ButtonPressedEventArgs>();
+            var receivedEvents = new List<ButtonPressedEventArgs<IButton>> ();
 
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
@@ -62,7 +62,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var button = new TestButton();
 
-            ButtonPressedEventArgs receivedEvent = null;
+            ButtonPressedEventArgs<IButton> receivedEvent = null;
 
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvent = e;
@@ -78,14 +78,14 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var button = new TestButton();
 
-            ButtonPressedEventArgs receivedEvent = null;
+            ButtonPressedEventArgs<IButton> receivedEvent = null;
 
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvent = e;
 
             Assert.IsTrue(button.SetPressedTo(true));   //This should generate an event
 
-            var eventButton = receivedEvent.GetButton<TestButton>();
+            var eventButton = receivedEvent.Button as TestButton;
             Assert.IsNotNull(eventButton);
             Assert.AreEqual(button.Id, eventButton.Id);
         }

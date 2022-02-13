@@ -14,9 +14,20 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public Elevator(params int[] floorNbrs)
         {
             OrderedFloorNumbers = floorNbrs.OrderBy(x => x);
-            FloorRequestPanel = new ElevatorFloorRequestPanel(this);
 
-            MoveToFloorNumber(OrderedFloorNumbers.Min());
+            FloorRequestPanel = new ElevatorFloorRequestPanel(this);
+            FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
+
+            CurrentFloorNumber = OrderedFloorNumbers.Min();
+        }
+
+        private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
+
+        public IEnumerable<int> RequestedFloorStops => _requestedFloorStops.OrderBy(x => x);
+
+        private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
+        {
+            _requestedFloorStops.Add(e.Button.FloorNbr);
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
@@ -48,6 +59,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     if (floorRequestButton != null)
                     {
                         floorRequestButton.SetPressedTo(false);
+                        _requestedFloorStops.Remove(floorRequestButton.FloorNbr);
                     }
                 }
 
@@ -72,7 +84,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             get => _direction;
 
-            set
+            private set
             {
                 if (value == _direction)
                 {
@@ -91,23 +103,55 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             DirectionChangedEvent?.Invoke(this,
                 new ElevatorDirectionChangedEventArgs(Id, direction));
         }
+
+        private void SetDirectionToStopAt(int floorNbr)
+        {
+            Direction = (floorNbr < CurrentFloorNumber) ? Direction.Down : Direction.Up;
+        }
         #endregion
 
         #region Floor
         public readonly IEnumerable<int> OrderedFloorNumbers;
 
-        public int CurrentFloorNumber { get; private set; }
+        private int _currentFloorNumber;
+
+        public int CurrentFloorNumber
+        {
+            get => _currentFloorNumber;
+
+            set
+            {
+                if (value == OrderedFloorNumbers.Min())
+                {
+                    Direction = Direction.Up;
+                }
+
+                if (value == OrderedFloorNumbers.Max())
+                {
+                    Direction = Direction.Down;
+                }
+
+                _currentFloorNumber = value;
+            }
+        }
+
         public int NextStopFloorNumber { get; private set; }
 
-        public bool MoveToFloorNumber(int value)
+        public bool RequestStopAtFloorNumber(int value)
         {
             if (!IsEnabled)
             {
                 return false;
             }
 
-            if ((value == CurrentFloorNumber) && (_doorStatus == DoorStatus.Open))
+            if (value == CurrentFloorNumber)
             {
+                if (DoorStatus == DoorStatus.Closed)
+                {
+                    DoorStatus = DoorStatus.Open;
+                    return true;
+                }
+
                 return false;
             }
 
@@ -115,13 +159,59 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             if (isValidFloorNumber)
             {
-                NextStopFloorNumber = value;    //TODO: Eventually, this will not always match CurrentFloorNumber
-                CurrentFloorNumber = value;
-                RaiseFloorNumberChangedEvent(value);
+                _requestedFloorStops.Add(value);
+                NavigateToNextFloorStop();
                 return true;
             }
 
             return false;
+        }
+
+        private void NavigateToNextFloorStop()
+        {
+            if (!RequestedFloorStops.Any())
+            {
+                return;  //Nothing to do
+            }
+
+            if (DoorStatus == DoorStatus.Open)
+            {
+                DoorStatus = DoorStatus.Closed;
+            }
+
+            var currentFloorNumber = CurrentFloorNumber;
+
+            switch (Direction)
+            {
+                case Direction.Down:
+                    if (currentFloorNumber != OrderedFloorNumbers.Min())
+                    {
+                        currentFloorNumber--;
+                    }
+                    break;
+                case Direction.Up:
+                    if (currentFloorNumber != OrderedFloorNumbers.Max())
+                    {
+                        currentFloorNumber++;
+                    }
+                    break;
+            }
+
+            if (currentFloorNumber == CurrentFloorNumber)
+            {
+                return; //Reached termination point
+            }
+
+            SetDirectionToStopAt(currentFloorNumber);
+            CurrentFloorNumber = currentFloorNumber;
+            RaiseFloorNumberChangedEvent(CurrentFloorNumber);
+            if (RequestedFloorStops.Contains(CurrentFloorNumber))
+            {
+                DoorStatus = DoorStatus.Open;
+                return;
+            }
+
+            NavigateToNextFloorStop();  //Recursive call
         }
 
         public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorNumberChangedEvent;

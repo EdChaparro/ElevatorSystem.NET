@@ -2,18 +2,13 @@
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public class ButtonPressedEventArgs : EventArgs
+    public class ButtonPressedEventArgs<TButton> : EventArgs where TButton : class, IButton
     {
-        public ButtonPressedEventArgs(IButton button)
+        public ButtonPressedEventArgs(TButton button)
         {
             Button = button;
         }
 
-        public IButton Button { get; }
-
-        public T? GetButton<T>() where T : class, IButton
-        {
-            return Button as T;
-        }
+        public TButton Button { get; }
     }
 }

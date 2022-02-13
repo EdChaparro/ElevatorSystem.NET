@@ -165,8 +165,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var eAdaptor1 = commandAdaptors.First(); //Control Elevators
             var eAdaptor2 = commandAdaptors.Last();  //  via Adaptors
 
-            eAdaptor1.StopAt(5);
-            eAdaptor2.StopAt(1);
+            Assert.IsTrue(eAdaptor1.RequestStopAtFloorNumber(5));
+            Assert.IsTrue(eAdaptor2.RequestStopAtFloorNumber(1));
             Assert.AreEqual(5, eAdaptor1.Status.CurrentFloorNumber);
             Assert.AreEqual(1, eAdaptor2.Status.CurrentFloorNumber);
 
@@ -176,7 +176,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.SetPressedTo(true));
             Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.IsPressed);
 
-            eAdaptor1.StopAt(3);
+            eAdaptor1.RequestStopAtFloorNumber(3);
             Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton.IsPressed);
         }
 
@@ -191,8 +191,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var eAdaptor1 = commandAdaptors.First(); //Control Elevators
             var eAdaptor2 = commandAdaptors.Last();  //  via Adaptors
 
-            eAdaptor1.StopAt(5);
-            eAdaptor2.StopAt(2);
+            eAdaptor1.RequestStopAtFloorNumber(5);
+            eAdaptor2.RequestStopAtFloorNumber(2);
             Assert.AreEqual(5, eAdaptor1.Status.CurrentFloorNumber);
             Assert.AreEqual(2, eAdaptor2.Status.CurrentFloorNumber);
 
@@ -201,7 +201,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.IsTrue(firstFloorElevatorCallPanel.UpButton.SetPressedTo(true));
 
-            eAdaptor1.StopAt(1);
+            eAdaptor1.RequestStopAtFloorNumber(1);
             Assert.IsFalse(firstFloorElevatorCallPanel.UpButton.IsPressed);
         }
 

@@ -1,9 +1,9 @@
 ﻿namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public class PanelButtonPressedEventArgs<TButton> : ButtonPressedEventArgs
-        where TButton : IButton
+    public class PanelButtonPressedEventArgs<TButton> : ButtonPressedEventArgs<TButton>
+        where TButton : class, IButton
     {
-        public PanelButtonPressedEventArgs(IPanel<TButton> panel, IButton button)
+        public PanelButtonPressedEventArgs(IPanel<TButton> panel, TButton button)
             : base(button)
         {
             Panel = panel;

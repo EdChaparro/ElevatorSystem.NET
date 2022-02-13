@@ -9,7 +9,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         bool IsPressed { get; }
         bool SetPressedTo(bool value);
 
-        event EventHandler<ButtonPressedEventArgs>? ButtonPressedEvent;
+        event EventHandler<ButtonPressedEventArgs<IButton>>? ButtonPressedEvent;
     }
 
     public abstract class AbstractButton : IButton
@@ -61,15 +61,14 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             return false;
         }
 
-        public event EventHandler<ButtonPressedEventArgs>? ButtonPressedEvent;
+        public event EventHandler<ButtonPressedEventArgs<IButton>>? ButtonPressedEvent;
 
         protected virtual bool IsOkToProceedWithButtonPress() => true;
 
         private void RaiseButtonPressedEvent()
         {
             ButtonPressedEvent?.Invoke(this,
-                new ButtonPressedEventArgs(this));
+                new ButtonPressedEventArgs<IButton>(this));
         }
     }
-
 }

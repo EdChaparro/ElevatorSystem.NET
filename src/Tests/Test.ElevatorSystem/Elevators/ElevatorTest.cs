@@ -49,18 +49,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldRaiseDirectionChangedEvent()
         {
-            var elevator = new Elevator(1..2)
-                { DoorStatus = DoorStatus.Closed, Direction = Direction.Up };
+            var elevator = new Elevator(1..5)
+                { DoorStatus = DoorStatus.Closed };
+
+            Assert.AreEqual(Direction.Up, elevator.Direction);
 
             var receivedEvents = new List<ElevatorDirectionChangedEventArgs>();
 
             elevator.DirectionChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            elevator.Direction = Direction.Up; //No event generated; direction not changed
+            elevator.RequestStopAtFloorNumber(4);
             Assert.AreEqual(0, receivedEvents.Count);
 
-            elevator.Direction = Direction.Down;
+            elevator.RequestStopAtFloorNumber(2);
             Assert.AreEqual(1, receivedEvents.Count);
 
             var directionEvent = receivedEvents.First();
@@ -74,9 +76,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseFloorChangedEvent()
         {
             var elevator = new Elevator(1..2)
-                { DoorStatus = DoorStatus.Open,
-                    Direction = Direction.Up,
-                };
+                { DoorStatus = DoorStatus.Open };
 
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
@@ -85,10 +85,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            Assert.IsFalse(elevator.MoveToFloorNumber(1)); //No event generated; direction not changed
+            Assert.IsFalse(elevator.RequestStopAtFloorNumber(1)); //No event generated; direction not changed
             Assert.AreEqual(0, receivedEvents.Count);
 
-            Assert.IsTrue(elevator.MoveToFloorNumber(2));
+            Assert.IsTrue(elevator.RequestStopAtFloorNumber(2));
             Assert.AreEqual(1, receivedEvents.Count);
 
             var floorEvent = receivedEvents.First();
@@ -104,7 +104,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var elevator = new Elevator(1..3)
             {
                 DoorStatus = DoorStatus.Open,
-                Direction = Direction.Up,
             };
 
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
@@ -114,11 +113,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            Assert.IsTrue(elevator.MoveToFloorNumber(2));
+            Assert.IsTrue(elevator.RequestStopAtFloorNumber(2));
             Assert.AreEqual(1, receivedEvents.Count);
 
             elevator.IsEnabled = false;
-            Assert.IsFalse(elevator.MoveToFloorNumber(3));           //Additional event
+            Assert.IsFalse(elevator.RequestStopAtFloorNumber(3));           //Additional event
             Assert.AreEqual(1, receivedEvents.Count);   // not raised
         }
 
@@ -129,8 +128,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var e = new Elevator(1..5)
             {
-                DoorStatus = DoorStatus.Closed,
-                Direction = Direction.Up,
+                DoorStatus = DoorStatus.Closed
             };
 
             Assert.AreEqual(1, e.CurrentFloorNumber);
@@ -139,15 +137,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsFalse(floor3RequestButton.IsPressed);
 
             Assert.IsTrue(floor3RequestButton.SetPressedTo(true));
-            Assert.IsTrue(e.MoveToFloorNumber(2));
             Assert.IsTrue(floor3RequestButton.IsPressed);
 
-            Assert.IsTrue(e.MoveToFloorNumber(3));
-            Assert.IsTrue(floor3RequestButton.IsPressed);
-
-            e.Direction = Direction.Up;
-            e.DoorStatus = DoorStatus.Open;                 // Door Opened on requested floor
-            Assert.IsFalse(floor3RequestButton.IsPressed);  //      Should reset button
+            Assert.IsTrue(e.RequestStopAtFloorNumber(3));
+            Assert.IsFalse(floor3RequestButton.IsPressed);
         }
 
         [TestMethod]
@@ -155,18 +148,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var e = new Elevator(1..5)
             {
-                DoorStatus = DoorStatus.Closed,
-                Direction = Direction.Down,
+                DoorStatus = DoorStatus.Closed
             };
 
-            e.MoveToFloorNumber(4);
+            e.RequestStopAtFloorNumber(4);
+            Assert.AreEqual(Direction.Up, e.Direction);
 
             var ePanel = e.FloorRequestPanel;
-            var floor5RequestButton = ePanel.GetButtonForFloorNumber(5);
-            Assert.IsFalse(floor5RequestButton.IsPressed);
+            var floor2RequestButton = ePanel.GetButtonForFloorNumber(2);
+            Assert.IsFalse(floor2RequestButton.IsPressed);
 
-            Assert.IsFalse(floor5RequestButton.SetPressedTo(true));
-            Assert.IsFalse(floor5RequestButton.IsPressed);
+            Assert.IsFalse(floor2RequestButton.SetPressedTo(true));
+            Assert.IsFalse(floor2RequestButton.IsPressed);
         }
         #endregion
 
@@ -175,8 +168,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var e = new Elevator(1..5);
 
-            Assert.IsTrue(e.MoveToFloorNumber(3));
-            Assert.IsFalse(e.MoveToFloorNumber(7));
+            Assert.IsTrue(e.RequestStopAtFloorNumber(3));
+            Assert.IsFalse(e.RequestStopAtFloorNumber(7));
         }
 
         [TestMethod]
@@ -184,6 +177,82 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var e = new Elevator(3..5);
             Assert.AreEqual(3, e.CurrentFloorNumber);
+        }
+
+        [TestMethod]
+        public void ShouldTrackedRequestedFloorStops()
+        {
+            var e = new Elevator(1..10);
+            Assert.IsFalse(e.RequestedFloorStops.Any());
+
+            var panel = e.FloorRequestPanel;
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(6).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(8).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 2, 4, 6, 8 }, e.RequestedFloorStops.ToList());
+        }
+
+        [TestMethod]
+        public void ShouldIgnoreRedundantFloorStopRequests()
+        {
+            var e = new Elevator(1..10);
+            Assert.IsFalse(e.RequestedFloorStops.Any());
+
+            var panel = e.FloorRequestPanel;
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsFalse(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(5).SetPressedTo(true));
+            Assert.IsFalse(panel.GetButtonForFloorNumber(5).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 2, 5 }, e.RequestedFloorStops.ToList());
+        }
+
+        [TestMethod]
+        public void ShouldUpdateRequestedFloorStopsListOnDoorOpen()
+        {
+            var e = new Elevator(1..7);
+            var panel = e.FloorRequestPanel;
+
+            Assert.IsFalse(panel.RequestedFloorStops.Any());
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(7).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 4, 7 }, e.RequestedFloorStops.ToList());
+
+            Assert.IsTrue(e.RequestStopAtFloorNumber(4));
+            CollectionAssert.AreEqual(new[] { 7 }, e.RequestedFloorStops.ToList());
+        }
+
+        [TestMethod]
+        public void ShouldTraverseToFloorDestinationStepwise()
+        {
+            var elevator = new Elevator(1..9)
+                { DoorStatus = DoorStatus.Closed };
+
+            Assert.AreEqual(1, elevator.CurrentFloorNumber);
+
+            var floorNumberChangedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
+
+            elevator.FloorNumberChangedEvent += (sender, e)
+                => floorNumberChangedEvents.Add(e);
+
+            Assert.IsTrue(elevator.RequestStopAtFloorNumber(5));
+            Assert.AreEqual(4, floorNumberChangedEvents.Count);
+
+            var floorNumber = 1;
+            foreach (var e in floorNumberChangedEvents)
+            {
+                floorNumber++;
+                Assert.AreEqual(floorNumber, e.CurrentFloorNbr);
+            }
+
+            //Door opens on arrival to floor destination
+            Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
         }
     }
 }

@@ -70,10 +70,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(2, receivedEvents.Count);
 
             var firstEvent = receivedEvents.First();
-            var downButton = firstEvent.GetButton<FloorElevatorCallButton>();
+            var downButton = firstEvent.Button;
 
             var secondEvent = receivedEvents.Last();
-            var upButton = secondEvent.GetButton<FloorElevatorCallButton>();
+            var upButton = secondEvent.Button;
 
             Assert.AreEqual(Direction.Down, downButton.Direction);
             Assert.AreEqual(Direction.Up, upButton.Direction);
