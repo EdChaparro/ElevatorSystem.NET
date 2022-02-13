@@ -14,9 +14,18 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public Elevator(params int[] floorNbrs)
         {
             OrderedFloorNumbers = floorNbrs.OrderBy(x => x);
+
             FloorRequestPanel = new ElevatorFloorRequestPanel(this);
+            FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
 
             MoveToFloorNumber(OrderedFloorNumbers.Min());
+        }
+
+        private readonly List<int> _requestedFloorStops = new List<int>();
+
+        private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
+        {
+            //TODO: Implement me
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }

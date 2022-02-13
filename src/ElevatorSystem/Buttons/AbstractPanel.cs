@@ -4,17 +4,18 @@ using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
-    public interface IPanel<T> where T : IButton
+    public interface IPanel<TButton> where TButton : class, IButton
     {
         string? Description { get; set; }
         bool IsEnabled { get; set; }
 
         int NumberOfButtons { get; }
 
-        event EventHandler<PanelButtonPressedEventArgs<T>>? PanelButtonPressedEvent;
+        event EventHandler<PanelButtonPressedEventArgs<TButton>>? PanelButtonPressedEvent;
     }
 
-    public abstract class AbstractPanel<T> : AbstractEntity, IPanel<T> where T : IButton
+    public abstract class AbstractPanel<TButton> : AbstractEntity,
+        IPanel<TButton> where TButton : class, IButton
     {
         public string? Description { get; set; }
 
@@ -39,9 +40,9 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             }
         }
 
-        public event EventHandler<PanelButtonPressedEventArgs<T>>? PanelButtonPressedEvent;
+        public event EventHandler<PanelButtonPressedEventArgs<TButton>>? PanelButtonPressedEvent;
 
-        private void RaisePanelButtonPressedEvent(ButtonPressedEventArgs e)
+        private void RaisePanelButtonPressedEvent(ButtonPressedEventArgs<IButton> e)
         {
             if (!IsEnabled)
             {
@@ -49,14 +50,14 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
             }
 
             PanelButtonPressedEvent?.Invoke(this,
-                new PanelButtonPressedEventArgs<T>(this, e.Button));
+                new PanelButtonPressedEventArgs<TButton>(this, (TButton)e.Button));
         }
 
-        private readonly List<T> _buttons = new List<T>();
+        private readonly List<TButton> _buttons = new List<TButton>();
 
-        protected IEnumerable<T> Buttons => _buttons;
+        protected IEnumerable<TButton> Buttons => _buttons;
 
-        protected bool Add(params T[] buttons)
+        protected bool Add(params TButton[] buttons)
         {
             foreach (var button in buttons)
             {
@@ -72,7 +73,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 
         public int NumberOfButtons => _buttons.Count;
 
-        public IEnumerable<T> PressedButtons => Buttons.Where(x => x.IsPressed);
+        public IEnumerable<TButton> PressedButtons => Buttons.Where(x => x.IsPressed);
 
         public override string ToString()
         {
