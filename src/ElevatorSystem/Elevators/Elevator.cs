@@ -18,7 +18,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             FloorRequestPanel = new ElevatorFloorRequestPanel(this);
             FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
 
-            MoveToFloorNumber(OrderedFloorNumbers.Min());
+            RequestStopAtFloorNumber(OrderedFloorNumbers.Min());
         }
 
         private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
@@ -111,7 +111,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public int CurrentFloorNumber { get; private set; }
         public int NextStopFloorNumber { get; private set; }
 
-        public bool MoveToFloorNumber(int value)
+        public bool RequestStopAtFloorNumber(int value)
         {
             if (!IsEnabled)
             {

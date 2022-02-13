@@ -48,7 +48,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             SetDirectionToStopAt(floorNbr);
 
             //TODO: Modify to simulate elevator movement latency
-            if (_elevator.MoveToFloorNumber(floorNbr))
+            if (_elevator.RequestStopAtFloorNumber(floorNbr))
             {
                 _elevator.DoorStatus = DoorStatus.Open;
                 return true;
