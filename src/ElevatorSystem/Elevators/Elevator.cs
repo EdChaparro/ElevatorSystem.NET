@@ -21,11 +21,13 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             MoveToFloorNumber(OrderedFloorNumbers.Min());
         }
 
-        private readonly List<int> _requestedFloorStops = new List<int>();
+        private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
+
+        public IEnumerable<int> RequestedFloorStops => _requestedFloorStops.ToList();
 
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
-            //TODO: Implement me
+            _requestedFloorStops.Add(e.Button.FloorNbr);
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
@@ -57,6 +59,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     if (floorRequestButton != null)
                     {
                         floorRequestButton.SetPressedTo(false);
+                        _requestedFloorStops.Remove(floorRequestButton.FloorNbr);
                     }
                 }
 

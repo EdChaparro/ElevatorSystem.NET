@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -184,6 +185,57 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var e = new Elevator(3..5);
             Assert.AreEqual(3, e.CurrentFloorNumber);
+        }
+
+        [TestMethod]
+        public void ShouldTrackedRequestedFloorStops()
+        {
+            var e = new Elevator(1..10);
+            Assert.IsFalse(e.RequestedFloorStops.Any());
+
+            var panel = e.FloorRequestPanel;
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(6).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(8).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 2, 4, 6, 8 }, e.RequestedFloorStops.ToList());
+        }
+
+        [TestMethod]
+        public void ShouldIgnoreRedundantFloorStopRequests()
+        {
+            var e = new Elevator(1..10);
+            Assert.IsFalse(e.RequestedFloorStops.Any());
+
+            var panel = e.FloorRequestPanel;
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsFalse(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(5).SetPressedTo(true));
+            Assert.IsFalse(panel.GetButtonForFloorNumber(5).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 2, 5 }, e.RequestedFloorStops.ToList());
+        }
+
+        [TestMethod]
+        public void ShouldUpdateRequestedFloorStopsListOnDoorOpen()
+        {
+            var e = new Elevator(1..7);
+            var panel = e.FloorRequestPanel;
+
+            Assert.IsFalse(panel.RequestedFloorStops.Any());
+
+            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
+            Assert.IsTrue(panel.GetButtonForFloorNumber(7).SetPressedTo(true));
+
+            CollectionAssert.AreEqual(new[] { 4, 7 }, e.RequestedFloorStops.ToList());
+
+            Assert.IsTrue(e.MoveToFloorNumber(4));
+            CollectionAssert.AreEqual(new[] { 4, 7 }, e.RequestedFloorStops.ToList());
+            e.DoorStatus = DoorStatus.Open;
+            CollectionAssert.AreEqual(new[] { 7 }, e.RequestedFloorStops.ToList());
         }
     }
 }
