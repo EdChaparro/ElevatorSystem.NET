@@ -34,7 +34,18 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public string? Name { get; set; }
 
-        public bool IsEnabled { get; set; } = true;
+        private bool _isEnabled = true;
+
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+
+            set
+            {
+                _isEnabled = value;
+                FloorRequestPanel.IsEnabled = value;
+            }
+        }
 
         #region Door
         private DoorStatus _doorStatus = DoorStatus.Closed;

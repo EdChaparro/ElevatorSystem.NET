@@ -16,6 +16,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         [TestMethod]
+        public void ShouldSyncFloorRequestPanelState()
+        {
+            var e = new Elevator(1..3);
+            Assert.IsTrue(e.IsEnabled);
+            Assert.AreEqual(e.IsEnabled, e.FloorRequestPanel.IsEnabled);
+
+            e.IsEnabled = false;
+            Assert.IsFalse(e.IsEnabled);
+            Assert.AreEqual(e.IsEnabled, e.FloorRequestPanel.IsEnabled);
+        }
+
+        [TestMethod]
         public void ShouldInstantiateFloorRequestPanelWithCorrectNumberOfButtons()
         {
             var e = new Elevator(3, 5, 7);
