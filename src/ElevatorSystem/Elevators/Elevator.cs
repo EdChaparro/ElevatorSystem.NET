@@ -27,7 +27,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
-            _requestedFloorStops.Add(e.Button.FloorNbr);
+            RequestStopAtFloorNumber(e.Button.FloorNbr);
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
