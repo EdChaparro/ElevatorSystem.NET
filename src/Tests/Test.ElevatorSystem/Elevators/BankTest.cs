@@ -31,21 +31,21 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldReportLowestFloorNumber()
         {
-            var bankWithFloors = new Bank(3, new Floor(1), new Floor(7), new Floor(5));
+            var bankWithFloors = new Bank(3, 1, 7, 5);
             Assert.AreEqual(1, bankWithFloors.LowestFloorNbr);
         }
 
         [TestMethod]
         public void ShouldReportHighestFloorNumber()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(7), new Floor(5));
+            var bank = new Bank(2, 1, 7, 5);
             Assert.AreEqual(7, bank.HighestFloorNbr);
         }
 
         [TestMethod]
         public void ShouldReportOrderedCollectionOfFloorNumbers()
         {
-            var bank = new Bank(1, new Floor(1), new Floor(7), new Floor(5));
+            var bank = new Bank(1, 1, 7, 5);
 
             var expectedFloorList = new [] { 1, 5, 7 };
             Assert.IsTrue(expectedFloorList.SequenceEqual(bank.OrderedFloorNumbers));
@@ -55,30 +55,24 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueFloors()
         {
-            new Bank(3,
-                new Floor(1), new Floor(2), new Floor(1));
+            new Bank(3, 1, 2, 1);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldNotAcceptBanksWithLessThanTwoFloors()
         {
-            new Bank(1, new Floor(1));
+            new Bank(1, 1);
         }
 
         [TestMethod]
         public void ShouldOnlyIncludeAppropriateCallButtonForEachFloor()
         {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
+            var bank = new Bank(2, 1..3);
 
-            Assert.IsNull(floor1.Panel);
-            Assert.IsNull(floor2.Panel);
-            Assert.IsNull(floor3.Panel);
-
-            //TODO: Is this the best way to get the Floor Elevator Call Panel instantiated?
-            var bank = new Bank(2, floor1, floor2, floor3);
+            var floor1 = bank.GetFloorFor(1);
+            var floor2 = bank.GetFloorFor(2);
+            var floor3 = bank.GetFloorFor(3);
 
             Assert.IsNotNull(floor1.Panel);
             Assert.IsNotNull(floor2.Panel);
@@ -97,16 +91,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldUseFloorNumberToDetermineRequiredCallButtons()
         {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
+            var bank = new Bank(2, 2, 3, 1); //Order doesn't matter
 
-            Assert.IsNull(floor1.Panel);
-            Assert.IsNull(floor2.Panel);
-            Assert.IsNull(floor3.Panel);
-
-            //TODO: Is this the best way to get the Floor Elevator Call Panel instantiated?
-            var bank = new Bank(2, floor2, floor3, floor1); //Order doesn't matter
+            var floor1 = bank.GetFloorFor(1);
+            var floor2 = bank.GetFloorFor(2);
+            var floor3 = bank.GetFloorFor(3);
 
             Assert.IsNotNull(floor1.Panel);
             Assert.IsNotNull(floor2.Panel);
@@ -123,26 +112,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         [TestMethod]
-        public void ShouldProvideElevatorCallPanelForAnyFloor()
+        public void ShouldProvideElevatorCallPanelForAllFloors()
         {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
-
-            var bank = new Bank(2,
-                floor1, floor2, floor3);
+            var bank = new Bank(2, 1..3);
 
             var floor1Panel = bank.GetFloorElevatorCallPanelFor(1);
             Assert.IsNotNull(floor1Panel);
-            Assert.AreEqual(floor1.Panel, floor1Panel);
 
             var floor2Panel = bank.GetFloorElevatorCallPanelFor(2);
             Assert.IsNotNull(floor2Panel);
-            Assert.AreEqual(floor2.Panel, floor2Panel);
 
             var floor3Panel = bank.GetFloorElevatorCallPanelFor(3);
             Assert.IsNotNull(floor3Panel);
-            Assert.AreEqual(floor3.Panel, floor3Panel);
         }
 
         [TestMethod]
@@ -206,20 +187,5 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         #endregion
-
-        [TestMethod]
-        public void ShouldPermitFloorNameToBeChanged()
-        {
-            var floor1 = new Floor(1);
-            var floor2 = new Floor(2);
-            var floor3 = new Floor(3);
-
-            Assert.AreEqual("3", floor3.Name);
-
-            var bank = new Bank(2, floor1, floor2, floor3);
-
-            bank.SetFloorName(3, "PH");
-            Assert.AreEqual("PH", floor3.Name);
-        }
     }
 }

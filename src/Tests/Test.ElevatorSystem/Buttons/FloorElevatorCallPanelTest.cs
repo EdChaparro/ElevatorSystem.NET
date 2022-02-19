@@ -13,7 +13,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignDownButton()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var bank = new Bank(2, 1, 2);
             var floorPanel = new FloorElevatorCallPanel(bank, true, false);
 
             Assert.IsNotNull(floorPanel.DownButton);
@@ -24,7 +24,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignUpButton()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var bank = new Bank(2, 1, 2);
             var floorPanel = new FloorElevatorCallPanel(bank, false, true);
 
             Assert.IsNotNull(floorPanel.UpButton);
@@ -35,7 +35,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignUpAndDownButton()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var bank = new Bank(2, 1, 2);
             var floorPanel = new FloorElevatorCallPanel(bank, true, true);
 
             Assert.IsNotNull(floorPanel.DownButton);
@@ -49,14 +49,14 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldIncludeAtLeastOneButton()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var bank = new Bank(2, 1, 2);
             new FloorElevatorCallPanel(bank, false, false);
         }
 
         [TestMethod]
         public void ShouldRaiseButtonPressedEvent()
         {
-            var bank = new Bank(2, new Floor(1), new Floor(2));
+            var bank = new Bank(2, 1, 2);
             var panel = new FloorElevatorCallPanel(bank, true, true);
 
             var receivedEvents =

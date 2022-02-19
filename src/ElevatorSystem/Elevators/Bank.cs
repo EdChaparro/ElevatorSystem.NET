@@ -8,15 +8,14 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 {
     public class Bank : AbstractEntity, IHasFloors, IEngine
     {
-        public Bank(int nbrOfElevators, Range floorRange) : this(nbrOfElevators,
-            Enumerable.Range
-                    (floorRange.Start.Value, floorRange.End.Value)
-                .Select(x => new Floor(x)).ToArray())
+        public Bank(int nbrOfElevators, Range floorRange)
+            : this(nbrOfElevators, Enumerable.Range
+            (floorRange.Start.Value, floorRange.End.Value).ToArray())
         {}
 
-        public Bank(int nbrOfElevators, params Floor[] floors)
+        public Bank(int nbrOfElevators, params int[] floorsNbr)
         {
-            var result = Add(floors);
+            var result = Add(floorsNbr);
 
             if (result == false)
             {
@@ -80,12 +79,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #region Floors
         public FloorElevatorCallPanel? GetFloorElevatorCallPanelFor(int floorNbr)
         {
-            return GetFloor(floorNbr)?.Panel;
+            return GetFloorFor(floorNbr)?.Panel;
         }
 
         public bool SetFloorName(int floorNbr, string name)
         {
-            var floor = GetFloor(floorNbr);
+            var floor = GetFloorFor(floorNbr);
 
             if (floor == null)
             {
@@ -96,7 +95,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return true;
         }
 
-        private Floor? GetFloor(int floorNbr)
+        public Floor? GetFloorFor(int floorNbr)
         {
             if (_floors.ContainsKey(floorNbr))
             {
@@ -107,28 +106,28 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return null;
         }
 
-        private bool Add(params Floor[] floors)
+        private bool Add(params int[] floorNbrs)
         {
-            if (floors.Length < 2)
+            if (floorNbrs.Length < 2)
             {
                 return false;   //Must have at least two floors
             }
 
             var itemsToAdd = new Dictionary<int, Floor>();
 
-            foreach (var floor in floors)
+            foreach (var floorNbr in floorNbrs)
             {
-                if (_floors.ContainsKey(floor.Number))
+                if (_floors.ContainsKey(floorNbr))
                 {
                     return false;
                 }
 
-                if (itemsToAdd.ContainsKey(floor.Number))
+                if (itemsToAdd.ContainsKey(floorNbr))
                 {
                     return false;
                 }
 
-                itemsToAdd[floor.Number] = floor;
+                itemsToAdd[floorNbr] = new Floor(floorNbr);
             }
 
             itemsToAdd.ToList().ForEach
