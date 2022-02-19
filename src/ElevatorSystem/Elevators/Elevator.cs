@@ -27,14 +27,25 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
-            _requestedFloorStops.Add(e.Button.FloorNbr);
+            RequestStopAtFloorNumber(e.Button.FloorNbr);
         }
 
         public ElevatorFloorRequestPanel FloorRequestPanel { get; }
 
         public string? Name { get; set; }
 
-        public bool IsEnabled { get; set; } = true;
+        private bool _isEnabled = true;
+
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+
+            set
+            {
+                _isEnabled = value;
+                FloorRequestPanel.IsEnabled = value;
+            }
+        }
 
         #region Door
         private DoorStatus _doorStatus = DoorStatus.Closed;
