@@ -42,7 +42,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var doorEvent = receivedEvents.First();
 
             Assert.AreEqual(DoorStatus.Open, doorEvent.DoorStatus);
-
             Assert.AreEqual(elevator.Id, doorEvent.ElevatorId);
         }
 
@@ -68,7 +67,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var directionEvent = receivedEvents.First();
 
             Assert.AreEqual(Direction.Down, directionEvent.Direction);
-
             Assert.AreEqual(elevator.Id, directionEvent.ElevatorId);
         }
 
@@ -85,8 +83,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            Assert.IsFalse(elevator.RequestStopAtFloorNumber(1)); //No event generated; direction not changed
-            Assert.AreEqual(0, receivedEvents.Count);
+            Assert.IsFalse(elevator.RequestStopAtFloorNumber(1)); //No event generated;
+            Assert.AreEqual(0, receivedEvents.Count);   //already at 1st floor
 
             Assert.IsTrue(elevator.RequestStopAtFloorNumber(2));
             Assert.AreEqual(1, receivedEvents.Count);
@@ -94,7 +92,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var floorEvent = receivedEvents.First();
 
             Assert.AreEqual(2, floorEvent.CurrentFloorNbr);
-
             Assert.AreEqual(elevator.Id, floorEvent.ElevatorId);
         }
 
@@ -117,7 +114,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(1, receivedEvents.Count);
 
             elevator.IsEnabled = false;
-            Assert.IsFalse(elevator.RequestStopAtFloorNumber(3));           //Additional event
+            Assert.IsFalse(elevator.RequestStopAtFloorNumber(3));  //Additional event
             Assert.AreEqual(1, receivedEvents.Count);   // not raised
         }
 
@@ -140,7 +137,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(floor3RequestButton.IsPressed);
 
             Assert.IsTrue(e.RequestStopAtFloorNumber(3));
-            Assert.IsFalse(floor3RequestButton.IsPressed);
+            Assert.IsFalse(floor3RequestButton.IsPressed);  //Button reset upon arrival
         }
 
         [TestMethod]
