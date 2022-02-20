@@ -44,12 +44,9 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator1.RequestStopAtFloorNumber(5);
             Assert.IsFalse(controller.RequestedFloorStopsUp.Any());
 
-            elevator2.RequestStopAtFloorNumber(9);                    //Moving Up
-            Assert.IsTrue(controller.RequestedFloorStopsDown.Any());  //Pickup still pending
-
-            elevator2.RequestStopAtFloorNumber(10);
-            elevator2.RequestStopAtFloorNumber(9);                      //Moving Down
-            Assert.IsFalse(controller.RequestedFloorStopsDown.Any());   //Pickup satisfied
+            elevator2.RequestStopAtFloorNumber(9);
+            Assert.AreEqual(Direction.Down, elevator2.Direction);
+            Assert.IsFalse(controller.RequestedFloorStopsDown.Any());
         }
     }
 }
