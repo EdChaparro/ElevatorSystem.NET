@@ -16,6 +16,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public BankController(Bank bank)
         {
             SetFloorCallButtonObservability(bank);
+            SetElevatorObservability(bank);
         }
 
         private readonly HashSet<int> _requestedFloorStopsUp = new HashSet<int>();
@@ -52,6 +53,27 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     break;
                 case Direction.Up:
                     _requestedFloorStopsUp.Add(button.FloorNumber);
+                    break;
+            }
+        }
+
+        private void SetElevatorObservability(Bank bank)
+        {
+            foreach (var elevator in bank.Elevators)
+            {
+                elevator.DoorStateChangedEvent += OnDoorStateChangedEvent;
+            }
+        }
+
+        private void OnDoorStateChangedEvent(object sender, ElevatorDoorEventArgs e)
+        {
+            switch (e.Direction)
+            {
+                case Direction.Down:
+                    _requestedFloorStopsDown.Remove(e.FloorNumber);
+                    break;
+                case Direction.Up:
+                    _requestedFloorStopsUp.Remove(e.FloorNumber);
                     break;
             }
         }

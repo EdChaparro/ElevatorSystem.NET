@@ -25,5 +25,31 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(9, controller.RequestedFloorStopsDown.First());
             Assert.AreEqual(5, controller.RequestedFloorStopsUp.First());
         }
+
+        [TestMethod]
+        public void ShouldUpdateRequestedFloorStopOnElevatorArrival()
+        {
+            var bank = new Bank(2, 1..10);
+            var elevator1 = bank.Elevators.First();
+            var elevator2 = bank.Elevators.Last();
+
+            IBankController controller = new BankController(bank);
+
+            Assert.IsTrue(bank.PressButtonForFloorNumber(5, Direction.Up));
+            Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Down));
+
+            CollectionAssert.AreEqual(new[] { 5 }, controller.RequestedFloorStopsUp.ToList());
+            CollectionAssert.AreEqual(new[] { 9 }, controller.RequestedFloorStopsDown.ToList());
+
+            elevator1.RequestStopAtFloorNumber(5);
+            Assert.IsFalse(controller.RequestedFloorStopsUp.Any());
+
+            elevator2.RequestStopAtFloorNumber(9);                    //Moving Up
+            Assert.IsTrue(controller.RequestedFloorStopsDown.Any());  //Pickup still pending
+
+            elevator2.RequestStopAtFloorNumber(10);
+            elevator2.RequestStopAtFloorNumber(9);                      //Moving Down
+            Assert.IsFalse(controller.RequestedFloorStopsDown.Any());   //Pickup satisfied
+        }
     }
 }
