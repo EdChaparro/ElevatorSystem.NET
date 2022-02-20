@@ -140,16 +140,16 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var bank = new Bank(2, 1..5);
 
-            var commandAdaptors = bank.ElevatorCommandAdapters;
-            Assert.AreEqual(2, commandAdaptors.Count());
+            var elevators = bank.Elevators;
+            Assert.AreEqual(2, elevators.Count());
 
-            var eAdaptor1 = commandAdaptors.First(); //Control Elevators
-            var eAdaptor2 = commandAdaptors.Last();  //  via Adaptors
+            var elevator1 = elevators.First(); //Control Elevators
+            var elevator2 = elevators.Last();  //  via Adaptors
 
-            Assert.IsTrue(eAdaptor1.RequestStopAtFloorNumber(5));
-            Assert.IsTrue(eAdaptor2.RequestStopAtFloorNumber(1));
-            Assert.AreEqual(5, eAdaptor1.Status.CurrentFloorNumber);
-            Assert.AreEqual(1, eAdaptor2.Status.CurrentFloorNumber);
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(5));
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(1));
+            Assert.AreEqual(5, elevator1.CurrentFloorNumber);
+            Assert.AreEqual(1, elevator2.CurrentFloorNumber);
 
             var thirdFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(3);
             Assert.IsNotNull(thirdFloorElevatorCallPanel);
@@ -157,7 +157,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.SetPressedTo(true));
             Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.IsPressed);
 
-            eAdaptor1.RequestStopAtFloorNumber(3);
+            elevator1.RequestStopAtFloorNumber(3);
             Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton.IsPressed);
         }
 
@@ -166,23 +166,23 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var bank = new Bank(2, 1..5);
 
-            var commandAdaptors = bank.ElevatorCommandAdapters;
-            Assert.AreEqual(2, commandAdaptors.Count());
+            var elevators = bank.Elevators;
+            Assert.AreEqual(2, elevators.Count());
 
-            var eAdaptor1 = commandAdaptors.First(); //Control Elevators
-            var eAdaptor2 = commandAdaptors.Last();  //  via Adaptors
+            var elevator1 = elevators.First(); //Control Elevators
+            var elevator2 = elevators.Last();  //  via Adaptors
 
-            eAdaptor1.RequestStopAtFloorNumber(5);
-            eAdaptor2.RequestStopAtFloorNumber(2);
-            Assert.AreEqual(5, eAdaptor1.Status.CurrentFloorNumber);
-            Assert.AreEqual(2, eAdaptor2.Status.CurrentFloorNumber);
+            elevator1.RequestStopAtFloorNumber(5);
+            elevator2.RequestStopAtFloorNumber(2);
+            Assert.AreEqual(5, elevator1.CurrentFloorNumber);
+            Assert.AreEqual(2, elevator2.CurrentFloorNumber);
 
             var firstFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(1);
             Assert.IsNotNull(firstFloorElevatorCallPanel);
 
             Assert.IsTrue(firstFloorElevatorCallPanel.UpButton.SetPressedTo(true));
 
-            eAdaptor1.RequestStopAtFloorNumber(1);
+            elevator1.RequestStopAtFloorNumber(1);
             Assert.IsFalse(firstFloorElevatorCallPanel.UpButton.IsPressed);
         }
 
