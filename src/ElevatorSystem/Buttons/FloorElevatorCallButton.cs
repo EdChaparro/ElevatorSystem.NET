@@ -4,13 +4,13 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 {
     public class FloorElevatorCallButton : AbstractButton
     {
-        public FloorElevatorCallButton(Bank bank, Direction direction)
+        public FloorElevatorCallButton(int floorNbr, Direction direction)
         {
-            _bank = bank;
+            FloorNumber = floorNbr;
             Direction = direction;
         }
 
-        private readonly Bank _bank;
+        public int FloorNumber { get; }
 
         public Direction Direction { get; }
     }

@@ -5,17 +5,17 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
 {
     public class FloorElevatorCallPanel : AbstractPanel<FloorElevatorCallButton>
     {
-        public FloorElevatorCallPanel(Bank bank, bool hasDownButton, bool hasUpButton)
+        public FloorElevatorCallPanel(int floorNbr, bool hasDownButton, bool hasUpButton)
         {
             if (hasDownButton)
             {
-                DownButton = new FloorElevatorCallButton(bank, Direction.Down);
+                DownButton = new FloorElevatorCallButton(floorNbr, Direction.Down);
                 Add(DownButton);
             }
 
             if (hasUpButton)
             {
-                UpButton = new FloorElevatorCallButton(bank, Direction.Up);
+                UpButton = new FloorElevatorCallButton(floorNbr, Direction.Up);
                 Add(UpButton);
             }
 
