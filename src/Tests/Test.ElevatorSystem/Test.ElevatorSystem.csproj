@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\ElevatorSystem\ElevatorSystem.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Service\" />
+  </ItemGroup>
+
 </Project>

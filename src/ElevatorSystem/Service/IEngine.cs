@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-
-namespace IntrepidProducts.ElevatorSystem.Service
+﻿namespace IntrepidProducts.ElevatorSystem.Service
 {
     public interface IEngine
     {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem
 {
@@ -16,8 +15,6 @@ namespace IntrepidProducts.ElevatorSystem
             {
                 throw new ArgumentException("Invalid elevator bank set specified");
             }
-
-            ElevatorController = new Controller(banks);
         }
 
         private readonly Dictionary<Guid, Bank> _banks = new Dictionary<Guid, Bank>();
@@ -46,8 +43,6 @@ namespace IntrepidProducts.ElevatorSystem
 
             return true;
         }
-
-        public IController ElevatorController { get; }
 
         public int NumberOfBanks => _banks.Count;
 
