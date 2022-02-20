@@ -82,6 +82,15 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return GetFloorFor(floorNbr)?.Panel;
         }
 
+        public bool PressButtonForFloorNumber(int floorNbr, Direction direction)
+        {
+            var panel = GetFloorElevatorCallPanelFor(floorNbr);
+
+            var button = direction == Direction.Down ? panel?.DownButton : panel?.UpButton;
+
+            return button?.SetPressedTo(true) ?? false;
+        }
+
         public bool SetFloorName(int floorNbr, string name)
         {
             var floor = GetFloorFor(floorNbr);
@@ -146,17 +155,20 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             {
                 if (floor.Equals(lowestFloor))
                 {
-                    floor.Panel = new FloorElevatorCallPanel(this, false, true);
+                    floor.Panel = new FloorElevatorCallPanel
+                        (floor.Number, false, true);
                     continue;
                 }
 
                 if (floor.Equals(highestFloor))
                 {
-                    floor.Panel = new FloorElevatorCallPanel(this, true, false);
+                    floor.Panel = new FloorElevatorCallPanel
+                        (floor.Number, true, false);
                     continue;
                 }
 
-                floor.Panel = new FloorElevatorCallPanel(this, true, true);
+                floor.Panel = new FloorElevatorCallPanel
+                    (floor.Number, true, true);
             }
         }
         #endregion

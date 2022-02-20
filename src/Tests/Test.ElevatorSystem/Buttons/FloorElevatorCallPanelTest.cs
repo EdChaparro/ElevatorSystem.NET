@@ -13,8 +13,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignDownButton()
         {
-            var bank = new Bank(2, 1, 2);
-            var floorPanel = new FloorElevatorCallPanel(bank, true, false);
+            var floorPanel = new FloorElevatorCallPanel(2, true, false);
 
             Assert.IsNotNull(floorPanel.DownButton);
             Assert.AreEqual(Direction.Down, floorPanel.DownButton.Direction);
@@ -24,8 +23,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignUpButton()
         {
-            var bank = new Bank(2, 1, 2);
-            var floorPanel = new FloorElevatorCallPanel(bank, false, true);
+            var floorPanel = new FloorElevatorCallPanel(1, false, true);
 
             Assert.IsNotNull(floorPanel.UpButton);
             Assert.AreEqual(Direction.Up, floorPanel.UpButton.Direction);
@@ -35,8 +33,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [TestMethod]
         public void ShouldAssignUpAndDownButton()
         {
-            var bank = new Bank(2, 1, 2);
-            var floorPanel = new FloorElevatorCallPanel(bank, true, true);
+            var floorPanel = new FloorElevatorCallPanel(2, true, true);
 
             Assert.IsNotNull(floorPanel.DownButton);
             Assert.IsNotNull(floorPanel.UpButton);
@@ -49,15 +46,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldIncludeAtLeastOneButton()
         {
-            var bank = new Bank(2, 1, 2);
-            new FloorElevatorCallPanel(bank, false, false);
+            new FloorElevatorCallPanel(1, false, false);
         }
 
         [TestMethod]
         public void ShouldRaiseButtonPressedEvent()
         {
-            var bank = new Bank(2, 1, 2);
-            var panel = new FloorElevatorCallPanel(bank, true, true);
+            var panel = new FloorElevatorCallPanel(2, true, true);
 
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<FloorElevatorCallButton>>();
