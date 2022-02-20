@@ -13,9 +13,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Service
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueElevatorBanks()
         {
-            var bank = new Bank(1,
-                new Floor(1),
-                new Floor(2));
+            var bank = new Bank(1, 1, 2);
             var dup = bank;
 
             new Controller(bank, dup);
@@ -24,12 +22,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Service
         [TestMethod]
         public void ShouldSendElevatorsToLowestFloorWithDoorOpenOnStart()
         {
-            var bank = new Bank(2,
-                new Floor(1),
-                new Floor(2),
-                new Floor(3),
-                new Floor(4),
-                new Floor(5));
+            var bank = new Bank(2, 1..5);
 
             bank.Start();
             var states = bank.ElevatorStates;

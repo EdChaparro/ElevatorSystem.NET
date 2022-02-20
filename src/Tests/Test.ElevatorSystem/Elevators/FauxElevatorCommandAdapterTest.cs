@@ -10,9 +10,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         [TestMethod]
         public void ShouldTrackStatusOfElevator()
         {
-            var bank = new Bank(2,
-                new Floor(1), new Floor(2),
-                new Floor(3), new Floor(4));
+            var bank = new Bank(2, 1..4);
 
             var adapter = bank.ElevatorCommandAdapters.First();
 

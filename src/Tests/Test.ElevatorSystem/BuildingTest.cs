@@ -11,8 +11,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldKeepElevatorBankCount()
         {
-            var bank1 = new Bank(2,new Floor(1), new Floor(2));
-            var bank2 = new Bank(2,new Floor(3), new Floor(4));
+            var bank1 = new Bank(2, 1, 2);
+            var bank2 = new Bank(2, 3, 4);
 
             var building = new Building(bank1, bank2);
             Assert.AreEqual(2, building.NumberOfBanks);
@@ -22,7 +22,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueElevatorBanks()
         {
-            var bank = new Bank(1, new Floor(1), new Floor(2));
+            var bank = new Bank(1, 1, 2);
             var dup = bank;
 
             new Building(bank, dup);
@@ -32,8 +32,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldKeepFloorCount()
         {
-            var bank1 = new Bank(3,new Floor(1), new Floor(2));
-            var bank2 = new Bank(3,new Floor(1), new Floor(3), new Floor(4));
+            var bank1 = new Bank(3, 1, 2);
+            var bank2 = new Bank(3, 1, 3, 4);
 
             var building = new Building(bank1, bank2);
 
@@ -43,7 +43,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldReportFloorCountBasedOnHighNumber()
         {
-            var bank = new Bank(4, new Floor(1), new Floor(3), new Floor(40));
+            var bank = new Bank(4, 1, 3, 40);
 
             var building = new Building(bank);
 
@@ -53,8 +53,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldReportLowestFloorNumber()
         {
-            var bank1 = new Bank(2,new Floor(2), new Floor(9));
-            var bank2 = new Bank(2, new Floor(3), new Floor(4), new Floor(6));
+            var bank1 = new Bank(2, 2, 9);
+            var bank2 = new Bank(2, 3, 4, 6);
 
             var building = new Building(bank1, bank2);
 
@@ -64,8 +64,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldReportHighestFloorNumber()
         {
-            var bank1 = new Bank(1,new Floor(2), new Floor(9));
-            var bank2 = new Bank(1,new Floor(3), new Floor(4), new Floor(6));
+            var bank1 = new Bank(1, 2, 9);
+            var bank2 = new Bank(1, 3, 4, 6);
 
             var building = new Building(bank1, bank2);
 
@@ -75,27 +75,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         [TestMethod]
         public void ShouldReportOrderedCollectionOfFloorNumbers()
         {
-            var bank1 = new Bank(2,
-                new Floor(1),
-                new Floor(2),
-                new Floor(3),
-                new Floor(4)
-            );
+            var bank1 = new Bank(2, 1..4);
 
-            var bank2 = new Bank(2,
-                new Floor(4),
-                new Floor(5),
-                new Floor(6),
-                new Floor(7)
-            );
+            var bank2 = new Bank(2, 4..4);
 
-            var bank3 = new Bank(2,
-                new Floor(5),
-                new Floor(6),
-                new Floor(7),
-                new Floor(8),
-                new Floor(9)
-            );
+            var bank3 = new Bank(2, 5..5);
 
             var building = new Building(bank1, bank2, bank3);
 
