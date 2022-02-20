@@ -12,19 +12,19 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         {
             var bank = new Bank(2, 1..4);
 
-            var adapter = bank.ElevatorCommandAdapters.First();
+            var elevator = bank.Elevators.First();
 
-            Assert.AreEqual(DoorStatus.Closed, adapter.Status.DoorStatus);
+            Assert.AreEqual(DoorStatus.Closed, elevator.DoorStatus);
 
-            adapter.RequestStopAtFloorNumber(3);
-            Assert.AreEqual(Direction.Up, adapter.Status.Direction);
+            elevator.RequestStopAtFloorNumber(3);
+            Assert.AreEqual(Direction.Up, elevator.Direction);
 
-            adapter.RequestStopAtFloorNumber(2);
-            Assert.AreEqual(Direction.Down, adapter.Status.Direction);
+            elevator.RequestStopAtFloorNumber(2);
+            Assert.AreEqual(Direction.Down, elevator.Direction);
 
-            Assert.AreEqual(2, adapter.Status.CurrentFloorNumber);
+            Assert.AreEqual(2, elevator.CurrentFloorNumber);
 
-            Assert.AreEqual(DoorStatus.Open, adapter.Status.DoorStatus);
+            Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
         }
     }
 }

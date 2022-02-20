@@ -25,32 +25,28 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             AddElevators(nbrOfElevators);
         }
 
-        private readonly Dictionary<Guid, IElevatorCommandAdapter> _elevatorCommandAdapters =
-            new Dictionary<Guid, IElevatorCommandAdapter>();
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
-        public IEnumerable<IElevatorCommandAdapter> ElevatorCommandAdapters
-            => _elevatorCommandAdapters.Values.ToList();
 
         #region Elevators
+        private readonly Dictionary<Guid, Elevator> _elevators =
+            new Dictionary<Guid, Elevator>();
 
-        public IEnumerable<ElevatorStatus> ElevatorStates
-            => _elevatorCommandAdapters.Values.Select(x => x.Status);
+        public IEnumerable<Elevator> Elevators => _elevators.Values.ToList();
 
         private void AddElevators(int nbrOfElevators)
         {
-            var itemsToAdd = new Dictionary<Guid, IElevatorCommandAdapter>();
+            var itemsToAdd = new Dictionary<Guid, Elevator>();
 
             for (int i = 0; i < nbrOfElevators; i++)
             {
                 var elevator = new Elevator(OrderedFloorNumbers.ToArray());
-                var eAdapter = new FauxElevatorCommandAdapter(this, elevator); //TODO: Use IoC
-                itemsToAdd[eAdapter.ElevatorId] = eAdapter;
+                itemsToAdd[elevator.Id] = elevator;
                 SetObservabilityFor(elevator);
             }
 
             itemsToAdd.ToList().ForEach
-                (x => _elevatorCommandAdapters.Add(x.Key, x.Value));
+                (x => _elevators.Add(x.Key, x.Value));
         }
 
         private void SetObservabilityFor(Elevator elevator)
@@ -73,7 +69,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public int NumberOfElevators => _elevatorCommandAdapters.Count;
+        public int NumberOfElevators => _elevators.Count;
         #endregion
 
         #region Floors
@@ -195,9 +191,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         private void SendAllElevatorsToHomeFloor()
         {
-            foreach (var adapter in ElevatorCommandAdapters)
+            foreach (var elevator in Elevators)
             {
-                adapter.RequestStopAtFloorNumber(LowestFloorNbr);
+                elevator.RequestStopAtFloorNumber(LowestFloorNbr);
             }
         }
         #endregion

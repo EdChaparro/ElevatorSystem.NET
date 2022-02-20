@@ -25,10 +25,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Service
             var bank = new Bank(2, 1..5);
 
             bank.Start();
-            var states = bank.ElevatorStates;
-            Assert.AreEqual(2, states.Count());
+            var elevators = bank.Elevators;
+            Assert.AreEqual(2, elevators.Count());
 
-            foreach (var state in states)
+            foreach (var state in elevators)
             {
                 Assert.AreEqual(bank.LowestFloorNbr, state.CurrentFloorNumber);
                 Assert.AreEqual(DoorStatus.Open, state.DoorStatus);

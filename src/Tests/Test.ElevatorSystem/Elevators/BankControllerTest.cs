@@ -11,7 +11,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldTrackFloorElevatorCallRequests()
         {
             var bank = new Bank(2, 1..10);
-            var controller = new BankController(bank);
+            IBankController  controller = new BankController(bank);
 
             Assert.IsFalse(controller.RequestedFloorStopsDown.Any());
             Assert.IsFalse(controller.RequestedFloorStopsUp.Any());
