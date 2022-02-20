@@ -95,7 +95,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             get => _direction;
 
-            private set
+            set
             {
                 if (value == _direction)
                 {

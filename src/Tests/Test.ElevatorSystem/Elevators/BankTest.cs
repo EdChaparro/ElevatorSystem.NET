@@ -8,9 +8,27 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     [TestClass]
     public class BankTest
     {
-        #region Elevators
-
         [TestMethod]
+        public void ShouldSendElevatorsToLowestFloorWithDoorOpenOnStart()
+        {
+            var bank = new Bank(2, 1..5);
+
+            bank.Start();
+            var elevators = bank.Elevators;
+            Assert.AreEqual(2, elevators.Count());
+
+            foreach (var state in elevators)
+            {
+                Assert.AreEqual(bank.LowestFloorNbr, state.CurrentFloorNumber);
+                Assert.AreEqual(DoorStatus.Open, state.DoorStatus);
+            }
+
+            bank.Stop();
+        }
+
+    #region Elevators
+
+    [TestMethod]
         public void ShouldKeepElevatorCount()
         {
             var bank = new Bank(2, 1..2);
