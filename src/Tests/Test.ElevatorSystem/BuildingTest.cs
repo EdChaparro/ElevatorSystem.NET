@@ -2,12 +2,33 @@ using System;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests
 {
     [TestClass]
     public class BuildingTest
     {
+        [TestMethod]
+        public void ShouldStartAndStopAllBanks()
+        {
+            var mockBank1 = new Mock<IBank>();
+            var mockBank2 = new Mock<IBank>();
+
+            mockBank1.SetupProperty(x => x.Id, Guid.NewGuid());
+            mockBank2.SetupProperty(x => x.Id, Guid.NewGuid());
+
+            var building = new Building(mockBank1.Object, mockBank2.Object);
+
+            building.StartAllElevatorBanks();
+            mockBank1.Verify(x => x.Start(), Times.Once);
+            mockBank2.Verify(x => x.Start(), Times.Once);
+
+            building.StopAllElevatorBanks();
+            mockBank1.Verify(x => x.Stop(), Times.Once);
+            mockBank2.Verify(x => x.Stop(), Times.Once);
+        }
+
         [TestMethod]
         public void ShouldKeepElevatorBankCount()
         {

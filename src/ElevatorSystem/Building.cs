@@ -7,7 +7,7 @@ namespace IntrepidProducts.ElevatorSystem
 {
     public class Building : IHasFloors
     {
-        public Building(params Bank[] banks)
+        public Building(params IBank[] banks)
         {
             var result = Add(banks);
 
@@ -17,11 +17,11 @@ namespace IntrepidProducts.ElevatorSystem
             }
         }
 
-        private readonly Dictionary<Guid, Bank> _banks = new Dictionary<Guid, Bank>();
+        private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
 
-        private bool Add(params Bank[] banks)
+        private bool Add(params IBank[] banks)
         {
-            var itemsToAdd = new Dictionary<Guid, Bank>();
+            var itemsToAdd = new Dictionary<Guid, IBank>();
 
             foreach (var bank in banks)
             {
@@ -67,6 +67,22 @@ namespace IntrepidProducts.ElevatorSystem
         public int LowestFloorNbr => OrderedFloorNumbers.Min();
         public int HighestFloorNbr => OrderedFloorNumbers.Max();
         #endregion
+
+        public void StartAllElevatorBanks()
+        {
+            foreach (var bank in _banks.Values)
+            {
+                bank.Start();
+            }
+        }
+
+        public void StopAllElevatorBanks()
+        {
+            foreach (var bank in _banks.Values)
+            {
+                bank.Stop();
+            }
+        }
 
         public override string ToString()
         {

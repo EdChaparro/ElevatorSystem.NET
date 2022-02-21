@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Elevator : AbstractEntity
+    public class Elevator : AbstractEntity, IEngine
     {
         public Elevator(Range floorRange) : this(Enumerable.Range
             (floorRange.Start.Value, floorRange.End.Value).ToArray())
@@ -238,5 +239,15 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 new ElevatorFloorNumberChangedEventArgs(Id, floorNumber));
         }
         #endregion
+
+        public void Start()
+        {
+            //TODO: Implement me
+        }
+
+        public void Stop()
+        {
+            //TODO: Implement me
+        }
     }
 }

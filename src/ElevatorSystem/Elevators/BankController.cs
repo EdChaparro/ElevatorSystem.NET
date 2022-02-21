@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IBankController
+    public interface IBankController : IEngine
     {
         IEnumerable<int> RequestedFloorStopsUp { get; }
         IEnumerable<int> RequestedFloorStopsDown { get; }
@@ -58,7 +59,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 }
 
                 panel.PanelButtonPressedEvent += OnFloorElevatorCallButtonPressedEvent;
-
             }
         }
 
@@ -87,6 +87,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         private void OnDoorStateChangedEvent(object sender, ElevatorDoorEventArgs e)
         {
+            if (e.DoorStatus == DoorStatus.Closed)
+            {
+                return; //Just interested in Door Open Events
+            }
+
             if (!IsStopRequestedAt(e.FloorNumber))
             {
                 return; //Nothing to do
@@ -141,5 +146,26 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 _requestedFloorStopsDown.Remove(e.FloorNumber);
             }
         }
+
+        #region IEngine
+
+        public void Start()
+        {
+            SendAllElevatorsToHomeFloor();
+        }
+
+        public void Stop()
+        {
+            SendAllElevatorsToHomeFloor();
+        }
+
+        private void SendAllElevatorsToHomeFloor()
+        {
+            foreach (var elevator in _bank.Elevators)
+            {
+                elevator.RequestStopAtFloorNumber(_bank.LowestFloorNbr);
+            }
+        }
+        #endregion
     }
 }
