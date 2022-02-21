@@ -6,7 +6,10 @@ using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Bank : AbstractEntity, IHasFloors, IEngine
+    public interface IBank : IHasId, IHasFloors, IEngine
+    {}  //Facilitates Mocking
+
+    public class Bank : AbstractEntity, IBank
     {
         public Bank(int nbrOfElevators, Range floorRange)
             : this(nbrOfElevators, Enumerable.Range
@@ -23,10 +26,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
 
             AddElevators(nbrOfElevators);
+
+            Controller = new BankController(this);
         }
 
+        public IBankController Controller { get; }
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
-
 
         #region Elevators
         private readonly Dictionary<Guid, Elevator> _elevators =
@@ -181,21 +186,14 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public void Start()
         {
-            SendAllElevatorsToHomeFloor();
+            Controller.Start();
         }
 
         public void Stop()
         {
-            SendAllElevatorsToHomeFloor();
+            Controller.Stop();
         }
 
-        private void SendAllElevatorsToHomeFloor()
-        {
-            foreach (var elevator in Elevators)
-            {
-                elevator.RequestStopAtFloorNumber(LowestFloorNbr);
-            }
-        }
         #endregion
         public override string ToString()
         {

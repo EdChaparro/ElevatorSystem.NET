@@ -5,7 +5,7 @@ namespace IntrepidProducts.ElevatorSystem
 {
     public interface IHasId
     {
-        Guid Id { get; }
+        Guid Id { get; set; }
     }
 
     public abstract class AbstractEntity : IHasId
@@ -15,7 +15,7 @@ namespace IntrepidProducts.ElevatorSystem
             Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; }
 
         public virtual bool IsValid()
         {

@@ -33,7 +33,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var elevator1 = bank.Elevators.First();
             var elevator2 = bank.Elevators.Last();
 
-            IBankController controller = new BankController(bank);
+            IBankController controller = bank.Controller;
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(5, Direction.Up));
             Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Down));
