@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Service;
 
@@ -20,6 +21,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
 
             CurrentFloorNumber = OrderedFloorNumbers.Min();
+            _elevatorEngine = new ElevatorEngine(this);
         }
 
         private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
@@ -71,8 +73,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     if (floorRequestButton != null)
                     {
                         floorRequestButton.SetPressedTo(false);
-                        _requestedFloorStops.Remove(floorRequestButton.FloorNbr);
                     }
+
+                    _requestedFloorStops.Remove(CurrentFloorNumber);
                 }
 
                 RaiseDoorStateChangedEvent(CurrentFloorNumber, Direction, value);
@@ -151,6 +154,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 }
 
                 _currentFloorNumber = value;
+
+                RaiseFloorNumberChangedEvent(_currentFloorNumber);
+                if (RequestedFloorStops.Contains(_currentFloorNumber))
+                {
+                    DoorStatus = DoorStatus.Open;
+                }
             }
         }
 
@@ -177,58 +186,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             if (isValidFloorNumber)
             {
                 _requestedFloorStops.Add(value);
-                NavigateToNextFloorStop();
                 return true;
             }
 
             return false;
-        }
-
-        private void NavigateToNextFloorStop()
-        {
-            if (!RequestedFloorStops.Any())
-            {
-                return;  //Nothing to do
-            }
-
-            if (DoorStatus == DoorStatus.Open)
-            {
-                DoorStatus = DoorStatus.Closed;
-            }
-
-            var currentFloorNumber = CurrentFloorNumber;
-
-            switch (Direction)
-            {
-                case Direction.Down:
-                    if (currentFloorNumber != OrderedFloorNumbers.Min())
-                    {
-                        currentFloorNumber--;
-                    }
-                    break;
-                case Direction.Up:
-                    if (currentFloorNumber != OrderedFloorNumbers.Max())
-                    {
-                        currentFloorNumber++;
-                    }
-                    break;
-            }
-
-            if (currentFloorNumber == CurrentFloorNumber)
-            {
-                return; //Reached termination point
-            }
-
-            SetDirectionToStopAt(currentFloorNumber);
-            CurrentFloorNumber = currentFloorNumber;
-            RaiseFloorNumberChangedEvent(CurrentFloorNumber);
-            if (RequestedFloorStops.Contains(CurrentFloorNumber))
-            {
-                DoorStatus = DoorStatus.Open;
-                return;
-            }
-
-            NavigateToNextFloorStop();  //Recursive call
         }
 
         public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorNumberChangedEvent;
@@ -240,14 +201,26 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
         #endregion
 
+        private Thread? _elevatorEngineThread;
+        private readonly ElevatorEngine _elevatorEngine;
         public void Start()
         {
-            //TODO: Implement me
+            _elevatorEngineThread = new Thread(_elevatorEngine.Start)
+            {
+                Name = "TrafficLightTimerThread"
+            };
+
+            _elevatorEngineThread.Start();
         }
 
         public void Stop()
         {
-            //TODO: Implement me
+            _elevatorEngine.Stop();
+
+            if (_elevatorEngineThread != null && _elevatorEngineThread.IsAlive)
+            {
+                _elevatorEngineThread.Join();        //Wait for shutdown to complete
+            }
         }
     }
 }

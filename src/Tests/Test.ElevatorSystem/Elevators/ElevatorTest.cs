@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -70,16 +72,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.DirectionChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
+            elevator.Start();
             elevator.RequestStopAtFloorNumber(4);
             Assert.AreEqual(0, receivedEvents.Count);
+            WaitForElevatorToReachFloor(4, elevator);
 
             elevator.RequestStopAtFloorNumber(2);
+            WaitForElevatorToReachFloor(2, elevator);
             Assert.AreEqual(1, receivedEvents.Count);
 
             var directionEvent = receivedEvents.First();
 
             Assert.AreEqual(Direction.Down, directionEvent.Direction);
             Assert.AreEqual(elevator.Id, directionEvent.ElevatorId);
+            elevator.Stop();
         }
 
         [TestMethod]
@@ -95,16 +101,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
+            elevator.Start();
             Assert.IsFalse(elevator.RequestStopAtFloorNumber(1)); //No event generated;
             Assert.AreEqual(0, receivedEvents.Count);   //already at 1st floor
 
             Assert.IsTrue(elevator.RequestStopAtFloorNumber(2));
+            WaitForElevatorToReachFloor(2, elevator);
             Assert.AreEqual(1, receivedEvents.Count);
 
             var floorEvent = receivedEvents.First();
 
             Assert.AreEqual(2, floorEvent.CurrentFloorNbr);
             Assert.AreEqual(elevator.Id, floorEvent.ElevatorId);
+
+            elevator.Stop();
         }
 
         [TestMethod]
@@ -122,12 +132,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
+            elevator.Start();
             Assert.IsTrue(elevator.RequestStopAtFloorNumber(2));
+            WaitForElevatorToReachFloor(2, elevator);
             Assert.AreEqual(1, receivedEvents.Count);
 
             elevator.IsEnabled = false;
             Assert.IsFalse(elevator.RequestStopAtFloorNumber(3));  //Additional event
             Assert.AreEqual(1, receivedEvents.Count);   // not raised
+            elevator.Stop();
         }
 
         #region Updates Floor Request Buttons
@@ -140,6 +153,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                 DoorStatus = DoorStatus.Closed
             };
 
+            e.Start();
             Assert.AreEqual(1, e.CurrentFloorNumber);
             var ePanel = e.FloorRequestPanel;
             var floor3RequestButton = ePanel.GetButtonForFloorNumber(3);
@@ -154,8 +168,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             };
 
             Assert.IsTrue(floor3RequestButton.SetPressedTo(true));
+            WaitForElevatorToReachFloor(3, e);
             Assert.AreEqual(2, floorNumberChangedEventCount); //Confirm we got expected events
             Assert.IsFalse(floor3RequestButton.IsPressed);
+            e.Stop();
         }
 
         [TestMethod]
@@ -166,8 +182,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                 DoorStatus = DoorStatus.Closed
             };
 
+            e.Start();
             e.RequestStopAtFloorNumber(4);
             Assert.AreEqual(Direction.Up, e.Direction);
+            WaitForElevatorToReachFloor(4, e);
 
             var ePanel = e.FloorRequestPanel;
             var floor2RequestButton = ePanel.GetButtonForFloorNumber(2);
@@ -175,6 +193,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.IsFalse(floor2RequestButton.SetPressedTo(true));
             Assert.IsFalse(floor2RequestButton.IsPressed);
+
+            e.Stop();
         }
         #endregion
 
@@ -248,7 +268,9 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.FloorNumberChangedEvent += (sender, e)
                 => floorNumberChangedEvents.Add(e);
 
+            elevator.Start();
             Assert.IsTrue(elevator.RequestStopAtFloorNumber(5));
+            WaitForElevatorToReachFloor(5, elevator);
             Assert.AreEqual(4, floorNumberChangedEvents.Count);
 
             var floorNumber = 1;
@@ -260,6 +282,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             //Door opens on arrival to floor destination
             Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
+            elevator.Stop();
         }
 
         [TestMethod]
@@ -270,8 +293,35 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
+            elevator.Start();
             Assert.IsTrue(elevator.PressButtonForFloorNumber(5));
+            WaitForElevatorToReachFloor(5, elevator);
             Assert.AreEqual(5, elevator.CurrentFloorNumber);
+            elevator.Stop();
+        }
+
+        public static void WaitForElevatorToReachFloor
+            (int floorNbr, Elevator elevator, int timeOutInSeconds = 10)
+        {
+            var timeOut = DateTime.Now + new TimeSpan(0, 0, timeOutInSeconds);
+            var isTimeOut = false;
+
+            while (!isTimeOut)
+            {
+                if (elevator.CurrentFloorNumber == floorNbr)
+                {
+                    break;
+                }
+
+                if (DateTime.Now > timeOut)
+                {
+                    isTimeOut = true;
+                }
+
+                Thread.Sleep(1000);
+            }
+
+            Assert.IsFalse(isTimeOut);
         }
     }
 }

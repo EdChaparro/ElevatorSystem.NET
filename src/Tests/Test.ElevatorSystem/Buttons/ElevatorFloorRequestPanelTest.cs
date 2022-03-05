@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
+using IntrepidProducts.ElevatorSystem.Tests.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Direction = IntrepidProducts.ElevatorSystem.Elevators.Direction;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {
@@ -68,12 +69,16 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(2, firstButton.FloorNbr);
             Assert.AreEqual(3, secondButton.FloorNbr);
 
+            elevator.Start();
             Assert.IsTrue(elevator.RequestStopAtFloorNumber(3));
+            ElevatorTest.WaitForElevatorToReachFloor(3, elevator);
+
             Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
             Assert.AreEqual(3, receivedEvents.Count);
             var thirdEvent = receivedEvents.Last();
             var thirdButton = thirdEvent.Button;
             Assert.AreEqual(1, thirdButton.FloorNbr);
+            elevator.Stop();
         }
 
         [TestMethod]

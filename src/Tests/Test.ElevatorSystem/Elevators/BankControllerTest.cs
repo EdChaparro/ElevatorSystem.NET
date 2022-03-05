@@ -41,12 +41,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             CollectionAssert.AreEqual(new[] { 5 }, controller.RequestedFloorStopsUp.ToList());
             CollectionAssert.AreEqual(new[] { 9 }, controller.RequestedFloorStopsDown.ToList());
 
+            elevator1.Start();
             elevator1.RequestStopAtFloorNumber(5);
+            ElevatorTest.WaitForElevatorToReachFloor(5, elevator1);
             Assert.IsFalse(controller.RequestedFloorStopsUp.Any());
+            elevator1.Stop();
 
+            elevator2.Start();
             elevator2.RequestStopAtFloorNumber(9);
+            ElevatorTest.WaitForElevatorToReachFloor(9, elevator2, 20);
             Assert.AreEqual(Direction.Down, elevator2.Direction);
             Assert.IsFalse(controller.RequestedFloorStopsDown.Any());
+            elevator2.Stop();
         }
     }
 }
