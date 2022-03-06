@@ -151,19 +151,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public void Start()
         {
-            SendAllElevatorsToHomeFloor();
+            foreach (var elevator in _bank.Elevators)
+            {
+                elevator.Start();
+                elevator.RequestStopAtFloorNumber(_bank.LowestFloorNbr);
+            }
         }
 
         public void Stop()
         {
-            SendAllElevatorsToHomeFloor();
-        }
-
-        private void SendAllElevatorsToHomeFloor()
-        {
             foreach (var elevator in _bank.Elevators)
             {
                 elevator.RequestStopAtFloorNumber(_bank.LowestFloorNbr);
+                elevator.Stop();
             }
         }
         #endregion
