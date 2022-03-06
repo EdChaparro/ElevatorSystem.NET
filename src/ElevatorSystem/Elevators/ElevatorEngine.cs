@@ -12,6 +12,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     {
         public ElevatorEngine(Elevator elevator)
         {
+            SleepIntervalInMilliseconds = Configuration.SimulationSleepIntervalInMilliseconds;
+
             Elevator = elevator;
 
             CancellationTokenSource = new CancellationTokenSource();
@@ -26,7 +28,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         protected CancellationTokenSource CancellationTokenSource { get; private set; }
         protected CancellationToken CancellationToken { get; private set; }
 
-        protected int SleepIntervalInMilliseconds { get; set; } = 1000;
+        protected int SleepIntervalInMilliseconds { get; set; }
 
         public void Start()
         {

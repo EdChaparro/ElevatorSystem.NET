@@ -10,6 +10,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     [TestClass]
     public class ElevatorTest
     {
+        public ElevatorTest()
+        {
+            Configuration.SimulationSleepIntervalInMilliseconds = 100;
+        }
+
         [TestMethod]
         public void ShouldInstantiateFloorRequestPanel()
         {
