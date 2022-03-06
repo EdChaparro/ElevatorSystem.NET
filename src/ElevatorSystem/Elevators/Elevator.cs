@@ -7,7 +7,10 @@ using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Elevator : AbstractEntity, IEngine
+    public interface IElevator : IHasId, IEngine
+    { }  //Facilitates Mocking
+
+    public class Elevator : AbstractEntity, IElevator
     {
         public Elevator(Range floorRange) : this(Enumerable.Range
             (floorRange.Start.Value, floorRange.End.Value).ToArray())
@@ -27,6 +30,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
 
         public IEnumerable<int> RequestedFloorStops => _requestedFloorStops.OrderBy(x => x);
+
+        public bool IsIdle => IsEnabled && !RequestedFloorStops.Any();
 
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
@@ -118,11 +123,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             DirectionChangedEvent?.Invoke(this,
                 new ElevatorDirectionChangedEventArgs(Id, direction));
         }
-
-        private void SetDirectionToStopAt(int floorNbr)
-        {
-            Direction = (floorNbr < CurrentFloorNumber) ? Direction.Down : Direction.Up;
-        }
         #endregion
 
         #region Floor
@@ -185,7 +185,21 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             if (isValidFloorNumber)
             {
+                if (IsIdle)
+                {
+                    if (value < CurrentFloorNumber)
+                    {
+                        Direction = Direction.Down;
+                    }
+
+                    if (value > CurrentFloorNumber)
+                    {
+                        Direction = Direction.Up;
+                    }
+                }
+
                 _requestedFloorStops.Add(value);
+
                 return true;
             }
 
@@ -207,7 +221,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             _elevatorEngineThread = new Thread(_elevatorEngine.Start)
             {
-                Name = "TrafficLightTimerThread"
+                Name = "ElevatorEngineThread"
             };
 
             _elevatorEngineThread.Start();
@@ -217,7 +231,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             _elevatorEngine.Stop();
 
-            if (_elevatorEngineThread != null && _elevatorEngineThread.IsAlive)
+            if (_elevatorEngineThread is { IsAlive: true })
             {
                 _elevatorEngineThread.Join();        //Wait for shutdown to complete
             }

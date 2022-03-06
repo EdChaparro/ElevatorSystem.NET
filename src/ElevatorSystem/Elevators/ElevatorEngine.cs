@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
@@ -8,67 +6,23 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     /// <summary>
     /// Service loop intended to run in an independent thread.
     /// </summary>
-    public class ElevatorEngine : IEngine
+    public class ElevatorEngine : AbstractEngine
     {
         public ElevatorEngine(Elevator elevator)
         {
-            SleepIntervalInMilliseconds = Configuration.SimulationSleepIntervalInMilliseconds;
+            SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
 
             Elevator = elevator;
-
-            CancellationTokenSource = new CancellationTokenSource();
-            CancellationToken = CancellationTokenSource.Token;
         }
 
-        private Elevator Elevator { get; set; }
+        private Elevator Elevator { get; }
 
-        public bool IsRunning { get; private set; }
-        protected bool IsStopRequested { get; set; }
-
-        protected CancellationTokenSource CancellationTokenSource { get; private set; }
-        protected CancellationToken CancellationToken { get; private set; }
-
-        protected int SleepIntervalInMilliseconds { get; set; }
-
-        public void Start()
-        {
-            CancellationTokenSource = new CancellationTokenSource();
-            CancellationToken = CancellationTokenSource.Token;
-
-            IsRunning = true;
-
-            while (IsStopRequested == false)
-            {
-                DoEngineLoop();
-                bool isCancelled = CancellationToken.WaitHandle.WaitOne(SleepIntervalInMilliseconds);
-
-                if (isCancelled)
-                {
-                    break;
-                }
-            }
-        }
-
-        public void Stop()
-        {
-            if (!IsRunning)
-            {
-                throw new InvalidOperationException("Elevator Engine is not running");
-            }
-
-            CancellationTokenSource.Cancel();
-            IsStopRequested = true;
-            IsRunning = false;
-        }
-
-        protected virtual void DoEngineLoop()
+        protected override void DoEngineLoop()
         {
             if (Elevator.RequestedFloorStops.Any())
             {
                 NavigateToNextFloorStop();
             }
-
-            Thread.Sleep(SleepIntervalInMilliseconds);
         }
 
         private void NavigateToNextFloorStop()
@@ -103,10 +57,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             SetDirectionToStopAt(currentFloorNumber);
             Elevator.CurrentFloorNumber = currentFloorNumber;
-
-            //NavigateToNextFloorStop();  //Recursive call
         }
-
 
         private void SetDirectionToStopAt(int floorNbr)
         {
