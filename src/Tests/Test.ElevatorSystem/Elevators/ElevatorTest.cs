@@ -322,6 +322,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             }
 
             Assert.IsFalse(isTimeOut);
+
+            //Added to resolved test flakiness. Some Elevator Events were
+            //unpredictably firing after test assertions, leading to random failures.
+            Thread.Sleep(100);
         }
     }
 }
