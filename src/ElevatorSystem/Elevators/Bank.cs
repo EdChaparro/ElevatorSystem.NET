@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Service;
 
@@ -26,11 +27,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
 
             AddElevators(nbrOfElevators);
+            SetFloorCallButtonObservability();
 
-            Controller = new BankController(this);
+            _bankEngine = new BankEngine(this);
         }
 
-        public IBankController Controller { get; }
         private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
 
         #region Elevators
@@ -71,6 +72,91 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             if (floorPanel != null) //Should never happen, makes compiler happy
             {
                 floorPanel.ResetButtonForElevatorArrival(e.Direction);
+            }
+
+            if (!IsStopRequestedAt(e.FloorNumber))
+            {
+                return; //Nothing to do
+            }
+
+            var isDownServiceRequested = IsDownStopRequestedAt(e.FloorNumber);
+            var isUpServiceRequested = IsUpStopRequestedAt(e.FloorNumber);
+
+            switch (e.Direction)
+            {
+                case Direction.Down:
+                    _requestedFloorStopsDown.Remove(e.FloorNumber);
+                    break;
+                case Direction.Up:
+                    _requestedFloorStopsUp.Remove(e.FloorNumber);
+                    break;
+            }
+
+            var elevator = Elevators
+                .Where(x => x.Id == e.ElevatorId)
+                .Select(x => x).FirstOrDefault();
+
+            if (elevator == null)
+            {
+                return; //This shouldn't happen
+            }
+
+            if (isDownServiceRequested && isUpServiceRequested)
+            {
+                return; //Up & Down service requested, don't change present elevator direction
+            }
+
+            if (elevator.RequestedFloorStops.Any())
+            {
+                return; //More stops in route
+            }
+
+            if (isDownServiceRequested)
+            {
+                if (elevator.Direction == Direction.Up)
+                {
+                    elevator.Direction = Direction.Down;
+                    _requestedFloorStopsDown.Remove(e.FloorNumber);
+                }
+
+                return;
+            }
+
+            if (elevator.Direction == Direction.Down)
+            {
+                elevator.Direction = Direction.Up;
+                _requestedFloorStopsDown.Remove(e.FloorNumber);
+            }
+        }
+
+        private void SetFloorCallButtonObservability()
+        {
+            foreach (var floorNbr in OrderedFloorNumbers)
+            {
+                var panel = GetFloorElevatorCallPanelFor(floorNbr);
+
+                if (panel == null) //This should never happen
+                {
+                    throw new NullReferenceException
+                        ($"Floor Panel not found for number {floorNbr}, Bank ID {Id}");
+                }
+
+                panel.PanelButtonPressedEvent += OnFloorElevatorCallButtonPressedEvent;
+            }
+        }
+
+        private void OnFloorElevatorCallButtonPressedEvent(object sender, PanelButtonPressedEventArgs<FloorElevatorCallButton> e)
+        {
+            var button = e.Button;
+
+            switch (button.Direction)
+            {
+                case Direction.Down:
+                    _requestedFloorStopsDown.Add(button.FloorNumber);
+                    break;
+                case Direction.Up:
+                    _requestedFloorStopsUp.Add(button.FloorNumber);
+                    break;
             }
         }
 
@@ -182,16 +268,66 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
         #endregion
 
+        #region Requested Floor Stops
+        private readonly HashSet<int> _requestedFloorStopsUp = new HashSet<int>();
+        public IEnumerable<int> RequestedFloorStopsUp => _requestedFloorStopsUp.OrderBy(x => x);
+
+        private readonly HashSet<int> _requestedFloorStopsDown = new HashSet<int>();
+        public IEnumerable<int> RequestedFloorStopsDown => _requestedFloorStopsDown.OrderBy(x => x);
+
+        public bool IsStopRequestedAt(int floorNumber)
+        {
+            return IsDownStopRequestedAt(floorNumber) ||
+                   IsUpStopRequestedAt(floorNumber);
+        }
+
+        public bool IsDownStopRequestedAt(int floorNumber)
+        {
+            return _requestedFloorStopsDown.Contains(floorNumber);
+        }
+
+        public bool IsUpStopRequestedAt(int flrNbr)
+        {
+            return _requestedFloorStopsUp.Contains(flrNbr);
+        }
+        #endregion
+
+
+
         #region IEngine
+        private Thread? _bankEngineThread;
+        private readonly BankEngine _bankEngine;
 
         public void Start()
         {
-            Controller.Start();
+            foreach (var elevator in Elevators)
+            {
+                elevator.Start();
+                elevator.RequestStopAtFloorNumber(LowestFloorNbr);
+            }
+
+            _bankEngineThread = new Thread(_bankEngine.Start)
+            {
+                Name = "BankEngineThread"
+            };
+
+            _bankEngineThread.Start();
         }
 
         public void Stop()
         {
-            Controller.Stop();
+            foreach (var elevator in Elevators)
+            {
+                elevator.RequestStopAtFloorNumber(LowestFloorNbr);
+                elevator.Stop();
+            }
+
+            _bankEngine.Stop();
+
+            if (_bankEngineThread != null && _bankEngineThread.IsAlive)
+            {
+                _bankEngineThread.Join();        //Wait for shutdown to complete
+            }
         }
 
         #endregion
