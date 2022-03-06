@@ -86,6 +86,60 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator2.Stop();
         }
 
+        [TestMethod]
+        public void ShouldTrackPendingElevatorStopsGoingUp()
+        {
+            var bank = new Bank(3, 1..10);
+            var elevator1 = bank.Elevators.ElementAt(0);
+            var elevator2 = bank.Elevators.ElementAt(1);
+            var elevator3 = bank.Elevators.ElementAt(2);
+
+            elevator1.Start();
+            elevator2.Start();
+            elevator3.Start();
+
+            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(9));
+            ElevatorTest.WaitForElevatorToReachFloor(9, elevator3);
+
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(3));   //Going up
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(7));   //Going up
+            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(1));   //Going down
+
+            CollectionAssert.AreEqual(new[] { 3, 7 }, bank.PendingUpFloorStops.ToList());
+
+            elevator1.Stop();
+            elevator2.Stop();
+            elevator3.Stop();
+        }
+
+
+        [TestMethod]
+        public void ShouldTrackPendingElevatorStopsGoingDown()
+        {
+            var bank = new Bank(3, 1..10);
+            var elevator1 = bank.Elevators.ElementAt(0);
+            var elevator2 = bank.Elevators.ElementAt(1);
+            var elevator3 = bank.Elevators.ElementAt(2);
+
+            elevator1.Start();
+            elevator2.Start();
+            elevator3.Start();
+
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(8));
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(9));
+            ElevatorTest.WaitForElevatorToReachFloor(9, elevator2);
+
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(2));   //Going down
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(3));   //Going down
+            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(5));   //Going up
+
+            CollectionAssert.AreEqual(new[] { 2, 3 }, bank.PendingDownFloorStops.ToList());
+
+            elevator1.Stop();
+            elevator2.Stop();
+            elevator3.Stop();
+        }
+
         #endregion
 
         #region Floors

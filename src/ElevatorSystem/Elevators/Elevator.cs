@@ -185,7 +185,21 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             if (isValidFloorNumber)
             {
+                if (IsIdle)
+                {
+                    if (value < CurrentFloorNumber)
+                    {
+                        Direction = Direction.Down;
+                    }
+
+                    if (value > CurrentFloorNumber)
+                    {
+                        Direction = Direction.Up;
+                    }
+                }
+
                 _requestedFloorStops.Add(value);
+
                 return true;
             }
 

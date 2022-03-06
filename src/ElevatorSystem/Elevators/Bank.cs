@@ -268,6 +268,22 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
         #endregion
 
+
+        public IEnumerable<int> PendingDownFloorStops
+            => PendingFloorStopsInDirection(Direction.Down);
+
+        public IEnumerable<int> PendingUpFloorStops
+            => PendingFloorStopsInDirection(Direction.Up);
+
+        private IEnumerable<int> PendingFloorStopsInDirection(Direction direction)
+        {
+            return Elevators
+                .Where(x => x.Direction == direction)
+                .SelectMany(x => x.RequestedFloorStops)
+                .Distinct()
+                .OrderBy(x => x);
+        }
+
         #region Requested Floor Stops
         private readonly HashSet<int> _requestedFloorStopsUp = new HashSet<int>();
         public IEnumerable<int> RequestedFloorStopsUp => _requestedFloorStopsUp.OrderBy(x => x);
