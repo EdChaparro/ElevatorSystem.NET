@@ -2,6 +2,6 @@
 {
     public static class Configuration
     {
-        public static int SimulationSleepIntervalInMilliseconds { get; set; } = 1000;
+        public static int EngineSleepIntervalInMilliseconds { get; set; } = 1000;
     }
 }

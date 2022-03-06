@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using IntrepidProducts.ElevatorSystem.Service;
 
@@ -8,19 +7,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     /// <summary>
     /// Service loop intended to run in an independent thread.
     /// </summary>
-    public class ElevatorEngine : IEngine
+    public class BankEngine : IEngine
     {
-        public ElevatorEngine(Elevator elevator)
+        public BankEngine(Bank bank)
         {
             SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
 
-            Elevator = elevator;
+            Bank = bank;
 
             CancellationTokenSource = new CancellationTokenSource();
             CancellationToken = CancellationTokenSource.Token;
         }
 
-        private Elevator Elevator { get; set; }
+        private Bank Bank { get; set; }
 
         public bool IsRunning { get; private set; }
         protected bool IsStopRequested { get; set; }
@@ -63,54 +62,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         protected virtual void DoEngineLoop()
         {
-            if (Elevator.RequestedFloorStops.Any())
-            {
-                NavigateToNextFloorStop();
-            }
+            //TODO: Implement Bank Logic
 
             Thread.Sleep(SleepIntervalInMilliseconds);
-        }
-
-        private void NavigateToNextFloorStop()
-        {
-            if (Elevator.DoorStatus == DoorStatus.Open)
-            {
-                Elevator.DoorStatus = DoorStatus.Closed;
-            }
-
-            var currentFloorNumber = Elevator.CurrentFloorNumber;
-
-            switch (Elevator.Direction)
-            {
-                case Direction.Down:
-                    if (currentFloorNumber != Elevator.OrderedFloorNumbers.Min())
-                    {
-                        currentFloorNumber--;
-                    }
-                    break;
-                case Direction.Up:
-                    if (currentFloorNumber != Elevator.OrderedFloorNumbers.Max())
-                    {
-                        currentFloorNumber++;
-                    }
-                    break;
-            }
-
-            if (currentFloorNumber == Elevator.CurrentFloorNumber)
-            {
-                return; //Reached termination point
-            }
-
-            SetDirectionToStopAt(currentFloorNumber);
-            Elevator.CurrentFloorNumber = currentFloorNumber;
-
-            //NavigateToNextFloorStop();  //Recursive call
-        }
-
-
-        private void SetDirectionToStopAt(int floorNbr)
-        {
-            Elevator.Direction = (floorNbr < Elevator.CurrentFloorNumber) ? Direction.Down : Direction.Up;
         }
     }
 }

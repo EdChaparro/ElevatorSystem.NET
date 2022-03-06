@@ -10,7 +10,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     {
         public BankTest()
         {
-            Configuration.SimulationSleepIntervalInMilliseconds = 100;
+            Configuration.EngineSleepIntervalInMilliseconds = 100;
         }
 
         [TestMethod]

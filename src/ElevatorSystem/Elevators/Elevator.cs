@@ -120,11 +120,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             DirectionChangedEvent?.Invoke(this,
                 new ElevatorDirectionChangedEventArgs(Id, direction));
         }
-
-        private void SetDirectionToStopAt(int floorNbr)
-        {
-            Direction = (floorNbr < CurrentFloorNumber) ? Direction.Down : Direction.Up;
-        }
         #endregion
 
         #region Floor
@@ -209,7 +204,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             _elevatorEngineThread = new Thread(_elevatorEngine.Start)
             {
-                Name = "TrafficLightTimerThread"
+                Name = "ElevatorEngineThread"
             };
 
             _elevatorEngineThread.Start();

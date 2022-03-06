@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Service;
 
@@ -19,6 +20,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             _bank = bank;
             SetFloorCallButtonObservability(bank);
             SetElevatorObservability(bank);
+            _bankEngine = new BankEngine(_bank);
         }
 
         private readonly Bank _bank;
@@ -149,6 +151,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         #region IEngine
 
+        private Thread? _bankEngineThread;
+        private readonly BankEngine _bankEngine;
+
         public void Start()
         {
             foreach (var elevator in _bank.Elevators)
@@ -156,6 +161,14 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 elevator.Start();
                 elevator.RequestStopAtFloorNumber(_bank.LowestFloorNbr);
             }
+
+            _bankEngineThread = new Thread(_bankEngine.Start)
+            {
+                Name = "BankEngineThread"
+            };
+
+            _bankEngineThread.Start();
+
         }
 
         public void Stop()
@@ -164,6 +177,13 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             {
                 elevator.RequestStopAtFloorNumber(_bank.LowestFloorNbr);
                 elevator.Stop();
+            }
+
+            _bankEngine.Stop();
+
+            if (_bankEngineThread != null && _bankEngineThread.IsAlive)
+            {
+                _bankEngineThread.Join();        //Wait for shutdown to complete
             }
         }
         #endregion

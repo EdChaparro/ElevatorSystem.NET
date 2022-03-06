@@ -12,7 +12,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     {
         public ElevatorTest()
         {
-            Configuration.SimulationSleepIntervalInMilliseconds = 100;
+            Configuration.EngineSleepIntervalInMilliseconds = 100;
         }
 
         [TestMethod]
