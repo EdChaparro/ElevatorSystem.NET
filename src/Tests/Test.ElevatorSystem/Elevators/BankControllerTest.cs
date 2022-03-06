@@ -7,6 +7,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     [TestClass]
     public class BankControllerTest
     {
+        public BankControllerTest()
+        {
+            Configuration.SimulationSleepIntervalInMilliseconds = 100;
+        }
+
         [TestMethod]
         public void ShouldTrackFloorElevatorCallRequests()
         {

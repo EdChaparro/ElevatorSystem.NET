@@ -8,6 +8,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
     [TestClass]
     public class BankTest
     {
+        public BankTest()
+        {
+            Configuration.SimulationSleepIntervalInMilliseconds = 100;
+        }
+
         [TestMethod]
         public void ShouldSendElevatorsToLowestFloorWithDoorOpenOnStart()
         {
