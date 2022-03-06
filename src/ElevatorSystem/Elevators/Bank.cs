@@ -324,7 +324,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             _bankEngine.Stop();
 
-            if (_bankEngineThread != null && _bankEngineThread.IsAlive)
+            if (_bankEngineThread is { IsAlive: true })
             {
                 _bankEngineThread.Join();        //Wait for shutdown to complete
             }

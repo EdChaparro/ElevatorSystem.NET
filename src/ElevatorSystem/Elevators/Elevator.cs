@@ -7,7 +7,10 @@ using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public class Elevator : AbstractEntity, IEngine
+    public interface IElevator : IHasId, IEngine
+    { }  //Facilitates Mocking
+
+    public class Elevator : AbstractEntity, IElevator
     {
         public Elevator(Range floorRange) : this(Enumerable.Range
             (floorRange.Start.Value, floorRange.End.Value).ToArray())
@@ -214,7 +217,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         {
             _elevatorEngine.Stop();
 
-            if (_elevatorEngineThread != null && _elevatorEngineThread.IsAlive)
+            if (_elevatorEngineThread is { IsAlive: true })
             {
                 _elevatorEngineThread.Join();        //Wait for shutdown to complete
             }

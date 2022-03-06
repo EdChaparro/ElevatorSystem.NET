@@ -15,7 +15,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             Elevator = elevator;
         }
 
-        private Elevator Elevator { get; set; }
+        private Elevator Elevator { get; }
 
         protected override void DoEngineLoop()
         {

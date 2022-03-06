@@ -1,4 +1,5 @@
-﻿using IntrepidProducts.ElevatorSystem.Service;
+﻿using System.Linq;
+using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
@@ -14,11 +15,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             Bank = bank;
         }
 
-        private Bank Bank { get; set; }
+        private Bank Bank { get; }
 
         protected override void DoEngineLoop()
         {
-            //TODO: Implement Bank Logic
+            if (Bank.RequestedFloorStopsDown.Any())
+            {
+                ServiceDownRequests();
+            }
+        }
+
+        private void ServiceDownRequests()
+        {
+            //TODO: Implement me
         }
     }
 }
