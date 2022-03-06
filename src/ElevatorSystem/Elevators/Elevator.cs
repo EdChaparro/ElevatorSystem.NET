@@ -28,6 +28,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public IEnumerable<int> RequestedFloorStops => _requestedFloorStops.OrderBy(x => x);
 
+        public bool IsIdle => IsEnabled && !RequestedFloorStops.Any();
+
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
             RequestStopAtFloorNumber(e.Button.FloorNbr);

@@ -309,6 +309,31 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             elevator.Stop();
         }
 
+        [TestMethod]
+        public void ShouldNeverReportIdleWhenDisabled()
+        {
+            var e = new Elevator(1..9);
+            Assert.IsTrue(e.IsIdle);
+
+            e.IsEnabled = false;
+            Assert.IsFalse(e.IsIdle);
+        }
+
+        [TestMethod]
+        public void ShouldOnlyReportIdleWhenRequestedStopCountIsZero()
+        {
+            var e = new Elevator(1..9);
+            e.Start();
+            Assert.IsTrue(e.IsIdle);
+
+            e.RequestStopAtFloorNumber(8);
+            Assert.IsFalse(e.IsIdle);
+
+            ElevatorTest.WaitForElevatorToReachFloor(8, e);
+            Assert.IsTrue(e.IsIdle);
+            e.Stop();
+        }
+
         public static void WaitForElevatorToReachFloor
             (int floorNbr, Elevator elevator, int timeOutInSeconds = 10)
         {
