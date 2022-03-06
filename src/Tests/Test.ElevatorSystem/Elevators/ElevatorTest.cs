@@ -219,7 +219,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(3, e.CurrentFloorNumber);
         }
 
-        [TestMethod, Ignore] //TODO: Set never has more than one due to immediate movement, fix?
+        [TestMethod]
         public void ShouldTrackedRequestedFloorStops()
         {
             var e = new Elevator(1..10);
@@ -245,19 +245,23 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsFalse(e.PressButtonForFloorNumber(5));
         }
 
-        [TestMethod, Ignore] //TODO: Set never has more than one due to immediate movement, fix?
+        [TestMethod]
         public void ShouldUpdateRequestedFloorStopsListOnDoorOpen()
         {
             var e = new Elevator(1..7);
             Assert.IsFalse(e.RequestedFloorStops.Any());
+
+            Assert.AreEqual(1, e.CurrentFloorNumber);
 
             Assert.IsTrue(e.PressButtonForFloorNumber(4));
             Assert.IsTrue(e.PressButtonForFloorNumber(7));
 
             CollectionAssert.AreEqual(new[] { 4, 7 }, e.RequestedFloorStops.ToList());
 
-            Assert.IsTrue(e.RequestStopAtFloorNumber(4));
-            CollectionAssert.AreEqual(new[] { 7 }, e.RequestedFloorStops.ToList());
+            e.Start();
+            WaitForElevatorToReachFloor(7, e);
+            Assert.IsFalse(e.RequestedFloorStops.Any());
+            e.Stop();
         }
 
         [TestMethod]
