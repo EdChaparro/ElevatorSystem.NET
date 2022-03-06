@@ -161,11 +161,17 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var elevators = bank.Elevators;
             Assert.AreEqual(2, elevators.Count());
 
-            var elevator1 = elevators.First(); //Control Elevators
-            var elevator2 = elevators.Last();  //  via Adaptors
+            var elevator1 = elevators.First();
+            var elevator2 = elevators.Last();
 
+            elevator1.Start();
             Assert.IsTrue(elevator1.RequestStopAtFloorNumber(5));
+            ElevatorTest.WaitForElevatorToReachFloor(5, elevator1);
+
+            elevator2.Start();
             Assert.IsTrue(elevator2.RequestStopAtFloorNumber(1));
+            ElevatorTest.WaitForElevatorToReachFloor(1, elevator2);
+
             Assert.AreEqual(5, elevator1.CurrentFloorNumber);
             Assert.AreEqual(1, elevator2.CurrentFloorNumber);
 
@@ -176,7 +182,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.IsPressed);
 
             elevator1.RequestStopAtFloorNumber(3);
+            ElevatorTest.WaitForElevatorToReachFloor(3, elevator1);
             Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton.IsPressed);
+
+            elevator1.Stop();
+            elevator2.Stop();
         }
 
         [TestMethod]
@@ -190,9 +200,14 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var elevator1 = elevators.First(); //Control Elevators
             var elevator2 = elevators.Last();  //  via Adaptors
 
+            elevator1.Start();
             elevator1.RequestStopAtFloorNumber(5);
-            elevator2.RequestStopAtFloorNumber(2);
+            ElevatorTest.WaitForElevatorToReachFloor(5, elevator1);
             Assert.AreEqual(5, elevator1.CurrentFloorNumber);
+
+            elevator2.Start();
+            elevator2.RequestStopAtFloorNumber(2);
+            ElevatorTest.WaitForElevatorToReachFloor(2, elevator2);
             Assert.AreEqual(2, elevator2.CurrentFloorNumber);
 
             var firstFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(1);
@@ -201,7 +216,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(firstFloorElevatorCallPanel.UpButton.SetPressedTo(true));
 
             elevator1.RequestStopAtFloorNumber(1);
+            ElevatorTest.WaitForElevatorToReachFloor(1, elevator1);
             Assert.IsFalse(firstFloorElevatorCallPanel.UpButton.IsPressed);
+
+            elevator1.Stop();
+            elevator2.Stop();
         }
 
         #endregion
