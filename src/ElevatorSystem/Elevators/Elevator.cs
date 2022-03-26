@@ -33,6 +33,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public bool IsIdle => IsEnabled && !RequestedFloorStops.Any();
 
+        public bool IsStoppingAtFloorFromDirection(int floorNbr, Direction direction)
+        {
+            return Direction == direction && RequestedFloorStops
+                .Any(x => x == floorNbr);
+        }
+
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
             RequestStopAtFloorNumber(e.Button.FloorNbr);

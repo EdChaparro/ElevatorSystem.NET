@@ -234,6 +234,32 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         [TestMethod]
+        public void ShouldReportScheduledDirectionalFloorStop()
+        {
+            var e1 = new Elevator(1..7);
+            var e2 = new Elevator(1..7);
+            e1.Start();
+            e2.Start();
+
+            Assert.IsTrue(e1.RequestStopAtFloorNumber(5));
+            Assert.IsTrue(e2.RequestStopAtFloorNumber(7));
+
+            Assert.IsTrue(e1.IsStoppingAtFloorFromDirection(5, Direction.Up));
+            Assert.IsFalse(e2.IsStoppingAtFloorFromDirection(5, Direction.Up));
+
+            WaitForElevatorToReachFloor(7, e2);
+
+            Assert.IsTrue(e1.RequestStopAtFloorNumber(1));
+            Assert.IsTrue(e2.RequestStopAtFloorNumber(2));
+
+            Assert.IsFalse(e1.IsStoppingAtFloorFromDirection(2, Direction.Down));
+            Assert.IsTrue(e2.IsStoppingAtFloorFromDirection(2, Direction.Down));
+
+            e1.Stop();
+            e2.Stop();
+        }
+
+        [TestMethod]
         public void ShouldIgnoreRedundantFloorStopRequests()
         {
             var e = new Elevator(1..10);
