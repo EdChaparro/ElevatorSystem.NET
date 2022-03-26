@@ -19,13 +19,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             var bank = new Bank(2, 1..5);
 
             bank.Start();
-            var elevators = bank.Elevators;
+            var elevators = bank.Elevators.ToList();
             Assert.AreEqual(2, elevators.Count());
 
-            foreach (var state in elevators)
+            foreach (var elevator in elevators)
             {
-                Assert.AreEqual(bank.LowestFloorNbr, state.CurrentFloorNumber);
-                Assert.AreEqual(DoorStatus.Open, state.DoorStatus);
+                Assert.AreEqual(bank.LowestFloorNbr, elevator.CurrentFloorNumber);
+                Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
             }
 
             bank.Stop();
