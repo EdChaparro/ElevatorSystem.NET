@@ -81,8 +81,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 return; //Nothing to do
             }
 
-            var isDownServiceRequested = IsDownStopRequestedAt(e.FloorNumber);
-            var isUpServiceRequested = IsUpStopRequestedAt(e.FloorNumber);
+            var isDownServiceRequested = IsStopRequestedAt(e.FloorNumber, Direction.Down);
+            var isUpServiceRequested = IsStopRequestedAt(e.FloorNumber, Direction.Up);
 
             RemoveRequestedFloorStop(e.FloorNumber, e.Direction);
 
@@ -286,9 +286,14 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         private readonly HashSet<int> _requestedFloorStopsUp = new HashSet<int>();
-        public IEnumerable<int> RequestedFloorStopsUp => _requestedFloorStopsUp.OrderBy(x => x);
-
         private readonly HashSet<int> _requestedFloorStopsDown = new HashSet<int>();
+
+        public IEnumerable<int> RequestedFloorStops(Direction direction)
+        {
+            return direction == Direction.Down ?
+                _requestedFloorStopsDown.OrderBy(x => x) :
+                _requestedFloorStopsUp.OrderBy(x => x);
+        }
 
         private void RemoveRequestedFloorStop(int floorNbr, Direction direction)
         {
@@ -303,22 +308,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public IEnumerable<int> RequestedFloorStopsDown => _requestedFloorStopsDown.OrderBy(x => x);
-
-        public bool IsStopRequestedAt(int floorNumber)
+        private bool IsStopRequestedAt(int floorNumber, Direction? direction = null)
         {
-            return IsDownStopRequestedAt(floorNumber) ||
-                   IsUpStopRequestedAt(floorNumber);
-        }
+            switch (direction)
+            {
+                case Direction.Down:
+                    return _requestedFloorStopsDown.Contains(floorNumber);
 
-        public bool IsDownStopRequestedAt(int floorNumber)
-        {
-            return _requestedFloorStopsDown.Contains(floorNumber);
-        }
+                case Direction.Up:
+                    return _requestedFloorStopsUp.Contains(floorNumber);
+            }
 
-        public bool IsUpStopRequestedAt(int flrNbr)
-        {
-            return _requestedFloorStopsUp.Contains(flrNbr);
+            return _requestedFloorStopsDown.Contains(floorNumber) ||
+                   _requestedFloorStopsUp.Contains(floorNumber);
         }
         #endregion
 
