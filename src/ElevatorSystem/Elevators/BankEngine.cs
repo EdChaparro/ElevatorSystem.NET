@@ -20,6 +20,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         protected override void DoEngineLoop()
         {
+            //TODO: Consider refactoring by putting strategies in a Chain-of-Responsibility dependency
+
             AssignFloorStopsRequiringService(Direction.Down);
             AssignFloorStopsRequiringService(Direction.Up);
         }
@@ -30,17 +32,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 = FindFloorStopsRequiringService(Bank.RequestedFloorStops(direction), direction)
                     .ToList();
 
+            //First, try to assign floor stop requests to idle elevators
             var assignedFloorNbrs = AssignIdleElevators(floorStopRequests, direction);
-
             foreach (var assignedFloorNbr in assignedFloorNbrs)
             {
                 floorStopRequests.Remove(assignedFloorNbr);
             }
 
-            //TODO: Implement second algorithm to assign elevators
+            //TODO: Insert additional strategies
         }
 
-        private List<int> AssignIdleElevators(IEnumerable<int> floorStops, Direction direction)
+        #region Idle Elevators
+
+        private List<int> AssignIdleElevators(IList<int> floorStops, Direction direction)
         {
             var assignedFloorStops = new List<int>();
 
@@ -54,7 +58,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 }
 
                 assignedFloorStops.Add(floorNbr);
-                idleElevator.RequestStopAtFloorNumber(floorNbr);
+                idleElevator.RequestStopAtFloorNumber(floorNbr, true);
             }
 
             return assignedFloorStops;
@@ -65,13 +69,16 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             switch (direction)
             {
                 case Direction.Down:
-                    return Bank.IdleElevators
+                    return Bank.IdleElevators   //TODO: Modify definition of Idle?
+                        .Where(x => !x.IsOnAdministrativeLock)
                         .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
                 default:
                     return Bank.IdleElevators
+                        .Where(x => !x.IsOnAdministrativeLock)
                         .OrderBy(x => x.CurrentFloorNumber).FirstOrDefault();
             }
         }
+        #endregion
 
         private IEnumerable<int> FindFloorStopsRequiringService(IEnumerable<int> requestedFloorStops, Direction direction)
         {

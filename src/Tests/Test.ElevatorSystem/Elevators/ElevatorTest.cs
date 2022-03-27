@@ -356,6 +356,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsFalse(e.IsIdle);
 
             ElevatorTest.WaitForElevatorToReachFloor(8, e);
+            e.DoorStatus = DoorStatus.Closed;
             Assert.IsTrue(e.IsIdle);
             e.Stop();
         }
