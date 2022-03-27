@@ -80,18 +80,18 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
         #endregion
 
-        private IEnumerable<int> FindFloorStopsRequiringService(IEnumerable<int> requestedFloorStops, Direction direction)
+        private IEnumerable<int> FindFloorStopsRequiringService(IEnumerable<RequestedFloorStop> requestedFloorStops, Direction direction)
         {
             var floorStopsRequiringService = new HashSet<int>();
 
             foreach (var requestedFloorStop in requestedFloorStops)
             {
-                if (Bank.IsElevatorStoppingAtFloorFromDirection(requestedFloorStop, direction))
+                if (Bank.IsElevatorStoppingAtFloorFromDirection(requestedFloorStop.FloorNbr, direction))
                 {
                     continue;   //Skip stops already scheduled to be visited by an elevator
                 }
 
-                floorStopsRequiringService.Add(requestedFloorStop);
+                floorStopsRequiringService.Add(requestedFloorStop.FloorNbr);
             }
 
             switch (direction)
