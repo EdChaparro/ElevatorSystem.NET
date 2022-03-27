@@ -27,11 +27,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             _elevatorEngine = new ElevatorEngine(this);
         }
 
+        public bool IsOnAdministrativeLock { get; set; }
+
         private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
 
         public IEnumerable<int> RequestedFloorStops => _requestedFloorStops.OrderBy(x => x);
 
         public bool IsIdle => IsEnabled && !RequestedFloorStops.Any();
+
+        public bool IsStoppingAtFloorFromDirection(int floorNbr, Direction direction)
+        {
+            return Direction == direction && RequestedFloorStops
+                .Any(x => x == floorNbr);
+        }
 
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
         {
@@ -58,6 +66,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #region Door
         private DoorStatus _doorStatus = DoorStatus.Closed;
 
+        //TODO: Make Doors Close automatically
         public DoorStatus DoorStatus
         {
             get => _doorStatus;
@@ -73,6 +82,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
                 if (_doorStatus == DoorStatus.Open)
                 {
+                    IsOnAdministrativeLock = false;   //Release administrative lock
                     var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(CurrentFloorNumber);
 
                     if (floorRequestButton != null)
@@ -163,7 +173,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public bool RequestStopAtFloorNumber(int value)
+        public bool RequestStopAtFloorNumber(int value, bool withAdministrativeLock = false)
         {
             if (!IsEnabled)
             {
@@ -181,6 +191,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 return false;
             }
 
+            DoorStatus = DoorStatus.Closed;
+
             var isValidFloorNumber = OrderedFloorNumbers.Any(x => x == value);
 
             if (isValidFloorNumber)
@@ -196,6 +208,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     {
                         Direction = Direction.Up;
                     }
+                }
+
+                if (withAdministrativeLock)
+                {
+                    IsOnAdministrativeLock = true;
                 }
 
                 _requestedFloorStops.Add(value);
