@@ -321,7 +321,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         }
 
         [TestMethod]
-        public void ShouldStopAtFloorWhenRequestedFromFloorPanel()
+        public void ShouldStopAtFloorWhenRequestedFromElevatorFloorPanel()
         {
             var elevator = new Elevator(1..9)
                 { DoorStatus = DoorStatus.Closed };
