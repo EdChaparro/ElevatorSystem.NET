@@ -55,8 +55,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(1, bank.RequestedFloorStops(Direction.Down).Count());
             Assert.AreEqual(1, bank.RequestedFloorStops(Direction.Up).Count());
 
-            Assert.AreEqual(9, bank.RequestedFloorStops(Direction.Down).First());
-            Assert.AreEqual(5, bank.RequestedFloorStops(Direction.Up).First());
+            Assert.AreEqual(9, bank.RequestedFloorStops(Direction.Down)
+                .Select(x => x.FloorNbr).First());
+            Assert.AreEqual(5, bank.RequestedFloorStops(Direction.Up)
+                .Select(x => x.FloorNbr).First());
         }
 
         [TestMethod]
@@ -69,8 +71,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(bank.PressButtonForFloorNumber(5, Direction.Up));
             Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Down));
 
-            CollectionAssert.AreEqual(new[] { 5 }, bank.RequestedFloorStops(Direction.Up).ToList());
-            CollectionAssert.AreEqual(new[] { 9 }, bank.RequestedFloorStops(Direction.Down).ToList());
+            CollectionAssert.AreEqual(new[] { 5 },
+                bank.RequestedFloorStops(Direction.Up).Select(x => x.FloorNbr).ToList());
+
+            CollectionAssert.AreEqual(new[] { 9 },
+                bank.RequestedFloorStops(Direction.Down).Select(x => x.FloorNbr).ToList());
 
             elevator1.Start();
             elevator1.RequestStopAtFloorNumber(5);
@@ -168,7 +173,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(elevator2.RequestStopAtFloorNumber(7));   //Going up
             Assert.IsTrue(elevator3.RequestStopAtFloorNumber(1));   //Going down
 
-            CollectionAssert.AreEqual(new[] { 3, 7 }, bank.PendingUpFloorStops.ToList());
+            CollectionAssert.AreEqual(new[] { 3, 7 },
+                bank.PendingUpFloorStops.Select(x => x.FloorNbr).ToList());
 
             elevator1.Stop();
             elevator2.Stop();
@@ -198,7 +204,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 
             Assert.AreEqual(2, bank.PendingDownFloorStops.Count());
 
-            CollectionAssert.AreEqual(new[] { 2, 3 }, bank.PendingDownFloorStops.ToList());
+            CollectionAssert.AreEqual(new[] { 2, 3 },
+                bank.PendingDownFloorStops.Select(x => x.FloorNbr).ToList());
 
             Assert.IsTrue(bank.IsElevatorStoppingAtFloorFromDirection(2, Direction.Down));
             Assert.IsTrue(bank.IsElevatorStoppingAtFloorFromDirection(3, Direction.Down));

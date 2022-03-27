@@ -142,16 +142,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         private void OnFloorElevatorCallButtonPressedEvent(object sender, PanelButtonPressedEventArgs<FloorElevatorCallButton> e)
         {
             var button = e.Button;
-
-            switch (button.Direction)
-            {
-                case Direction.Down:
-                    _requestedFloorStopsDown.Add(button.FloorNumber);
-                    break;
-                case Direction.Up:
-                    _requestedFloorStopsUp.Add(button.FloorNumber);
-                    break;
-            }
+            AddRequestedFloorStop(button.FloorNumber, button.Direction);
         }
 
         public int NumberOfElevators => _elevators.Count;
@@ -263,19 +254,19 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         #endregion
 
 
-        public IEnumerable<int> PendingDownFloorStops
+        public IEnumerable<RequestedFloorStop> PendingDownFloorStops
             => PendingFloorStopsInDirection(Direction.Down);
 
-        public IEnumerable<int> PendingUpFloorStops
+        public IEnumerable<RequestedFloorStop> PendingUpFloorStops
             => PendingFloorStopsInDirection(Direction.Up);
 
-        private IEnumerable<int> PendingFloorStopsInDirection(Direction direction)
+        private IEnumerable<RequestedFloorStop> PendingFloorStopsInDirection(Direction direction)
         {
             return Elevators
                 .Where(x => x.Direction == direction)
                 .SelectMany(x => x.RequestedFloorStops)
                 .Distinct()
-                .OrderBy(x => x);
+                .OrderBy(x => x.FloorNbr);
         }
 
         #region Requested Floor Stops
@@ -285,42 +276,42 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 .Any(x => x.IsStoppingAtFloorFromDirection(floorNbr, direction));
         }
 
-        private readonly HashSet<int> _requestedFloorStopsUp = new HashSet<int>();
-        private readonly HashSet<int> _requestedFloorStopsDown = new HashSet<int>();
+        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
 
-        public IEnumerable<int> RequestedFloorStops(Direction direction)
+        public IEnumerable<RequestedFloorStop> RequestedFloorStops(Direction direction)
         {
-            return direction == Direction.Down ?
-                _requestedFloorStopsDown.OrderBy(x => x) :
-                _requestedFloorStopsUp.OrderBy(x => x);
+            return _requestedFloorStops.Where(x => x.Direction == direction);
         }
 
         private void RemoveRequestedFloorStop(int floorNbr, Direction direction)
         {
-            switch (direction)
+            var requestedFloorStop = _requestedFloorStops
+                .Where(x => x.FloorNbr == floorNbr)
+                .FirstOrDefault(x => x.Direction == direction);
+
+            if (requestedFloorStop != null)
             {
-                case Direction.Down:
-                    _requestedFloorStopsDown.Remove(floorNbr);
-                    break;
-                case Direction.Up:
-                    _requestedFloorStopsUp.Remove(floorNbr);
-                    break;
+                _requestedFloorStops.Remove(requestedFloorStop);
             }
+        }
+
+        private void AddRequestedFloorStop(int floorNbr, Direction direction)
+        {
+            var rfs = RequestedFloorStop.CreateRequestedFloorStop(floorNbr, direction);
+            _requestedFloorStops.Add(rfs);
         }
 
         private bool IsStopRequestedAt(int floorNumber, Direction? direction = null)
         {
-            switch (direction)
+            if (direction == null)
             {
-                case Direction.Down:
-                    return _requestedFloorStopsDown.Contains(floorNumber);
-
-                case Direction.Up:
-                    return _requestedFloorStopsUp.Contains(floorNumber);
+                return _requestedFloorStops
+                    .Any(x => x.FloorNbr == floorNumber);
             }
 
-            return _requestedFloorStopsDown.Contains(floorNumber) ||
-                   _requestedFloorStopsUp.Contains(floorNumber);
+            return _requestedFloorStops
+                .Where(x => x.FloorNbr == floorNumber)
+                .Any(x => x.Direction == direction);
         }
         #endregion
 

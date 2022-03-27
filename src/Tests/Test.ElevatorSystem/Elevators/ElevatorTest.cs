@@ -230,7 +230,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(e.PressButtonForFloorNumber(6));
             Assert.IsTrue(e.PressButtonForFloorNumber(8));
 
-            CollectionAssert.AreEqual(new[] { 2, 4, 6, 8 }, e.RequestedFloorStops.ToList());
+            CollectionAssert.AreEqual(new[] { 2, 4, 6, 8 },
+                e.RequestedFloorStops.Select(x => x.FloorNbr).ToList());
         }
 
         [TestMethod]
@@ -282,7 +283,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.IsTrue(e.PressButtonForFloorNumber(4));
             Assert.IsTrue(e.PressButtonForFloorNumber(7));
 
-            CollectionAssert.AreEqual(new[] { 4, 7 }, e.RequestedFloorStops.ToList());
+            CollectionAssert.AreEqual(new[] { 4, 7 },
+                e.RequestedFloorStops.Select(x => x.FloorNbr).ToList());
 
             e.Start();
             WaitForElevatorToReachFloor(7, e);
@@ -364,7 +366,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public static void WaitForElevatorToReachFloor
             (int floorNbr, Elevator elevator, int timeOutInSeconds = 10)
         {
-            if (elevator.CurrentFloorNumber == floorNbr)
+            if ((elevator.CurrentFloorNumber == floorNbr) &&
+                (elevator.DoorStatus == DoorStatus.Open))
             {
                 return;     //All done
             }

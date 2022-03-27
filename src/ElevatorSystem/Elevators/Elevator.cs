@@ -29,16 +29,34 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         public bool IsOnAdministrativeLock { get; set; }
 
-        private readonly HashSet<int> _requestedFloorStops = new HashSet<int>();
+        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
 
-        public IEnumerable<int> RequestedFloorStops => _requestedFloorStops.OrderBy(x => x);
+        private void RemoveRequestedFloorStop(int floorNbr)
+        {
+            var requestedFloorStop = _requestedFloorStops
+                .FirstOrDefault(x => x.FloorNbr == floorNbr);
+
+            if (requestedFloorStop != null)
+            {
+                _requestedFloorStops.Remove(requestedFloorStop);
+            }
+        }
+
+        private void AddRequestedFloorStop(int floorNbr, Direction? direction = null)
+        {
+            var rfs = RequestedFloorStop.CreateRequestedFloorStop(floorNbr, direction);
+            _requestedFloorStops.Add(rfs);
+        }
+
+        public IEnumerable<RequestedFloorStop> RequestedFloorStops =>
+            _requestedFloorStops.OrderBy(x => x.FloorNbr);
 
         public bool IsIdle => IsEnabled && !RequestedFloorStops.Any();
 
         public bool IsStoppingAtFloorFromDirection(int floorNbr, Direction direction)
         {
             return Direction == direction && RequestedFloorStops
-                .Any(x => x == floorNbr);
+                .Any(x => x.FloorNbr == floorNbr);
         }
 
         private void OnPanelButtonPressedEvent(object sender, PanelButtonPressedEventArgs<ElevatorFloorRequestButton> e)
@@ -90,7 +108,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                         floorRequestButton.SetPressedTo(false);
                     }
 
-                    _requestedFloorStops.Remove(CurrentFloorNumber);
+                    RemoveRequestedFloorStop(CurrentFloorNumber);
                 }
 
                 RaiseDoorStateChangedEvent(CurrentFloorNumber, Direction, value);
@@ -166,7 +184,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 _currentFloorNumber = value;
 
                 RaiseFloorNumberChangedEvent(_currentFloorNumber);
-                if (RequestedFloorStops.Contains(_currentFloorNumber))
+                if (RequestedFloorStops.Any(x => x.FloorNbr == _currentFloorNumber))
                 {
                     DoorStatus = DoorStatus.Open;
                 }
@@ -215,7 +233,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     IsOnAdministrativeLock = true;
                 }
 
-                _requestedFloorStops.Add(value);
+                AddRequestedFloorStop(value);
 
                 return true;
             }
