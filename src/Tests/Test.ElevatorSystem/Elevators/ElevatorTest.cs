@@ -364,12 +364,33 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public static void WaitForElevatorToReachFloor
             (int floorNbr, Elevator elevator, int timeOutInSeconds = 10)
         {
+            if (elevator.CurrentFloorNumber == floorNbr)
+            {
+                return;     //All done
+            }
+
+            var isFloorReached = false;
+
+            elevator.DoorStateChangedEvent += (sender, e)
+                =>
+            {
+                if (elevator.DoorStatus == DoorStatus.Closed)
+                {
+                    return;
+                }
+
+                if (elevator.CurrentFloorNumber == floorNbr)
+                {
+                    isFloorReached = true;
+                }
+            };
+
             var timeOut = DateTime.Now + new TimeSpan(0, 0, timeOutInSeconds);
             var isTimeOut = false;
 
             while (!isTimeOut)
             {
-                if (elevator.CurrentFloorNumber == floorNbr)
+                if (isFloorReached)
                 {
                     break;
                 }
