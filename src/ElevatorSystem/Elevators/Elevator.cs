@@ -190,7 +190,8 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public (bool isOk, Guid? Id) RequestStopAtFloorNumber(int value, bool withAdministrativeLock = false)
+        public (bool isOk, RequestedFloorStop? requestedFloorStop)
+            RequestStopAtFloorNumber(int value)
         {
             if (!IsEnabled)
             {
@@ -227,9 +228,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     }
                 }
 
-                var rfs = AddRequestedFloorStop(value);
+                var rfs = AddRequestedFloorStop(value, Direction);
 
-                return (true, rfs.Id);
+                return (true, rfs);
             }
 
             return (false, null);

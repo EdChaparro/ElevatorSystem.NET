@@ -12,7 +12,61 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
     public abstract class AbstractStrategy : IStrategy
     {
-        public abstract void AssignElevators(Bank bank);
+        private readonly List<RequestedFloorStop> _assignedDownRequestedFloorStops
+            = new List<RequestedFloorStop>();
+        public List<RequestedFloorStop> AssignedDownRequestedFloorStops
+            => _assignedDownRequestedFloorStops.ToList();
+
+        private readonly List<RequestedFloorStop> _assignedUpRequestedFloorStops
+            = new List<RequestedFloorStop>();
+        public List<RequestedFloorStop> AssignedUpRequestedFloorStops
+            => _assignedUpRequestedFloorStops.ToList();
+
+        public void AssignElevators(Bank bank)
+        {
+            var assignedDown = Assign(bank, Direction.Down);
+            var assignedUp = Assign(bank, Direction.Up);
+
+            _assignedDownRequestedFloorStops.AddRange(assignedDown);
+            _assignedUpRequestedFloorStops.AddRange(assignedUp);
+        }
+
+        private IEnumerable<RequestedFloorStop> Assign(Bank bank, Direction direction)
+        {
+            var floorStopRequests
+                = FindFloorStopsRequiringService
+                        (bank, bank.GetRequestedFloorStops(direction), direction).ToList();
+
+            var floorNumbersToPassAlong = new List<int>();
+            foreach (var floorNbr in floorStopRequests)
+            {
+                switch (direction)
+                {
+                    case Direction.Down:
+                        if (AssignedDownRequestedFloorStops.Any(x => x.FloorNbr == floorNbr))
+                        {
+                            continue;
+                        }
+
+                        floorNumbersToPassAlong.Add(floorNbr);
+                        break;
+
+                    case Direction.Up:
+                        if (AssignedUpRequestedFloorStops.Any(x => x.FloorNbr == floorNbr))
+                        {
+                            continue;
+                        }
+
+                        floorNumbersToPassAlong.Add(floorNbr);
+                        break;
+                }
+            }
+
+            return Assign(bank, floorNumbersToPassAlong, direction);
+        }
+
+        protected abstract IEnumerable<RequestedFloorStop> Assign
+            (Bank bank, IEnumerable<int> floorStops, Direction direction);
 
         protected IEnumerable<int> FindFloorStopsRequiringService
             (Bank bank, IEnumerable<RequestedFloorStop> requestedFloorStops, Direction direction)
@@ -35,19 +89,6 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                     return floorStopsRequiringService.OrderByDescending(x => x);
                 default:
                     return floorStopsRequiringService.OrderBy(x => x);
-            }
-        }
-
-        protected Elevator? FindIdleElevator(Bank bank, Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.Down:
-                    return bank.IdleElevators
-                        .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
-                default:
-                    return bank.IdleElevators
-                        .OrderBy(x => x.CurrentFloorNumber).FirstOrDefault();
             }
         }
     }
