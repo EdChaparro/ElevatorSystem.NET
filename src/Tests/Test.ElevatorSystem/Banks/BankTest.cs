@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
+using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
+using IntrepidProducts.ElevatorSystem.Tests.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
+namespace IntrepidProducts.ElevatorSystem.Tests.Banks
 {
     [TestClass]
     public class BankTest
