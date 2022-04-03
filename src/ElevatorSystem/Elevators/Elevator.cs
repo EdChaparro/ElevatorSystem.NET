@@ -51,6 +51,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         public IEnumerable<RequestedFloorStop> RequestedFloorStops =>
             _requestedFloorStops.OrderBy(x => x.FloorNbr);
 
+        //TODO: Modify definition of Idle to require Door Closed?
         public bool IsIdle => IsEnabled && !RequestedFloorStops.Any();
 
         public bool IsStoppingAtFloorFromDirection(int floorNbr, Direction direction)
