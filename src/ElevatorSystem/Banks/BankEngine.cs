@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using IntrepidProducts.ElevatorSystem.Elevators;
 using IntrepidProducts.ElevatorSystem.Service;
 
-namespace IntrepidProducts.ElevatorSystem.Elevators
+namespace IntrepidProducts.ElevatorSystem.Banks
 {
     /// <summary>
     /// Service loop intended to run in an independent thread.

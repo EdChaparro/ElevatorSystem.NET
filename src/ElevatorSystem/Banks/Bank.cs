@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Elevators;
 using IntrepidProducts.ElevatorSystem.Service;
 
-namespace IntrepidProducts.ElevatorSystem.Elevators
+namespace IntrepidProducts.ElevatorSystem.Banks
 {
     public interface IBank : IHasId, IHasFloors, IEngine
     {}  //Facilitates Mocking
