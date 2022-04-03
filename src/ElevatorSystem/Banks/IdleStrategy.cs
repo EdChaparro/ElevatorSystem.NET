@@ -9,29 +9,22 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     /// </summary>
     public class IdleStrategy : AbstractStrategy
     {
-        public override void AssignElevators(Bank bank)
+        protected override IEnumerable<RequestedFloorStop> Assign(Bank bank, IEnumerable<int> floorStops, Direction direction)
         {
-            AssignFloorStopsRequiringService(bank, Direction.Down);
-            AssignFloorStopsRequiringService(bank, Direction.Up);
-        }
+            var assignedFloorStops = new List<RequestedFloorStop>();
 
-        private void AssignFloorStopsRequiringService(Bank bank, Direction direction)
-        {
-            var floorStopRequests
-                = FindFloorStopsRequiringService(bank, bank.RequestedFloorStops(direction), direction)
-                    .ToList();
-
-            //First, try to assign floor stop requests to idle elevators
-            var assignedFloorNbrs = AssignIdleElevators(bank, floorStopRequests, direction);
+            var assignedFloorNbrs = AssignIdleElevators(bank, floorStops, direction);
             foreach (var assignedFloorNbr in assignedFloorNbrs)
             {
-                floorStopRequests.Remove(assignedFloorNbr);
+                assignedFloorStops.Add(assignedFloorNbr);
             }
+
+            return assignedFloorStops;
         }
 
-        private List<int> AssignIdleElevators(Bank bank, IList<int> floorStops, Direction direction)
+        private List<RequestedFloorStop> AssignIdleElevators(Bank bank, IEnumerable<int> floorStops, Direction direction)
         {
-            var assignedFloorStops = new List<int>();
+            var assignedFloorStops = new List<RequestedFloorStop>();
 
             foreach (var floorNbr in floorStops)
             {
@@ -42,11 +35,28 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                     break;
                 }
 
-                assignedFloorStops.Add(floorNbr);
-                idleElevator.RequestStopAtFloorNumber(floorNbr, true);
+                var result = idleElevator.RequestStopAtFloorNumber(floorNbr);
+
+                if (result.requestedFloorStop != null)
+                {
+                    assignedFloorStops.Add(result.requestedFloorStop);
+                }
             }
 
             return assignedFloorStops;
+        }
+
+        protected Elevator? FindIdleElevator(Bank bank, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Down:
+                    return bank.IdleElevators
+                        .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
+                default:
+                    return bank.IdleElevators
+                        .OrderBy(x => x.CurrentFloorNumber).FirstOrDefault();
+            }
         }
     }
 }

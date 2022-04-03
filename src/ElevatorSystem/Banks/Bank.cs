@@ -279,9 +279,14 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
         private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
 
-        public IEnumerable<RequestedFloorStop> RequestedFloorStops(Direction direction)
+        public IEnumerable<RequestedFloorStop> GetRequestedFloorStops(Direction direction)
         {
             return _requestedFloorStops.Where(x => x.Direction == direction);
+        }
+
+        public RequestedFloorStop? GetRequestedFloorStop(Guid id)
+        {
+            return _requestedFloorStops.FirstOrDefault(x => x.Id == id);
         }
 
         private void RemoveRequestedFloorStop(int floorNbr, Direction direction)

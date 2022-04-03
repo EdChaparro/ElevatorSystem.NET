@@ -27,8 +27,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             _elevatorEngine = new ElevatorEngine(this);
         }
 
-        public bool IsOnAdministrativeLock { get; set; }
-
         private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
 
         private void RemoveRequestedFloorStop(int floorNbr)
@@ -42,10 +40,11 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        private void AddRequestedFloorStop(int floorNbr, Direction? direction = null)
+        private RequestedFloorStop AddRequestedFloorStop(int floorNbr, Direction? direction = null)
         {
             var rfs = RequestedFloorStop.CreateRequestedFloorStop(floorNbr, direction);
             _requestedFloorStops.Add(rfs);
+            return rfs;
         }
 
         public IEnumerable<RequestedFloorStop> RequestedFloorStops =>
@@ -101,7 +100,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
                 if (_doorStatus == DoorStatus.Open)
                 {
-                    IsOnAdministrativeLock = false;   //Release administrative lock
                     var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(CurrentFloorNumber);
 
                     if (floorRequestButton != null)
@@ -192,11 +190,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             }
         }
 
-        public bool RequestStopAtFloorNumber(int value, bool withAdministrativeLock = false)
+        public (bool isOk, RequestedFloorStop? requestedFloorStop)
+            RequestStopAtFloorNumber(int value)
         {
             if (!IsEnabled)
             {
-                return false;
+                return (false, null);
             }
 
             if (value == CurrentFloorNumber)
@@ -204,10 +203,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 if (DoorStatus == DoorStatus.Closed)
                 {
                     DoorStatus = DoorStatus.Open;
-                    return true;
+                    return (true, null);
                 }
 
-                return false;
+                return (false, null);
             }
 
             DoorStatus = DoorStatus.Closed;
@@ -229,17 +228,12 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     }
                 }
 
-                if (withAdministrativeLock)
-                {
-                    IsOnAdministrativeLock = true;
-                }
+                var rfs = AddRequestedFloorStop(value, Direction);
 
-                AddRequestedFloorStop(value);
-
-                return true;
+                return (true, rfs);
             }
 
-            return false;
+            return (false, null);
         }
 
         public event EventHandler<ElevatorFloorNumberChangedEventArgs>? FloorNumberChangedEvent;

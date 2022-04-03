@@ -48,18 +48,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
         {
             var bank = new Bank(2, 1..10);
 
-            Assert.IsFalse(bank.RequestedFloorStops(Direction.Down).Any());
-            Assert.IsFalse(bank.RequestedFloorStops(Direction.Up).Any());
+            Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Down).Any());
+            Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Up).Any());
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Down));
             Assert.IsTrue(bank.PressButtonForFloorNumber(5, Direction.Up));
 
-            Assert.AreEqual(1, bank.RequestedFloorStops(Direction.Down).Count());
-            Assert.AreEqual(1, bank.RequestedFloorStops(Direction.Up).Count());
+            Assert.AreEqual(1, bank.GetRequestedFloorStops(Direction.Down).Count());
+            Assert.AreEqual(1, bank.GetRequestedFloorStops(Direction.Up).Count());
 
-            Assert.AreEqual(9, bank.RequestedFloorStops(Direction.Down)
+            Assert.AreEqual(9, bank.GetRequestedFloorStops(Direction.Down)
                 .Select(x => x.FloorNbr).First());
-            Assert.AreEqual(5, bank.RequestedFloorStops(Direction.Up)
+            Assert.AreEqual(5, bank.GetRequestedFloorStops(Direction.Up)
                 .Select(x => x.FloorNbr).First());
         }
 
@@ -74,22 +74,22 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Down));
 
             CollectionAssert.AreEqual(new[] { 5 },
-                bank.RequestedFloorStops(Direction.Up).Select(x => x.FloorNbr).ToList());
+                bank.GetRequestedFloorStops(Direction.Up).Select(x => x.FloorNbr).ToList());
 
             CollectionAssert.AreEqual(new[] { 9 },
-                bank.RequestedFloorStops(Direction.Down).Select(x => x.FloorNbr).ToList());
+                bank.GetRequestedFloorStops(Direction.Down).Select(x => x.FloorNbr).ToList());
 
             elevator1.Start();
             elevator1.RequestStopAtFloorNumber(5);
             ElevatorTest.WaitForElevatorToReachFloor(5, elevator1);
-            Assert.IsFalse(bank.RequestedFloorStops(Direction.Up).Any());
+            Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Up).Any());
             elevator1.Stop();
 
             elevator2.Start();
             elevator2.RequestStopAtFloorNumber(9);
             ElevatorTest.WaitForElevatorToReachFloor(9, elevator2, 20);
             Assert.AreEqual(Direction.Down, elevator2.Direction);
-            Assert.IsFalse(bank.RequestedFloorStops(Direction.Down).Any());
+            Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Down).Any());
             elevator2.Stop();
         }
 
@@ -168,12 +168,12 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             elevator2.Start();
             elevator3.Start();
 
-            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(9));
+            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(9).isOk);
             ElevatorTest.WaitForElevatorToReachFloor(9, elevator3);
 
-            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(3));   //Going up
-            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(7));   //Going up
-            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(1));   //Going down
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(3).isOk);   //Going up
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(7).isOk);   //Going up
+            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(1).isOk);   //Going down
 
             CollectionAssert.AreEqual(new[] { 3, 7 },
                 bank.PendingUpFloorStops.Select(x => x.FloorNbr).ToList());
@@ -196,13 +196,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             elevator2.Start();
             elevator3.Start();
 
-            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(8));
-            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(9));
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(8).isOk);
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(9).isOk);
             ElevatorTest.WaitForElevatorToReachFloor(9, elevator2);
 
-            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(2));
-            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(3));
-            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(5));   //Is going Up
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(2).isOk);
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(3).isOk);
+            Assert.IsTrue(elevator3.RequestStopAtFloorNumber(5).isOk);   //Is going Up
 
             Assert.AreEqual(2, bank.PendingDownFloorStops.Count());
 
@@ -348,11 +348,11 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             var elevator2 = elevators.Last();
 
             elevator1.Start();
-            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(5));
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(5).isOk);
             ElevatorTest.WaitForElevatorToReachFloor(5, elevator1);
 
             elevator2.Start();
-            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(1));
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(1).isOk);
             ElevatorTest.WaitForElevatorToReachFloor(1, elevator2);
 
             Assert.AreEqual(5, elevator1.CurrentFloorNumber);
