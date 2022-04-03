@@ -70,7 +70,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(3, secondButton.FloorNbr);
 
             elevator.Start();
-            Assert.IsTrue(elevator.RequestStopAtFloorNumber(3));
+            Assert.IsTrue(elevator.RequestStopAtFloorNumber(3).isOk);
             ElevatorTest.WaitForElevatorToReachFloor(3, elevator);
 
             Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
