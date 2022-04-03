@@ -27,8 +27,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             _elevatorEngine = new ElevatorEngine(this);
         }
 
-        public bool IsOnAdministrativeLock { get; set; }
-
         private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
 
         private void RemoveRequestedFloorStop(int floorNbr)
@@ -101,7 +99,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
                 if (_doorStatus == DoorStatus.Open)
                 {
-                    IsOnAdministrativeLock = false;   //Release administrative lock
                     var floorRequestButton = FloorRequestPanel.GetButtonForFloorNumber(CurrentFloorNumber);
 
                     if (floorRequestButton != null)
@@ -227,11 +224,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     {
                         Direction = Direction.Up;
                     }
-                }
-
-                if (withAdministrativeLock)
-                {
-                    IsOnAdministrativeLock = true;
                 }
 
                 AddRequestedFloorStop(value);

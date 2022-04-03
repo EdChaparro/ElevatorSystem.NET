@@ -21,7 +21,6 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                 = FindFloorStopsRequiringService(bank, bank.RequestedFloorStops(direction), direction)
                     .ToList();
 
-            //First, try to assign floor stop requests to idle elevators
             var assignedFloorNbrs = AssignIdleElevators(bank, floorStopRequests, direction);
             foreach (var assignedFloorNbr in assignedFloorNbrs)
             {

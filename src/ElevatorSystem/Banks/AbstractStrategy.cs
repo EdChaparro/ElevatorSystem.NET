@@ -44,11 +44,9 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             {
                 case Direction.Down:
                     return bank.IdleElevators
-                        .Where(x => !x.IsOnAdministrativeLock)
                         .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
                 default:
                     return bank.IdleElevators
-                        .Where(x => !x.IsOnAdministrativeLock)
                         .OrderBy(x => x.CurrentFloorNumber).FirstOrDefault();
             }
         }
