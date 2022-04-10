@@ -301,7 +301,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
             var floorNumberChangedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
-
             elevator.FloorNumberChangedEvent += (sender, e)
                 => floorNumberChangedEvents.Add(e);
 

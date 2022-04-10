@@ -284,9 +284,9 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             return _requestedFloorStops.Where(x => x.Direction == direction);
         }
 
-        public RequestedFloorStop? GetRequestedFloorStop(Guid id)
+        public IEnumerable<RequestedFloorStop> GetRequestedFloorStops()
         {
-            return _requestedFloorStops.FirstOrDefault(x => x.Id == id);
+            return _requestedFloorStops;
         }
 
         private void RemoveRequestedFloorStop(int floorNbr, Direction direction)
@@ -324,6 +324,8 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         #region IEngine
         private Thread? _bankEngineThread;
         private readonly BankEngine _bankEngine;
+
+        public List<RequestedFloorStop> AssignedFloorStops => _bankEngine.AssignedFloorStops.ToList();
 
         public void Start()
         {

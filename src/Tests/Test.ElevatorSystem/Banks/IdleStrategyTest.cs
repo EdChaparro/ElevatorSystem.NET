@@ -9,26 +9,24 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
     public class IdleStrategyTest
     {
         [TestMethod]
-        public void ShouldNotDoubleAssignElevators()
+        public void ShouldAssignFirstAvailableElevator()
         {
             var bank = new Bank(2, 1..10);
             var elevator1 = bank.Elevators.First();
-            var elevator2 = bank.Elevators.Last();
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(8, Direction.Down));
 
-            var strategy = new IdleStrategy();
+            var strategy = new IdleStrategy(bank);
 
-            Assert.IsFalse(strategy.AssignedDownRequestedFloorStops.Any());
-            strategy.AssignElevators(bank);
-            Assert.AreEqual(1, strategy.AssignedDownRequestedFloorStops.Count());
+            var assignments = strategy.AssignElevators
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+                Direction.Down).ToList();
 
-            strategy.AssignElevators(bank); //Second call should have no effect
-            Assert.AreEqual(1, strategy.AssignedDownRequestedFloorStops.Count());
+            Assert.AreEqual(1, assignments.Count());
+            var rfs = assignments.First();
 
-            //TODO: Expand test to show new floor assignments will be honored.
+            Assert.AreEqual(1, elevator1.RequestedFloorStops.Count());
+            Assert.AreEqual(rfs, elevator1.RequestedFloorStops.First());
         }
-
-        //TODO: Create tests demonstrating Strategy cached is cleared when request honored
     }
 }

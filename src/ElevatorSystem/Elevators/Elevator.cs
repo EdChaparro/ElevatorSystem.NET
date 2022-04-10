@@ -266,5 +266,10 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 _elevatorEngineThread.Join();        //Wait for shutdown to complete
             }
         }
+
+        public override string ToString()
+        {
+            return $"Id: {Id}";
+        }
     }
 }
