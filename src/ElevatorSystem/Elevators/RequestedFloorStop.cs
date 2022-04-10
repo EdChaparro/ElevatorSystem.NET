@@ -40,6 +40,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             return rfs;
         }
 
-
+        public override string ToString()
+        {
+            return $"Id: {Id}, FloorNbr: {FloorNbr}, Direction: {Direction}";
+        }
     }
 }

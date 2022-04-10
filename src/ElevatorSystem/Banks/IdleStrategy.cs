@@ -12,20 +12,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         public IdleStrategy(Bank bank) : base(bank)
         {}
 
-        protected override IEnumerable<RequestedFloorStop> Assign(IEnumerable<int> floorStops, Direction direction)
-        {
-            var assignedFloorStops = new List<RequestedFloorStop>();
-
-            var assignedFloorNbrs = AssignIdleElevators(floorStops, direction);
-            foreach (var assignedFloorNbr in assignedFloorNbrs)
-            {
-                assignedFloorStops.Add(assignedFloorNbr);
-            }
-
-            return assignedFloorStops;
-        }
-
-        private List<RequestedFloorStop> AssignIdleElevators(IEnumerable<int> floorStops, Direction direction)
+        public override IEnumerable<RequestedFloorStop> AssignElevators(IEnumerable<int> floorStops, Direction direction)
         {
             var assignedFloorStops = new List<RequestedFloorStop>();
 

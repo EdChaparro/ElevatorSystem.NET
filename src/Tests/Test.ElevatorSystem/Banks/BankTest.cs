@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using IntrepidProducts.ElevatorSystem.Tests.Elevators;
@@ -91,6 +92,28 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             Assert.AreEqual(Direction.Down, elevator2.Direction);
             Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Down).Any());
             elevator2.Stop();
+        }
+
+        [TestMethod]
+        public void ShouldTrackAssignedElevators()
+        {
+            var bank = new Bank(2, 1..50);
+            var elevator = bank.Elevators.First(); //First idle elevator will be assigned
+
+            Assert.IsFalse(bank.AssignedFloorStops.Any());
+
+            bank.Start();
+            Assert.IsTrue(bank.PressButtonForFloorNumber(14, Direction.Down));
+
+            Thread.Sleep(500);  //Give the Engine a chance to do its thing
+
+            Assert.IsTrue(bank.AssignedFloorStops.Any());
+
+            ElevatorTest.WaitForElevatorToReachFloor(14, elevator);
+
+            Assert.IsFalse(bank.AssignedFloorStops.Any());   //Cache should be clear
+
+            bank.Stop();
         }
 
         [TestMethod, Ignore]    //Strategy not yet implemented
