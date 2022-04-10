@@ -116,35 +116,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             bank.Stop();
         }
 
-        [TestMethod, Ignore]    //Strategy not yet implemented
-        public void ShouldAssignProximateElevatorToServiceStopRequests()
-        {
-            var bank = new Bank(2, 1..10);
-            var elevator1 = bank.Elevators.First();
-            var elevator2 = bank.Elevators.Last();
-
-            elevator1.Name = "Test Elevator 1";
-            elevator2.Name = "Test Elevator 2";
-
-            bank.Start();
-
-            Assert.IsTrue(bank.PressButtonForFloorNumber(7, Direction.Down));
-            Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Down));
-
-            ElevatorTest.WaitForElevatorToReachFloor(7, elevator2);
-            Assert.AreEqual(Direction.Down, elevator2.Direction);
-            Assert.IsTrue(elevator2.PressButtonForFloorNumber(1));
-
-            ElevatorTest.WaitForElevatorToReachFloor(9, elevator1);
-            Assert.IsTrue(elevator1.PressButtonForFloorNumber(1));
-
-            bank.PressButtonForFloorNumber(2, Direction.Down);
-
-            ElevatorTest.WaitForElevatorToReachFloor(2, elevator2);
-
-            bank.Stop();
-        }
-
         [TestMethod]
         public void ShouldChangeElevatorDirectionWhenIdle()
         {

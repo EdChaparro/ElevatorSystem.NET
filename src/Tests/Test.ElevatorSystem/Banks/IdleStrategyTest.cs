@@ -28,5 +28,28 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             Assert.AreEqual(1, elevator1.RequestedFloorStops.Count());
             Assert.AreEqual(rfs, elevator1.RequestedFloorStops.First());
         }
+
+        [TestMethod]
+        public void ShouldNotAssignWhenElevatorsAreBusy()
+        {
+            var bank = new Bank(2, 1..10);
+            var elevator1 = bank.Elevators.First();
+            var elevator2 = bank.Elevators.Last();
+
+            elevator1.Name = "Test Elevator 1";
+            elevator2.Name = "Test Elevator 2";
+
+            var strategy = new ProximateStrategy(bank);
+
+            Assert.IsTrue(elevator1.RequestStopAtFloorNumber(8).isOk);
+            Assert.IsTrue(elevator2.RequestStopAtFloorNumber(5).isOk);
+            Assert.IsTrue(bank.PressButtonForFloorNumber(7, Direction.Down));
+
+            var assignments = strategy.AssignElevators
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+                Direction.Down).ToList();
+
+            Assert.AreEqual(0, assignments.Count());
+        }
     }
 }
