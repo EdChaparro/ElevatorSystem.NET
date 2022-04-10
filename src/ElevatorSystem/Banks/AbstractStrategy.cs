@@ -10,6 +10,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             (IEnumerable<int> floorStopRequests, Direction direction);
     }
 
+    //TODO: Add support for Strategy Chaining
     public abstract class AbstractStrategy : IStrategy
     {
         protected AbstractStrategy(Bank bank)
