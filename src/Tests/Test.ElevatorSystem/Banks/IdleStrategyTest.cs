@@ -17,13 +17,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(8, Direction.Down));
 
-            var strategy = new IdleStrategy();
+            var strategy = new IdleStrategy(bank);
 
             Assert.IsFalse(strategy.AssignedDownRequestedFloorStops.Any());
-            strategy.AssignElevators(bank);
+            strategy.AssignElevators();
             Assert.AreEqual(1, strategy.AssignedDownRequestedFloorStops.Count());
 
-            strategy.AssignElevators(bank); //Second call should have no effect
+            strategy.AssignElevators(); //Second call should have no effect
             Assert.AreEqual(1, strategy.AssignedDownRequestedFloorStops.Count());
 
             //TODO: Expand test to show new floor assignments will be honored.

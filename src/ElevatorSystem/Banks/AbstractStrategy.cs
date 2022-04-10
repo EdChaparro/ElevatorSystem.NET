@@ -7,11 +7,18 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     //TODO: Add support for multiple strategies using Chain-of-Responsibility pattern
     public interface IStrategy
     {
-        void AssignElevators(Bank bank);
+        void AssignElevators();
     }
 
     public abstract class AbstractStrategy : IStrategy
     {
+        protected AbstractStrategy(Bank bank)
+        {
+            Bank = bank;
+        }
+
+        protected Bank Bank { get; }
+
         private readonly List<RequestedFloorStop> _assignedDownRequestedFloorStops
             = new List<RequestedFloorStop>();
         public List<RequestedFloorStop> AssignedDownRequestedFloorStops
@@ -22,20 +29,20 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         public List<RequestedFloorStop> AssignedUpRequestedFloorStops
             => _assignedUpRequestedFloorStops.ToList();
 
-        public void AssignElevators(Bank bank)
+        public void AssignElevators()
         {
-            var assignedDown = Assign(bank, Direction.Down);
-            var assignedUp = Assign(bank, Direction.Up);
+            var assignedDown = Assign(Direction.Down);
+            var assignedUp = Assign(Direction.Up);
 
             _assignedDownRequestedFloorStops.AddRange(assignedDown);
             _assignedUpRequestedFloorStops.AddRange(assignedUp);
         }
 
-        private IEnumerable<RequestedFloorStop> Assign(Bank bank, Direction direction)
+        private IEnumerable<RequestedFloorStop> Assign(Direction direction)
         {
             var floorStopRequests
                 = FindFloorStopsRequiringService
-                        (bank, bank.GetRequestedFloorStops(direction), direction).ToList();
+                        (Bank.GetRequestedFloorStops(direction), direction).ToList();
 
             var floorNumbersToPassAlong = new List<int>();
             foreach (var floorNbr in floorStopRequests)
@@ -62,20 +69,20 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                 }
             }
 
-            return Assign(bank, floorNumbersToPassAlong, direction);
+            return Assign(floorNumbersToPassAlong, direction);
         }
 
         protected abstract IEnumerable<RequestedFloorStop> Assign
-            (Bank bank, IEnumerable<int> floorStops, Direction direction);
+            (IEnumerable<int> floorStops, Direction direction);
 
         protected IEnumerable<int> FindFloorStopsRequiringService
-            (Bank bank, IEnumerable<RequestedFloorStop> requestedFloorStops, Direction direction)
+            (IEnumerable<RequestedFloorStop> requestedFloorStops, Direction direction)
         {
             var floorStopsRequiringService = new HashSet<int>();
 
             foreach (var requestedFloorStop in requestedFloorStops)
             {
-                if (bank.IsElevatorStoppingAtFloorFromDirection(requestedFloorStop.FloorNbr, direction))
+                if (Bank.IsElevatorStoppingAtFloorFromDirection(requestedFloorStop.FloorNbr, direction))
                 {
                     continue;   //Skip stops already scheduled to be visited by an elevator
                 }

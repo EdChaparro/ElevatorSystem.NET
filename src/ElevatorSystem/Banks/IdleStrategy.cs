@@ -9,11 +9,14 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     /// </summary>
     public class IdleStrategy : AbstractStrategy
     {
-        protected override IEnumerable<RequestedFloorStop> Assign(Bank bank, IEnumerable<int> floorStops, Direction direction)
+        public IdleStrategy(Bank bank) : base(bank)
+        {}
+
+        protected override IEnumerable<RequestedFloorStop> Assign(IEnumerable<int> floorStops, Direction direction)
         {
             var assignedFloorStops = new List<RequestedFloorStop>();
 
-            var assignedFloorNbrs = AssignIdleElevators(bank, floorStops, direction);
+            var assignedFloorNbrs = AssignIdleElevators(floorStops, direction);
             foreach (var assignedFloorNbr in assignedFloorNbrs)
             {
                 assignedFloorStops.Add(assignedFloorNbr);
@@ -22,13 +25,13 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             return assignedFloorStops;
         }
 
-        private List<RequestedFloorStop> AssignIdleElevators(Bank bank, IEnumerable<int> floorStops, Direction direction)
+        private List<RequestedFloorStop> AssignIdleElevators(IEnumerable<int> floorStops, Direction direction)
         {
             var assignedFloorStops = new List<RequestedFloorStop>();
 
             foreach (var floorNbr in floorStops)
             {
-                var idleElevator = FindIdleElevator(bank, direction);
+                var idleElevator = FindIdleElevator(direction);
 
                 if (idleElevator == null)
                 {
@@ -46,15 +49,15 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             return assignedFloorStops;
         }
 
-        protected Elevator? FindIdleElevator(Bank bank, Direction direction)
+        protected Elevator? FindIdleElevator(Direction direction)
         {
             switch (direction)
             {
                 case Direction.Down:
-                    return bank.IdleElevators
+                    return Bank.IdleElevators
                         .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
                 default:
-                    return bank.IdleElevators
+                    return Bank.IdleElevators
                         .OrderBy(x => x.CurrentFloorNumber).FirstOrDefault();
             }
         }
