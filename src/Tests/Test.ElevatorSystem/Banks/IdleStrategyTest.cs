@@ -19,8 +19,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             var strategy = new IdleStrategy(bank);
 
             var assignments = strategy.AssignElevators
-            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
-                Direction.Down).ToList();
+                (bank.GetRequestedFloorStops().Select(x => x.FloorNbr).ToList(),
+                    Direction.Down).ToList();
 
             Assert.AreEqual(1, assignments.Count());
             var rfs = assignments.First();
@@ -46,7 +46,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             Assert.IsTrue(bank.PressButtonForFloorNumber(7, Direction.Down));
 
             var assignments = strategy.AssignElevators
-            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr).ToList(),
                 Direction.Down).ToList();
 
             Assert.AreEqual(0, assignments.Count());

@@ -12,7 +12,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         public ProximateStrategy(Bank bank) : base(bank)
         { }
 
-        public override IEnumerable<RequestedFloorStop> AssignElevators(IEnumerable<int> floorStops, Direction direction)
+        protected override IList<RequestedFloorStop> DoElevatorAssignments(IList<int> floorStops, Direction direction)
         {
             var assignedFloorStops = new List<RequestedFloorStop>();
 

@@ -29,12 +29,12 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             var strategy = new ProximateStrategy(bank);
 
             var downAssignments = strategy.AssignElevators
-            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr).ToList(),
                 Direction.Down).ToList();
             Assert.AreEqual(0, downAssignments.Count);
 
             var upAssignments = strategy.AssignElevators
-            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr).ToList(),
                 Direction.Up).ToList();
             Assert.AreEqual(1, upAssignments.Count());
             var sRFS = upAssignments.First();
@@ -49,7 +49,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             Assert.IsTrue(elevator2.PressButtonForFloorNumber(1));
             bank.PressButtonForFloorNumber(4, Direction.Down);
             downAssignments = strategy.AssignElevators
-            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr).ToList(),
                 Direction.Down).ToList();
             Assert.AreEqual(1, downAssignments.Count);
             sRFS = downAssignments.First();
@@ -78,7 +78,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             Assert.IsTrue(bank.PressButtonForFloorNumber(2, Direction.Down));
 
             var assignments = strategy.AssignElevators
-            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr),
+            (bank.GetRequestedFloorStops().Select(x => x.FloorNbr).ToList(),
                 Direction.Down).ToList();
 
             Assert.AreEqual(0, assignments.Count);

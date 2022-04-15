@@ -58,7 +58,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         private List<RequestedFloorStop> AssignElevators(Direction direction)
         {
             var requestedFloorStops = Bank.GetRequestedFloorStops(direction)
-                .Select(x => x.FloorNbr);
+                .Select(x => x.FloorNbr).ToList();
 
             return Strategy.AssignElevators(requestedFloorStops, direction).ToList();
         }
