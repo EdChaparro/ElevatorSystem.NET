@@ -9,7 +9,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     /// </summary>
     public class IdleStrategy : AbstractStrategy
     {
-        public IdleStrategy(Bank bank) : base(bank)
+        public IdleStrategy(Bank bank, IStrategy? nextStrategy = null) : base(bank, nextStrategy)
         {}
 
         protected override IList<RequestedFloorStop> DoElevatorAssignments(IList<int> floorStops, Direction direction)

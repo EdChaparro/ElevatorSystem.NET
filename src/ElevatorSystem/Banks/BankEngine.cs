@@ -15,7 +15,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
 
             Bank = bank;
-            Strategy = new IdleStrategy(bank);  //TODO: use IoC
+            Strategy = new IdleStrategy(bank, new ProximateStrategy(bank));  //TODO: use IoC
         }
 
         private Bank Bank { get; }
