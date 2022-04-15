@@ -177,7 +177,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             elevator3.Stop();
         }
 
-
         [TestMethod]
         public void ShouldTrackPendingElevatorStopsGoingDown()
         {

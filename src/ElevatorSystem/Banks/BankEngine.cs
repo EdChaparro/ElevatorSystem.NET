@@ -15,7 +15,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
 
             Bank = bank;
-            Strategy = new IdleStrategy(bank);  //TODO: use IoC
+            Strategy = new IdleStrategy(bank, new ProximateStrategy(bank));  //TODO: use IoC
         }
 
         private Bank Bank { get; }
@@ -58,7 +58,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         private List<RequestedFloorStop> AssignElevators(Direction direction)
         {
             var requestedFloorStops = Bank.GetRequestedFloorStops(direction)
-                .Select(x => x.FloorNbr);
+                .Select(x => x.FloorNbr).ToList();
 
             return Strategy.AssignElevators(requestedFloorStops, direction).ToList();
         }

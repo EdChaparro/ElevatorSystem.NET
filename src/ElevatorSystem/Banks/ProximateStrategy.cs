@@ -9,10 +9,10 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     /// </summary>
     public class ProximateStrategy : AbstractStrategy
     {
-        public ProximateStrategy(Bank bank) : base(bank)
+        public ProximateStrategy(Bank bank, IStrategy? nextStrategy = null) : base(bank, nextStrategy)
         { }
 
-        public override IEnumerable<RequestedFloorStop> AssignElevators(IEnumerable<int> floorStops, Direction direction)
+        protected override IList<RequestedFloorStop> DoElevatorAssignments(IList<int> floorStops, Direction direction)
         {
             var assignedFloorStops = new List<RequestedFloorStop>();
 
