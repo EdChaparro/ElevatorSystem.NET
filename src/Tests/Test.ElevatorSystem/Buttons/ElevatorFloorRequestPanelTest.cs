@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using IntrepidProducts.ElevatorSystem.Tests.Elevators;
@@ -44,7 +43,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         public void ShouldRaiseButtonPressedEvent()
         {
             var elevator = new Elevator(1, 2, 3);
-            var panel = new ElevatorFloorRequestPanel(elevator);
+            var panel = elevator.FloorRequestPanel;
 
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<ElevatorFloorRequestButton>>();
@@ -52,12 +51,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             panel.PanelButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
 
-            var buttonForFloor1 = panel.GetButtonForFloorNumber(1);
-            var buttonForFloor2 = panel.GetButtonForFloorNumber(2);
-            var buttonForFloor3 = panel.GetButtonForFloorNumber(3);
-
-            Assert.IsTrue(buttonForFloor2.SetPressedTo(true));
-            Assert.IsTrue(buttonForFloor3.SetPressedTo(true));
+            Assert.IsTrue(elevator.PressButtonForFloorNumber(2));
+            Assert.IsTrue(elevator.PressButtonForFloorNumber(3));
             Assert.AreEqual(2, receivedEvents.Count);
 
             var firstEvent = receivedEvents.First();
@@ -73,7 +68,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.IsTrue(elevator.RequestStopAtFloorNumber(3).isOk);
             ElevatorTest.WaitForElevatorToReachFloor(3, elevator);
 
-            Assert.IsTrue(buttonForFloor1.SetPressedTo(true));
+            Assert.IsTrue(elevator.PressButtonForFloorNumber(1));
+
             Assert.AreEqual(3, receivedEvents.Count);
             var thirdEvent = receivedEvents.Last();
             var thirdButton = thirdEvent.Button;
@@ -99,13 +95,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         public void ShouldProvidedRequestedFloorStops()
         {
             var elevator = new Elevator(1..7);
-            var panel = new ElevatorFloorRequestPanel(elevator);
+            var panel = elevator.FloorRequestPanel;
 
             Assert.IsFalse(panel.RequestedFloorStops.Any());
 
-            Assert.IsTrue(panel.GetButtonForFloorNumber(2).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(4).SetPressedTo(true));
-            Assert.IsTrue(panel.GetButtonForFloorNumber(6).SetPressedTo(true));
+            Assert.IsTrue(elevator.PressButtonForFloorNumber(2));
+            Assert.IsTrue(elevator.PressButtonForFloorNumber(4));
+            Assert.IsTrue(elevator.PressButtonForFloorNumber(6));
 
             CollectionAssert.AreEqual(new[] { 2, 4, 6 }, panel.RequestedFloorStops.ToList());
         }
