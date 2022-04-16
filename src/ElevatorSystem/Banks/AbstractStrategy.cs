@@ -25,24 +25,26 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         public IEnumerable<RequestedFloorStop> AssignElevators
             (IList<int> floorStops, Direction direction)
         {
-            var requestedFloorStopsFromAssignments =
+            var floorStopsAssignedByThisStrategy =
                 DoElevatorAssignments(floorStops, direction);
 
-            if ((NextStrategy == null) || (!requestedFloorStopsFromAssignments.Any()))
+            if (NextStrategy == null)
             {
-                return requestedFloorStopsFromAssignments;
+                return floorStopsAssignedByThisStrategy;
             }
 
             var remainingUnassignedFloorStops
-                = floorStops.Except(requestedFloorStopsFromAssignments
+                = floorStops.Except(floorStopsAssignedByThisStrategy
                     .Select(x => x.FloorNbr)).ToList();
 
             if (!remainingUnassignedFloorStops.Any())
             {
-                return requestedFloorStopsFromAssignments;
+                return floorStopsAssignedByThisStrategy;
             }
 
-            return NextStrategy.AssignElevators(remainingUnassignedFloorStops, direction);
+            var floorStopsAssignedByOtherStrategies = NextStrategy.AssignElevators(remainingUnassignedFloorStops, direction);
+
+            return floorStopsAssignedByThisStrategy.Concat(floorStopsAssignedByOtherStrategies);
         }
 
         protected abstract IList<RequestedFloorStop> DoElevatorAssignments
