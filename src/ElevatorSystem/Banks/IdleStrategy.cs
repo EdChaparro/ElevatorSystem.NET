@@ -25,7 +25,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                     break;
                 }
 
-                var result = idleElevator.RequestStopAtFloorNumber(floorNbr);
+                var result = idleElevator.RequestStopAtFloorNumber(floorNbr, direction);
 
                 if (result.requestedFloorStop != null)
                 {

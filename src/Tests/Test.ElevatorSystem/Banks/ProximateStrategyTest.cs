@@ -83,5 +83,45 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
 
             Assert.AreEqual(0, assignments.Count);
         }
+
+        [TestMethod]
+        public void ShouldNotAssignElevatorWithDirectionalConflicts()
+        {
+            var bank = new Bank(1, 1..10);
+            var elevator = bank.Elevators.First();
+
+            elevator.Start();
+
+            Assert.IsTrue(bank.PressButtonForFloorNumber(6, Direction.Down));
+            Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Up));
+
+            var requestedFloorStops =
+                bank.GetRequestedFloorStops(Direction.Down)
+                    .Select(x => x.FloorNbr).ToList();
+
+            var idleStrategy = new IdleStrategy(bank);
+            var proximateStrategy = new ProximateStrategy(bank);
+
+            var idleAssignments = idleStrategy.AssignElevators
+                (requestedFloorStops, Direction.Down);
+
+            Assert.AreEqual(1, idleAssignments.Count());
+            var idleAssignment = idleAssignments.First();
+            Assert.AreEqual(6, idleAssignment.FloorNbr);
+
+            var proximateAssignments = proximateStrategy.AssignElevators
+                (requestedFloorStops, Direction.Up);
+            Assert.AreEqual(0, proximateAssignments.Count());
+
+            ElevatorTest.WaitForElevatorToReachFloor(6, elevator);
+            elevator.RequestStopAtFloorNumber(8);
+
+            proximateAssignments = proximateStrategy.AssignElevators
+                (bank.GetRequestedFloorStops(Direction.Up)
+                    .Select(x => x.FloorNbr).ToList(), Direction.Up);
+            Assert.AreEqual(1, proximateAssignments.Count());
+
+            elevator.Stop();
+        }
     }
 }

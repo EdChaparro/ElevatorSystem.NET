@@ -191,7 +191,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
         }
 
         public (bool isOk, RequestedFloorStop? requestedFloorStop)
-            RequestStopAtFloorNumber(int value)
+            RequestStopAtFloorNumber(int value, Direction? forDirection = null)
         {
             if (!IsEnabled)
             {
@@ -228,7 +228,9 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                     }
                 }
 
-                var rfs = AddRequestedFloorStop(value, Direction);
+                var rfsDirection = forDirection ?? Direction;
+
+                var rfs = AddRequestedFloorStop(value, rfsDirection);
 
                 return (true, rfs);
             }

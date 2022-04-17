@@ -362,6 +362,20 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
             e.Stop();
         }
 
+        [TestMethod]
+        public void ShouldSetCorrectRequestFloorStopDirection()
+        {
+            var e = new Elevator(1..9);
+
+            var rfs1 = e.RequestStopAtFloorNumber(7).requestedFloorStop;
+            Assert.IsNotNull(rfs1);
+            Assert.AreEqual(Direction.Up, rfs1.Direction); //Defaults to heading
+
+            var rfs2 = e.RequestStopAtFloorNumber(8, Direction.Down).requestedFloorStop;
+            Assert.IsNotNull(rfs2);
+            Assert.AreEqual(Direction.Down, rfs2.Direction); //Can be overridden
+        }
+
         public static void WaitForElevatorToReachFloor
             (int floorNbr, Elevator elevator, int timeOutInSeconds = 10)
         {

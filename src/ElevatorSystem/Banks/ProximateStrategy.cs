@@ -25,7 +25,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                     break;
                 }
 
-                var result = proximateElevator.RequestStopAtFloorNumber(floorNbr);
+                var result = proximateElevator.RequestStopAtFloorNumber(floorNbr, direction);
 
                 if (result.requestedFloorStop != null)
                 {
@@ -38,23 +38,44 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
         protected Elevator? FindProximateElevator(int floorNbr, Direction direction)
         {
+            IEnumerable<Elevator> elevators;
+
             switch (direction)
             {
                 case Direction.Down:
-                    return Bank.Elevators
+                    elevators = Bank.Elevators
                         .Where(x =>
                             x.IsEnabled &&
                             x.Direction == direction &&
                             x.CurrentFloorNumber > floorNbr)
-                        .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
+                        .OrderByDescending(x => x.CurrentFloorNumber);
+                    break;
                 default:
-                    return Bank.Elevators
+                    elevators = Bank.Elevators
                         .Where(x =>
                             x.IsEnabled &&
                             x.Direction == direction &&
                             x.CurrentFloorNumber < floorNbr)
-                        .OrderByDescending(x => x.CurrentFloorNumber).FirstOrDefault();
+                        .OrderByDescending(x => x.CurrentFloorNumber);
+                    break;
             }
+
+            Elevator? elevator = null;
+            var oppositeDirection = direction == Direction.Down ? Direction.Up : Direction.Down;
+
+
+            foreach (var e in elevators)
+            {
+                if (e.RequestedFloorStops.Any(x => x.Direction == oppositeDirection))
+                {
+                    continue;
+                }
+
+                elevator = e;
+                break;
+            }
+
+            return elevator;
         }
     }
 }
