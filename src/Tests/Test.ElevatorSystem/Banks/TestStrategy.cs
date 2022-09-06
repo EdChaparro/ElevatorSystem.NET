@@ -1,15 +1,15 @@
 #nullable enable
-using System.Collections.Generic;
-using System.Linq;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Banks
 {
     public class TestStrategy : AbstractStrategy
     {
         public TestStrategy(Bank bank, IStrategy? nextStrategy = null) : base(bank, nextStrategy)
-        {}
+        { }
 
         /// <summary>
         /// For testing only -- arbitrarily assigns first floor stop

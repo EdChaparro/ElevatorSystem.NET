@@ -1,7 +1,7 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Elevators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
@@ -20,7 +20,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         }
 
         public IEnumerable<int> RequestedFloorStops
-            => Buttons.Where(x=> x.IsPressed)
+            => Buttons.Where(x => x.IsPressed)
                 .Select(x => x.FloorNbr);
 
         public ElevatorFloorRequestButton? GetButtonForFloorNumber(int nbr)

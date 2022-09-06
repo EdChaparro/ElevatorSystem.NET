@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using IntrepidProducts.ElevatorSystem.Buttons;
-using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {

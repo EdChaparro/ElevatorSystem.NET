@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
 using IntrepidProducts.ElevatorSystem.Banks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
+using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests
 {
@@ -104,7 +104,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
 
             var building = new Building(bank1, bank2, bank3);
 
-            var expectedFloorList = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var expectedFloorList = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             Assert.IsTrue(expectedFloorList.SequenceEqual(building.OrderedFloorNumbers));
         }
 

@@ -1,9 +1,9 @@
-﻿using System;
-using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+using System;
 
 namespace IntrepidProducts.ElevatorSystem
 {
-    public class Floor 
+    public class Floor
     {
         public Floor(int number)
         {

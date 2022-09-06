@@ -1,9 +1,9 @@
+using IntrepidProducts.ElevatorSystem.Elevators;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using IntrepidProducts.ElevatorSystem.Elevators;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
 {
@@ -45,7 +45,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseDoorEventWhenStatusChanges()
         {
             var elevator = new Elevator(1..2)
-                { DoorStatus = DoorStatus.Closed };
+            { DoorStatus = DoorStatus.Closed };
 
             var receivedEvents = new List<ElevatorDoorEventArgs>();
 
@@ -68,7 +68,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseDirectionChangedEvent()
         {
             var elevator = new Elevator(1..5)
-                { DoorStatus = DoorStatus.Closed };
+            { DoorStatus = DoorStatus.Closed };
 
             Assert.AreEqual(Direction.Up, elevator.Direction);
 
@@ -97,7 +97,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldRaiseFloorChangedEvent()
         {
             var elevator = new Elevator(1..2)
-                { DoorStatus = DoorStatus.Open };
+            { DoorStatus = DoorStatus.Open };
 
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
@@ -296,7 +296,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldTraverseToFloorDestinationStepwise()
         {
             var elevator = new Elevator(1..9)
-                { DoorStatus = DoorStatus.Closed };
+            { DoorStatus = DoorStatus.Closed };
 
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
 
@@ -325,7 +325,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
         public void ShouldStopAtFloorWhenRequestedFromElevatorFloorPanel()
         {
             var elevator = new Elevator(1..9)
-                { DoorStatus = DoorStatus.Closed };
+            { DoorStatus = DoorStatus.Closed };
 
             Assert.AreEqual(1, elevator.CurrentFloorNumber);
 

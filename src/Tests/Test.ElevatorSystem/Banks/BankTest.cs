@@ -1,10 +1,10 @@
-using System;
-using System.Linq;
-using System.Threading;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using IntrepidProducts.ElevatorSystem.Tests.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Banks
 {
@@ -248,7 +248,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
         {
             var bank = new Bank(1, 1, 7, 5);
 
-            var expectedFloorList = new [] { 1, 5, 7 };
+            var expectedFloorList = new[] { 1, 5, 7 };
             Assert.IsTrue(expectedFloorList.SequenceEqual(bank.OrderedFloorNumbers));
         }
 

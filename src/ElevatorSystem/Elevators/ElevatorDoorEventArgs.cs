@@ -5,7 +5,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
     public class ElevatorDoorEventArgs : ElevatorEventArgs
     {
         public ElevatorDoorEventArgs(Guid elevatorId,
-            int floorNbr, Direction direction,  DoorStatus doorStatus)
+            int floorNbr, Direction direction, DoorStatus doorStatus)
             : base(elevatorId)
         {
             FloorNumber = floorNbr;

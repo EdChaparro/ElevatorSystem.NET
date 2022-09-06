@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {

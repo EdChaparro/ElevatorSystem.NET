@@ -1,12 +1,12 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Banks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorSystem
 {
     public class Buildings : List<Building>
-    {}
+    { }
 
     public class Building : AbstractEntity, IHasFloors
     {
