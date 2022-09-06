@@ -5,7 +5,10 @@ using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorSystem
 {
-    public class Building : IHasFloors
+    public class Buildings : List<Building>
+    {}
+
+    public class Building : AbstractEntity, IHasFloors
     {
         public Building(params IBank[] banks)
         {
