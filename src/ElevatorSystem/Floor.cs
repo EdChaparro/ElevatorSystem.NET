@@ -9,9 +9,9 @@ namespace IntrepidProducts.ElevatorSystem
         {
             Number = number;
 
-            if (number < 1)
+            if (number == 0)
             {
-                throw new ArgumentException("Floor number must be greater than 1");
+                throw new ArgumentException("Floor number cannot be zero");
             }
 
             Name = number.ToString();

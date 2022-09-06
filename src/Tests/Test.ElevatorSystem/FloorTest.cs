@@ -16,9 +16,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void ShouldRejectFloorNumbersBelowOne()
+        public void ShouldRejectFloorNumbersWhenZero()
         {
             var floor = new Floor(0);
+        }
+
+        [TestMethod]
+        public void ShouldAcceptNegativeFloorNumbers()
+        {
+            var floor = new Floor(-5);
         }
 
         [TestMethod]

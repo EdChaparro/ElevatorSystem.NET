@@ -32,16 +32,16 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         {
             var floorNumbers = floorNbrs.ToList();
 
+            if (floorNumbers.Contains(0))
+            {
+                throw new ArgumentException
+                    ("Floor Number can not be zero");
+            }
+
             if (floorNumbers.Count() < 2)
             {
                 throw new ArgumentException
                     ("Floor Request Panel must have at least two floors");
-            }
-
-            if (floorNumbers.Min() < 1)
-            {
-                throw new ArgumentException
-                    ("Floor numbers must be positive");
             }
 
             if (floorNumbers.Distinct().Count() != floorNumbers.Count())

@@ -27,7 +27,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             _elevatorEngine = new ElevatorEngine(this);
         }
 
-        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
+        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new();
 
         private void RemoveRequestedFloorStop(int floorNbr)
         {

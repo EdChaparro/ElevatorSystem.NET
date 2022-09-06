@@ -86,7 +86,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void ShouldRejectFloorNumbersLessThanOne()
+        public void ShouldRejectFloorNumberWhenZero()
         {
             new ElevatorFloorRequestPanel(new Elevator(0, 1, 2));
         }

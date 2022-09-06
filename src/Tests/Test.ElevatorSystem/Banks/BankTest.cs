@@ -237,6 +237,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
         }
 
         [TestMethod]
+        public void ShouldAcceptNegativeFloorNumbers()
+        {
+            var bank = new Bank(2, -3, -2, -1, 1, 2);
+            Assert.AreEqual(5, bank.NumberOfFloors);
+        }
+
+        [TestMethod]
         public void ShouldReportOrderedCollectionOfFloorNumbers()
         {
             var bank = new Bank(1, 1, 7, 5);
@@ -250,6 +257,13 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
         public void ShouldRejectNonUniqueFloors()
         {
             new Bank(3, 1, 2, 1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ShouldRejectFloorNumberZero()
+        {
+            new Bank(3, -1, 0, 1);
         }
 
         [TestMethod]
