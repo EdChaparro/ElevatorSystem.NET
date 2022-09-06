@@ -1,17 +1,17 @@
-﻿using System;
-using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+using System;
 
 namespace IntrepidProducts.ElevatorSystem
 {
-    public class Floor 
+    public class Floor
     {
         public Floor(int number)
         {
             Number = number;
 
-            if (number < 1)
+            if (number == 0)
             {
-                throw new ArgumentException("Floor number must be greater than 1");
+                throw new ArgumentException("Floor number cannot be zero");
             }
 
             Name = number.ToString();

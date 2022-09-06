@@ -1,22 +1,22 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Elevators;
+using IntrepidProducts.ElevatorSystem.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using IntrepidProducts.ElevatorSystem.Buttons;
-using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Banks
 {
     public interface IBank : IHasId, IHasFloors, IEngine
-    {}  //Facilitates Mocking
+    { }  //Facilitates Mocking
 
     public class Bank : AbstractEntity, IBank
     {
         public Bank(int nbrOfElevators, Range floorRange)
             : this(nbrOfElevators, Enumerable.Range
             (floorRange.Start.Value, floorRange.End.Value).ToArray())
-        {}
+        { }
 
         public Bank(int nbrOfElevators, params int[] floorsNbr)
         {

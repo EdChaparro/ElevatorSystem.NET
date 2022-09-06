@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {
@@ -41,7 +41,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
         {
             var button = new TestButton();
 
-            var receivedEvents = new List<ButtonPressedEventArgs<IButton>> ();
+            var receivedEvents = new List<ButtonPressedEventArgs<IButton>>();
 
             button.ButtonPressedEvent += (sender, e)
                 => receivedEvents.Add(e);
@@ -69,7 +69,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 
             button.IsEnabled = false;
             Assert.IsFalse(button.SetPressedTo(true));
-            
+
             Assert.IsNull(receivedEvent);
         }
 

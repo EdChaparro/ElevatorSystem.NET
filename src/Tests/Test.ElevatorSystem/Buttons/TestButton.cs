@@ -1,5 +1,5 @@
-﻿using System;
-using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+using System;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
 {

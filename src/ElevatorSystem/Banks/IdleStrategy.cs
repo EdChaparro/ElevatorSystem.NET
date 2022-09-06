@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IntrepidProducts.ElevatorSystem.Elevators;
+using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem.Banks
 {
@@ -10,7 +10,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     public class IdleStrategy : AbstractStrategy
     {
         public IdleStrategy(Bank bank, IStrategy? nextStrategy = null) : base(bank, nextStrategy)
-        {}
+        { }
 
         protected override IList<RequestedFloorStop> DoElevatorAssignments(IList<int> floorStops, Direction direction)
         {

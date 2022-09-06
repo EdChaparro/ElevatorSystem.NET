@@ -1,12 +1,14 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Banks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.ElevatorSystem.Banks;
-using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem
 {
-    public class Building : IHasFloors
+    public class Buildings : List<Building>
+    { }
+
+    public class Building : AbstractEntity, IHasFloors
     {
         public Building(params IBank[] banks)
         {
@@ -17,6 +19,8 @@ namespace IntrepidProducts.ElevatorSystem
                 throw new ArgumentException("Invalid elevator bank set specified");
             }
         }
+
+        public string? Name { get; set; }
 
         private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
 

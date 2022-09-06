@@ -1,7 +1,7 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Elevators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorSystem.Buttons
 {
@@ -20,7 +20,7 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         }
 
         public IEnumerable<int> RequestedFloorStops
-            => Buttons.Where(x=> x.IsPressed)
+            => Buttons.Where(x => x.IsPressed)
                 .Select(x => x.FloorNbr);
 
         public ElevatorFloorRequestButton? GetButtonForFloorNumber(int nbr)
@@ -32,16 +32,16 @@ namespace IntrepidProducts.ElevatorSystem.Buttons
         {
             var floorNumbers = floorNbrs.ToList();
 
+            if (floorNumbers.Contains(0))
+            {
+                throw new ArgumentException
+                    ("Floor Number can not be zero");
+            }
+
             if (floorNumbers.Count() < 2)
             {
                 throw new ArgumentException
                     ("Floor Request Panel must have at least two floors");
-            }
-
-            if (floorNumbers.Min() < 1)
-            {
-                throw new ArgumentException
-                    ("Floor numbers must be positive");
             }
 
             if (floorNumbers.Distinct().Count() != floorNumbers.Count())

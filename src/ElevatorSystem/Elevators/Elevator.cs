@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IntrepidProducts.ElevatorSystem.Buttons;
+using IntrepidProducts.ElevatorSystem.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using IntrepidProducts.ElevatorSystem.Buttons;
-using IntrepidProducts.ElevatorSystem.Service;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
@@ -27,7 +27,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             _elevatorEngine = new ElevatorEngine(this);
         }
 
-        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
+        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new();
 
         private void RemoveRequestedFloorStop(int floorNbr)
         {

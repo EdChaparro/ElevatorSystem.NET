@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using IntrepidProducts.ElevatorSystem.Service;
+﻿using IntrepidProducts.ElevatorSystem.Service;
+using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
