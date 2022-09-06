@@ -20,6 +20,8 @@ namespace IntrepidProducts.ElevatorSystem
             }
         }
 
+        public string? Name { get; set; }
+
         private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
 
         private bool Add(params IBank[] banks)
