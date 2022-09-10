@@ -9,7 +9,7 @@
 
     <RootNamespace>IntrepidProducts.ElevatorSystem.Tests</RootNamespace>
 
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
