@@ -9,6 +9,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
     [TestClass]
     public class BuildingTest
     {
+        #region Banks
         [TestMethod]
         public void ShouldStartAndStopAllBanks()
         {
@@ -48,6 +49,30 @@ namespace IntrepidProducts.ElevatorSystem.Tests
 
             new Building(bank, dup);
         }
+
+        [TestMethod]
+        public void ShouldSupportAddingBanksAfterInstantiation()
+        {
+            var building = new Building();
+            Assert.AreEqual(0, building.NumberOfBanks);
+
+            building.Add(new Bank(1, 1..3));
+            Assert.AreEqual(1, building.NumberOfBanks);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void ShouldNotPermitBankAdditionsWhileRunning()
+        {
+            var bank = new Bank(2, 1, 4);
+
+            var building = new Building(bank);
+            building.StartAllElevatorBanks();
+
+            //Boom...
+            building.Add(new Bank(1, 1..3));
+        }
+        #endregion
 
         #region Floors
         [TestMethod]
@@ -105,7 +130,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             var building = new Building(bank1, bank2, bank3);
 
             var expectedFloorList = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            Assert.IsTrue(expectedFloorList.SequenceEqual(building.OrderedFloorNumbers));
+            CollectionAssert.AreEqual(expectedFloorList, building.OrderedFloorNumbers.ToArray());
         }
 
         #endregion

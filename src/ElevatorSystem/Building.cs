@@ -24,8 +24,14 @@ namespace IntrepidProducts.ElevatorSystem
 
         private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
 
-        private bool Add(params IBank[] banks)
+        public bool Add(params IBank[] banks)
         {
+            if (IsEngineStarted)
+            {
+                throw new InvalidOperationException
+                    ("Elevator Bank Count changes not permitted while Engine is running");
+            }
+
             var itemsToAdd = new Dictionary<Guid, IBank>();
 
             foreach (var bank in banks)
@@ -73,8 +79,18 @@ namespace IntrepidProducts.ElevatorSystem
         public int HighestFloorNbr => OrderedFloorNumbers.Max();
         #endregion
 
+        #region Engine
+
+        public bool IsEngineStarted { get; private set; }
         public void StartAllElevatorBanks()
         {
+            if (IsEngineStarted)
+            {
+                throw new InvalidOperationException("Engine already started");
+            }
+
+            IsEngineStarted = true;
+
             foreach (var bank in _banks.Values)
             {
                 bank.Start();
@@ -83,11 +99,14 @@ namespace IntrepidProducts.ElevatorSystem
 
         public void StopAllElevatorBanks()
         {
+            IsEngineStarted = false;
+
             foreach (var bank in _banks.Values)
             {
                 bank.Stop();
             }
         }
+        #endregion
 
         public override string ToString()
         {
