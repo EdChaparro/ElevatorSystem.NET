@@ -11,6 +11,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     public interface IBank : IHasId, IHasFloors, IEngine //Facilitates Mocking
     {
         string? Name { get; set; }
+        int NumberOfElevators { get; }
     }
 
     public class Bank : AbstractEntity, IBank
