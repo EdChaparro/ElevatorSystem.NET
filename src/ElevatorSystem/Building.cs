@@ -24,6 +24,7 @@ namespace IntrepidProducts.ElevatorSystem
 
         private readonly Dictionary<Guid, IBank> _banks = new Dictionary<Guid, IBank>();
 
+        #region Banks
         public bool Add(params IBank[] banks)
         {
             if (IsEngineStarted)
@@ -56,6 +57,22 @@ namespace IntrepidProducts.ElevatorSystem
         }
 
         public int NumberOfBanks => _banks.Count;
+
+        public IBank? GetBank(Guid bankId)
+        {
+            if (!_banks.ContainsKey(bankId))
+            {
+                return null;
+            }
+
+            return _banks[bankId];
+        }
+
+        public IBank? GetBank(string bankName)
+        {
+            return _banks.Values.FirstOrDefault(x => x.Name == bankName);
+        }
+        #endregion
 
         #region IHasFloor
         public int NumberOfFloors => OrderedFloorNumbers.Max();

@@ -8,8 +8,10 @@ using System.Threading;
 
 namespace IntrepidProducts.ElevatorSystem.Banks
 {
-    public interface IBank : IHasId, IHasFloors, IEngine
-    { }  //Facilitates Mocking
+    public interface IBank : IHasId, IHasFloors, IEngine //Facilitates Mocking
+    {
+        string? Name { get; set; }
+    }
 
     public class Bank : AbstractEntity, IBank
     {
