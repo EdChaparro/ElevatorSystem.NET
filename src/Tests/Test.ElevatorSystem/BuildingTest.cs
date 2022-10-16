@@ -2,6 +2,7 @@ using IntrepidProducts.ElevatorSystem.Banks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests
@@ -67,6 +68,18 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             var building = new Building(bank1, bank2);
             Assert.AreEqual(bank1, building.GetBank("A"));
             Assert.AreEqual(bank2, building.GetBank("B"));
+        }
+
+        [TestMethod]
+        public void ShouldReturnAllBanks()
+        {
+            var bank1 = new Bank(2, 1, 2);
+            var bank2 = new Bank(2, 3, 4);
+
+            var building = new Building(bank1, bank2);
+
+            CollectionAssert.AreEqual
+                (new List<IBank> {bank1, bank2}, building.Banks.ToList());
         }
 
         [TestMethod]
