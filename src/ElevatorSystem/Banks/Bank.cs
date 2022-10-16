@@ -33,7 +33,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             _bankEngine = new BankEngine(this);
         }
 
-        private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
+        public string? Name { get; set; }
 
         #region Elevators
         private readonly Dictionary<Guid, Elevator> _elevators =
@@ -150,6 +150,8 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         #endregion
 
         #region Floors
+        private readonly SortedDictionary<int, Floor> _floors = new SortedDictionary<int, Floor>();
+
         public FloorElevatorCallPanel? GetFloorElevatorCallPanelFor(int floorNbr)
         {
             return GetFloorFor(floorNbr)?.Panel;
