@@ -36,8 +36,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         public string? Name { get; set; }
 
         #region Elevators
-        private readonly Dictionary<Guid, Elevator> _elevators =
-            new Dictionary<Guid, Elevator>();
+        private readonly Dictionary<Guid, Elevator> _elevators = new();
 
         public IEnumerable<Elevator> Elevators => _elevators.Values.ToList();
 
