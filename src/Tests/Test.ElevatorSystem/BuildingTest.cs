@@ -41,6 +41,35 @@ namespace IntrepidProducts.ElevatorSystem.Tests
         }
 
         [TestMethod]
+        public void ShouldGetBankById()
+        {
+            var bank1 = new Bank(2, 1, 2);
+            var bank2 = new Bank(2, 3, 4);
+
+            var building = new Building(bank1, bank2);
+            Assert.AreEqual(bank1, building.GetBank(bank1.Id));
+            Assert.AreEqual(bank2, building.GetBank(bank2.Id));
+        }
+
+        [TestMethod]
+        public void ShouldGetBankByName()
+        {
+            var bank1 = new Bank(2, 1, 2)
+            {
+                Name = "A"
+            };
+
+            var bank2 = new Bank(2, 3, 4)
+            {
+                Name = "B"
+            };
+
+            var building = new Building(bank1, bank2);
+            Assert.AreEqual(bank1, building.GetBank("A"));
+            Assert.AreEqual(bank2, building.GetBank("B"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldRejectNonUniqueElevatorBanks()
         {
