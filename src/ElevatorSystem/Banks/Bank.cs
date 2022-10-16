@@ -164,19 +164,6 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             return button?.SetPressedTo(true) ?? false;
         }
 
-        public bool SetFloorName(int floorNbr, string name)
-        {
-            var floor = GetFloorFor(floorNbr);
-
-            if (floor == null)
-            {
-                return false;
-            }
-
-            floor.Name = name;
-            return true;
-        }
-
         public Floor? GetFloorFor(int floorNbr)
         {
             if (_floors.ContainsKey(floorNbr))
@@ -253,7 +240,6 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         public int LowestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Min() : 0;
         public int HighestFloorNbr => OrderedFloorNumbers.Any() ? OrderedFloorNumbers.Max() : 0;
         #endregion
-
 
         public IEnumerable<RequestedFloorStop> PendingDownFloorStops
             => PendingFloorStopsInDirection(Direction.Down);
