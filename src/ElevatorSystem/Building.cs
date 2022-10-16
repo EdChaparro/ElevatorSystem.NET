@@ -58,6 +58,8 @@ namespace IntrepidProducts.ElevatorSystem
 
         public int NumberOfBanks => _banks.Count;
 
+        public IEnumerable<IBank> Banks => _banks.Values.ToList();
+
         public IBank? GetBank(Guid bankId)
         {
             if (!_banks.ContainsKey(bankId))
