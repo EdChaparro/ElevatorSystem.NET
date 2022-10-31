@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
