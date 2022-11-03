@@ -11,6 +11,9 @@ namespace IntrepidProducts.ElevatorSystem
 
     public class Building : AbstractEntity, IHasFloors
     {
+        public Building()   //Parmeterless constructor added to support serialization
+        { }
+
         public Building(params IBank[] banks)
         {
             var result = Add(banks);
@@ -78,7 +81,7 @@ namespace IntrepidProducts.ElevatorSystem
         #endregion
 
         #region IHasFloor
-        public int NumberOfFloors => OrderedFloorNumbers.Max();
+        public int NumberOfFloors => OrderedFloorNumbers.DefaultIfEmpty(0).Max();
 
         public IEnumerable<int> OrderedFloorNumbers
         {
@@ -95,8 +98,9 @@ namespace IntrepidProducts.ElevatorSystem
             }
         }
 
-        public int LowestFloorNbr => OrderedFloorNumbers.Min();
-        public int HighestFloorNbr => OrderedFloorNumbers.Max();
+        //Using DefaultIfEmpty to prevent exceptions on serialization
+        public int LowestFloorNbr => OrderedFloorNumbers.DefaultIfEmpty(0).Min();
+        public int HighestFloorNbr => OrderedFloorNumbers.DefaultIfEmpty(0).Max();
         #endregion
 
         #region Engine
