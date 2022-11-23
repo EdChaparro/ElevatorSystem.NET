@@ -13,6 +13,16 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
     public class Elevator : AbstractEntity, IElevator
     {
+        public Elevator() //Parmeterless constructor added to support serialization
+        {
+            OrderedFloorNumbers = Enumerable.Empty<int>();
+
+            FloorRequestPanel = new ElevatorFloorRequestPanel(this);
+            FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
+
+            _elevatorEngine = new ElevatorEngine(this);
+        }
+
         public Elevator(Range floorRange) : this(Enumerable.Range
             (floorRange.Start.Value, floorRange.End.Value).ToArray())
         { }
