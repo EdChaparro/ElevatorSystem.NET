@@ -11,7 +11,7 @@ namespace IntrepidProducts.ElevatorSystem
 
     public class Building : AbstractEntity, IHasFloors
     {
-        public Building()   //Parmeterless constructor added to support serialization
+        public Building()   //Parameter-less constructor added to support serialization
         { }
 
         public Building(params IBank[] banks)
