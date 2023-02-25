@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BDB01342
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ElevatorSystem", "src\Tests\Test.ElevatorSystem\Test.ElevatorSystem.csproj", "{CA12A44D-B115-49B7-8812-7D849ADFD982}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatorService", "src\ElevatorService\ElevatorService.csproj", "{FD087D35-B7E9-4267-AF21-5FEBE8015817}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,6 +25,10 @@ Global
 		{CA12A44D-B115-49B7-8812-7D849ADFD982}.Debug|x64.Build.0 = Debug|x64
 		{CA12A44D-B115-49B7-8812-7D849ADFD982}.Release|x64.ActiveCfg = Release|x64
 		{CA12A44D-B115-49B7-8812-7D849ADFD982}.Release|x64.Build.0 = Release|x64
+		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Debug|x64.ActiveCfg = Debug|x64
+		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Debug|x64.Build.0 = Debug|x64
+		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Release|x64.ActiveCfg = Release|x64
+		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
