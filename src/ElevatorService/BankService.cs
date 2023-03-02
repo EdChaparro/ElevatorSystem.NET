@@ -20,18 +20,12 @@ public class BankService : AbstractBackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Console.WriteLine($"Real BankService started at: {DateTimeOffset.Now}, Id: {Bank.Id}");
-        Console.WriteLine($"SleepIntervalInMilliseconds {SleepIntervalInMilliseconds}");
-
-
         while (!stoppingToken.IsCancellationRequested)
         {
             ClearCompletedFloorStops();
 
             AssignedFloorStops.AddRange(AssignElevators(Direction.Down));
             AssignedFloorStops.AddRange(AssignElevators(Direction.Up));
-
-            Console.WriteLine($"Real BankService running at: {DateTimeOffset.Now}");
 
             await Task.Delay(SleepIntervalInMilliseconds, stoppingToken);
         }
@@ -67,5 +61,4 @@ public class BankService : AbstractBackgroundService
 
         return Strategy.AssignElevators(requestedFloorStops, direction).ToList();
     }
-
 }

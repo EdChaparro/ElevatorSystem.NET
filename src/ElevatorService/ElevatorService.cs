@@ -56,17 +56,12 @@ public class ElevatorService : AbstractBackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Console.WriteLine($"Real ElevatorService started at: {DateTimeOffset.Now}, Id: {Elevator.Id}");
-        Console.WriteLine($"SleepIntervalInMilliseconds {SleepIntervalInMilliseconds}");
-
         while (!stoppingToken.IsCancellationRequested)
         {
             if (Elevator.RequestedFloorStops.Any())
             {
                 NavigateToNextFloorStop();
             }
-
-            Console.WriteLine($"Real ElevatorService running at: {DateTimeOffset.Now}");
 
             await Task.Delay(SleepIntervalInMilliseconds, stoppingToken);
         }
