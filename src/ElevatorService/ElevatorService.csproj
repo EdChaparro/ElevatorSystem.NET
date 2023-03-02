@@ -8,7 +8,7 @@
     <RootNamespace>IntrepidProducts.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <AssemblyName>IntrepidProducts.$(MSBuildProjectName)</AssemblyName>
     <Platforms>x64</Platforms>
-    <StartupObject>IntrepidProducts.ElevatorService.ElevatorServiceRunner</StartupObject>
+    <StartupObject>IntrepidProducts.ElevatorService.BankServiceConsoleRunner</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
