@@ -2,9 +2,9 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService;
 
-public class ElevatorEngine : AbstractBackgroundService
+public class ElevatorService : AbstractBackgroundService
 {
-    public ElevatorEngine(Elevator elevator)
+    public ElevatorService(Elevator elevator)
     {
         SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
 
@@ -56,7 +56,7 @@ public class ElevatorEngine : AbstractBackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Console.WriteLine($"Real ElevatorEngine started at: {DateTimeOffset.Now}, Id: {Elevator.Id}");
+        Console.WriteLine($"Real ElevatorService started at: {DateTimeOffset.Now}, Id: {Elevator.Id}");
         Console.WriteLine($"SleepIntervalInMilliseconds {SleepIntervalInMilliseconds}");
 
         while (!stoppingToken.IsCancellationRequested)
@@ -66,7 +66,7 @@ public class ElevatorEngine : AbstractBackgroundService
                 NavigateToNextFloorStop();
             }
 
-            Console.WriteLine($"Real ElevatorEngine running at: {DateTimeOffset.Now}");
+            Console.WriteLine($"Real ElevatorService running at: {DateTimeOffset.Now}");
 
             await Task.Delay(SleepIntervalInMilliseconds, stoppingToken);
         }

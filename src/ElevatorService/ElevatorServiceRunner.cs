@@ -41,7 +41,7 @@ public class ElevatorServiceRunner
 
     public static IBackgroundService GetElevatorEngineFor(Elevator elevator)
     {
-        return new ElevatorEngine(elevator);
+        return new ElevatorService(elevator);
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args)
@@ -52,7 +52,7 @@ public class ElevatorServiceRunner
             .ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<Elevator>(bank.Elevators.First());
-                services.AddHostedService<ElevatorEngine>();
+                services.AddHostedService<ElevatorService>();
             });
     }
 }

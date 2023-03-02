@@ -25,4 +25,10 @@
     <ProjectReference Include="..\..\ElevatorService\ElevatorService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="IntrepidProducts.Common">
+      <HintPath>..\..\..\dependencies\IntrepidProducts.Common\IntrepidProducts.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
