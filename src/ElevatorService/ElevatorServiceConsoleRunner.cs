@@ -3,22 +3,8 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService;
 
-public class ElevatorServiceRunner
+public class ElevatorServiceConsoleRunner
 {
-    //public static void Main(string[] args)
-    //{
-    //    var host = CreateHostBuilder(args)
-    //        .Build();
-
-    //    host.RunAsync();
-
-    //    Console.WriteLine("Engine started, waiting 5 second before shutdown");
-    //    Thread.Sleep(5000);
-
-    //    Console.WriteLine("Shutting down Engine");
-    //    host.StopAsync();
-    //}
-
     public static void Main(string[] args)
     {
         var bank = new Bank(2, 1..10);
