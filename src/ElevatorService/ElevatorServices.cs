@@ -37,6 +37,11 @@ public class ElevatorServices : IElevatorServices
         }
     }
 
+    public IBackgroundService? Get(Elevator elevator)
+    {
+        return _serviceDetails.ContainsKey(elevator.Id) ? _serviceDetails[elevator.Id].service : null;
+    }
+
     public void UnRegister(params Elevator[] elevators)
     {
         foreach (var elevator in elevators)
@@ -44,6 +49,13 @@ public class ElevatorServices : IElevatorServices
             if (!_serviceDetails.ContainsKey(elevator.Id))
             {
                 continue;
+            }
+
+            var (service, cancellationToken) = _serviceDetails[elevator.Id];
+
+            if (service.IsRunning)
+            {
+                service.StopAsync(cancellationToken);
             }
 
             _serviceDetails.Remove(elevator.Id);

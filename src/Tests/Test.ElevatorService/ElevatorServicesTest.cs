@@ -8,105 +8,126 @@ namespace IntrepidProducts.ElevatorService.Tests
         [TestMethod]
         public void ShouldRegisterElevatorService()
         {
-            var service = new ElevatorServices();
-            Assert.AreEqual(0, service.Count);
+            var services = new ElevatorServices();
+            Assert.AreEqual(0, services.Count);
 
             var elevator = new Elevator(1..10);
-            service.Register(elevator);
+            services.Register(elevator);
 
-            Assert.AreEqual(1, service.Count);
+            Assert.AreEqual(1, services.Count);
         }
 
         [TestMethod]
         public void ShouldRegisterMultipleElevatorServices()
         {
-            var service = new ElevatorServices();
-            Assert.AreEqual(0, service.Count);
+            var services = new ElevatorServices();
+            Assert.AreEqual(0, services.Count);
 
             var elevator1 = new Elevator(1..10);
             var elevator2 = new Elevator(1..10);
-            service.Register(elevator1, elevator2);
+            services.Register(elevator1, elevator2);
 
-            Assert.AreEqual(2, service.Count);
+            Assert.AreEqual(2, services.Count);
         }
 
         [TestMethod]
         public void ShouldUnRegisterElevatorService()
         {
-            var service = new ElevatorServices();
+            var services = new ElevatorServices();
 
             var elevator = new Elevator(1..10);
-            service.Register(elevator);
-            Assert.AreEqual(1, service.Count);
+            services.Register(elevator);
+            Assert.AreEqual(1, services.Count);
 
-            service.UnRegister(elevator);
-            Assert.AreEqual(0, service.Count);
+            services.UnRegister(elevator);
+            Assert.AreEqual(0, services.Count);
+        }
+
+        [TestMethod]
+        public void ShouldStopRunningServiceWhenUnRegistered()
+        {
+            var services = new ElevatorServices();
+
+            var elevator = new Elevator(1..10);
+            services.Register(elevator);
+
+            var service = services.Get(elevator);
+            Assert.IsNotNull(service);
+            Assert.IsFalse(service.IsRunning);
+
+            services.Start(elevator);
+            Assert.IsTrue(service.IsRunning);
+
+            services.UnRegister(elevator);
+            Assert.AreEqual(0, services.Count);
+
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
         public void ShouldUnRegisterMultipleElevatorServices()
         {
-            var service = new ElevatorServices();
+            var services = new ElevatorServices();
 
             var elevator1 = new Elevator(1..10);
             var elevator2 = new Elevator(1..10);
             var elevator3 = new Elevator(1..10);
 
-            service.Register(elevator1, elevator2, elevator3);
-            Assert.AreEqual(3, service.Count);
+            services.Register(elevator1, elevator2, elevator3);
+            Assert.AreEqual(3, services.Count);
 
-            service.UnRegister(elevator1, elevator3);
-            Assert.AreEqual(1, service.Count);
+            services.UnRegister(elevator1, elevator3);
+            Assert.AreEqual(1, services.Count);
 
-            Assert.IsFalse(service.IsRegistered(elevator1));
-            Assert.IsTrue(service.IsRegistered(elevator2));
-            Assert.IsFalse(service.IsRegistered(elevator3));
+            Assert.IsFalse(services.IsRegistered(elevator1));
+            Assert.IsTrue(services.IsRegistered(elevator2));
+            Assert.IsFalse(services.IsRegistered(elevator3));
         }
 
 
         [TestMethod]
         public void ShouldNotStartElevatorServiceUponRegistration()
         {
-            var service = new ElevatorServices();
-            Assert.AreEqual(0, service.Count);
+            var services = new ElevatorServices();
+            Assert.AreEqual(0, services.Count);
 
             var elevator = new Elevator(1..10);
-            service.Register(elevator);
+            services.Register(elevator);
 
-            Assert.AreEqual(1, service.Count);
+            Assert.AreEqual(1, services.Count);
 
-            Assert.IsFalse(service.IsRunning(elevator));
+            Assert.IsFalse(services.IsRunning(elevator));
         }
 
         [TestMethod]
         public void ShouldStartElevatorService()
         {
-            var service = new ElevatorServices();
+            var services = new ElevatorServices();
 
             var elevator = new Elevator(1..10);
-            service.Register(elevator);
+            services.Register(elevator);
 
-            Assert.IsFalse(service.IsRunning(elevator));
-            service.Start(elevator);
-            Assert.IsTrue(service.IsRunning(elevator));
+            Assert.IsFalse(services.IsRunning(elevator));
+            services.Start(elevator);
+            Assert.IsTrue(services.IsRunning(elevator));
         }
 
 
         [TestMethod]
         public void ShouldStopElevatorService()
         {
-            var service = new ElevatorServices();
+            var services = new ElevatorServices();
 
             var elevator = new Elevator(1..10);
-            service.Register(elevator);
+            services.Register(elevator);
 
-            service.Start(elevator);
-            Assert.IsTrue(service.IsRunning(elevator));
+            services.Start(elevator);
+            Assert.IsTrue(services.IsRunning(elevator));
 
-            var isStopped = service.StopAsync(elevator);
+            var isStopped = services.StopAsync(elevator);
 
             Assert.IsTrue(isStopped.Result);
-            Assert.IsFalse(service.IsRunning(elevator));
+            Assert.IsFalse(services.IsRunning(elevator));
         }
     }
 }
