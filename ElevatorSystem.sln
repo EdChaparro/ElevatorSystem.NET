@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ElevatorSystem", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatorService", "src\ElevatorService\ElevatorService.csproj", "{FD087D35-B7E9-4267-AF21-5FEBE8015817}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.ElevatorService", "src\Tests\Test.ElevatorService\Test.ElevatorService.csproj", "{B571D42A-67DD-4734-A6E5-54840A83AAB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -29,12 +31,17 @@ Global
 		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Debug|x64.Build.0 = Debug|x64
 		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Release|x64.ActiveCfg = Release|x64
 		{FD087D35-B7E9-4267-AF21-5FEBE8015817}.Release|x64.Build.0 = Release|x64
+		{B571D42A-67DD-4734-A6E5-54840A83AAB6}.Debug|x64.ActiveCfg = Debug|x64
+		{B571D42A-67DD-4734-A6E5-54840A83AAB6}.Debug|x64.Build.0 = Debug|x64
+		{B571D42A-67DD-4734-A6E5-54840A83AAB6}.Release|x64.ActiveCfg = Release|x64
+		{B571D42A-67DD-4734-A6E5-54840A83AAB6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CA12A44D-B115-49B7-8812-7D849ADFD982} = {BDB01342-4792-4801-86AF-D6C0511FB7A0}
+		{B571D42A-67DD-4734-A6E5-54840A83AAB6} = {BDB01342-4792-4801-86AF-D6C0511FB7A0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8926BA5D-B085-4A91-A7D5-332B1A90AAF2}
