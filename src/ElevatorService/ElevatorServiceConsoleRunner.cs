@@ -9,12 +9,12 @@ public class ElevatorServiceConsoleRunner
     {
         var bank = new Bank(2, 1..10);
 
-        var service = GetElevatorEngineFor(bank.Elevators.First());
+        var service = GetEngineFor(bank.Elevators.First());
 
         var cancellationToken = new CancellationToken();
         service.StartAsync(cancellationToken);
 
-        Console.WriteLine("Engine started directly, waiting 5 second before shutdown");
+        Console.WriteLine("Elevator Engine started directly, waiting 5 second before shutdown");
         Console.WriteLine($"IsRunning: {service.IsRunning}");
 
         Thread.Sleep(5000);
@@ -25,20 +25,8 @@ public class ElevatorServiceConsoleRunner
         Console.WriteLine($"IsRunning: {service.IsRunning}");
     }
 
-    public static IBackgroundService GetElevatorEngineFor(Elevator elevator)
+    public static IBackgroundService GetEngineFor(Elevator elevator)
     {
         return new ElevatorService(elevator);
-    }
-
-    public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-        var bank = new Bank(2, 1..10);
-
-        return Host.CreateDefaultBuilder(args)
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddSingleton<Elevator>(bank.Elevators.First());
-                services.AddHostedService<ElevatorService>();
-            });
     }
 }
