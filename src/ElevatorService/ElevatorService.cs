@@ -4,14 +4,10 @@ namespace IntrepidProducts.ElevatorService;
 
 public class ElevatorService : AbstractBackgroundService
 {
-    public ElevatorService(Elevator elevator)
+    public ElevatorService(Elevator elevator) : base(Configuration.EngineSleepIntervalInMilliseconds)
     {
-        SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
-
         Elevator = elevator;
     }
-
-    protected int SleepIntervalInMilliseconds { get; set; }
 
     private Elevator Elevator { get; }
 
@@ -54,16 +50,11 @@ public class ElevatorService : AbstractBackgroundService
         Elevator.Direction = (floorNbr < Elevator.CurrentFloorNumber) ? Direction.Down : Direction.Up;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override void ServiceLoop()
     {
-        while (!stoppingToken.IsCancellationRequested)
+        if (Elevator.RequestedFloorStops.Any())
         {
-            if (Elevator.RequestedFloorStops.Any())
-            {
-                NavigateToNextFloorStop();
-            }
-
-            await Task.Delay(SleepIntervalInMilliseconds, stoppingToken);
+            NavigateToNextFloorStop();
         }
     }
 }

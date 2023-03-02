@@ -5,9 +5,8 @@ namespace IntrepidProducts.ElevatorService;
 
 public class BankService : AbstractBackgroundService
 {
-    public BankService(Bank bank)
+    public BankService(Bank bank) : base(Configuration.EngineSleepIntervalInMilliseconds)
     {
-        SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
         Bank = bank;
         Strategy = new IdleStrategy(bank, new ProximateStrategy(bank));  //TODO: use IoC
     }
@@ -15,20 +14,14 @@ public class BankService : AbstractBackgroundService
     private Bank Bank { get; }
     private IStrategy Strategy { get; }
 
-    protected int SleepIntervalInMilliseconds { get; set; }
     public List<RequestedFloorStop> AssignedFloorStops { get; private set; } = new();
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override void ServiceLoop()
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            ClearCompletedFloorStops();
+        ClearCompletedFloorStops();
 
-            AssignedFloorStops.AddRange(AssignElevators(Direction.Down));
-            AssignedFloorStops.AddRange(AssignElevators(Direction.Up));
-
-            await Task.Delay(SleepIntervalInMilliseconds, stoppingToken);
-        }
+        AssignedFloorStops.AddRange(AssignElevators(Direction.Down));
+        AssignedFloorStops.AddRange(AssignElevators(Direction.Up));
     }
 
     private void ClearCompletedFloorStops()
@@ -54,7 +47,7 @@ public class BankService : AbstractBackgroundService
         }
     }
 
-    private List<RequestedFloorStop> AssignElevators(Direction direction)
+    private IEnumerable<RequestedFloorStop> AssignElevators(Direction direction)
     {
         var requestedFloorStops = Bank.GetRequestedFloorStops(direction)
             .Select(x => x.FloorNbr).ToList();
