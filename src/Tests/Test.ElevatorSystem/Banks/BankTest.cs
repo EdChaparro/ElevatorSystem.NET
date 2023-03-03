@@ -105,7 +105,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             bank.Start();
             Assert.IsTrue(bank.PressButtonForFloorNumber(14, Direction.Down));
 
-            Thread.Sleep(500);  //Give the Engine a chance to do its thing
+            Thread.Sleep(200);  //Give the Engine a chance to do its thing
 
             Assert.IsTrue(bank.AssignedFloorStops.Any());
 

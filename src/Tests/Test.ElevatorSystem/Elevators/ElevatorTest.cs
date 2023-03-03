@@ -416,7 +416,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Elevators
                     isTimeOut = true;
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
 
             Assert.IsFalse(isTimeOut);
