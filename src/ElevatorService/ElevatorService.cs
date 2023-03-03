@@ -1,60 +1,62 @@
 using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorService;
-
-public class ElevatorService : AbstractBackgroundService
+namespace IntrepidProducts.ElevatorService
 {
-    public ElevatorService(Elevator elevator) : base(Configuration.EngineSleepIntervalInMilliseconds)
+    //TODO: Consider creating ONE Service to manage multiple Elevators
+    public class ElevatorService : AbstractBackgroundService
     {
-        Elevator = elevator;
-    }
-
-    private Elevator Elevator { get; }
-
-    private void NavigateToNextFloorStop()
-    {
-        if (Elevator.DoorStatus == DoorStatus.Open)
+        public ElevatorService(Elevator elevator) : base(Configuration.EngineSleepIntervalInMilliseconds)
         {
-            Elevator.DoorStatus = DoorStatus.Closed;
+            Elevator = elevator;
         }
 
-        var currentFloorNumber = Elevator.CurrentFloorNumber;
+        private Elevator Elevator { get; }
 
-        switch (Elevator.Direction)
+        private void NavigateToNextFloorStop()
         {
-            case Direction.Down:
-                if (currentFloorNumber != Elevator.OrderedFloorNumbers.Min())
-                {
-                    currentFloorNumber--;
-                }
-                break;
-            case Direction.Up:
-                if (currentFloorNumber != Elevator.OrderedFloorNumbers.Max())
-                {
-                    currentFloorNumber++;
-                }
-                break;
+            if (Elevator.DoorStatus == DoorStatus.Open)
+            {
+                Elevator.DoorStatus = DoorStatus.Closed;
+            }
+
+            var currentFloorNumber = Elevator.CurrentFloorNumber;
+
+            switch (Elevator.Direction)
+            {
+                case Direction.Down:
+                    if (currentFloorNumber != Elevator.OrderedFloorNumbers.Min())
+                    {
+                        currentFloorNumber--;
+                    }
+                    break;
+                case Direction.Up:
+                    if (currentFloorNumber != Elevator.OrderedFloorNumbers.Max())
+                    {
+                        currentFloorNumber++;
+                    }
+                    break;
+            }
+
+            if (currentFloorNumber == Elevator.CurrentFloorNumber)
+            {
+                return; //Reached termination point
+            }
+
+            SetDirectionToStopAt(currentFloorNumber);
+            Elevator.CurrentFloorNumber = currentFloorNumber;
         }
 
-        if (currentFloorNumber == Elevator.CurrentFloorNumber)
+        private void SetDirectionToStopAt(int floorNbr)
         {
-            return; //Reached termination point
+            Elevator.Direction = (floorNbr < Elevator.CurrentFloorNumber) ? Direction.Down : Direction.Up;
         }
 
-        SetDirectionToStopAt(currentFloorNumber);
-        Elevator.CurrentFloorNumber = currentFloorNumber;
-    }
-
-    private void SetDirectionToStopAt(int floorNbr)
-    {
-        Elevator.Direction = (floorNbr < Elevator.CurrentFloorNumber) ? Direction.Down : Direction.Up;
-    }
-
-    protected override void ServiceLoop()
-    {
-        if (Elevator.RequestedFloorStops.Any())
+        protected override void ServiceLoop()
         {
-            NavigateToNextFloorStop();
+            if (Elevator.RequestedFloorStops.Any())
+            {
+                NavigateToNextFloorStop();
+            }
         }
     }
 }
