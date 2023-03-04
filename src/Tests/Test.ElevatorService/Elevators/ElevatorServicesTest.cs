@@ -6,6 +6,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
     [TestClass]
     public class ElevatorServicesTest
     {
+        public ElevatorServicesTest()
+        {
+            Configuration.EngineSleepIntervalInMilliseconds = 100;
+        }
+
         [TestMethod]
         public void ShouldRegisterElevatorService()
         {

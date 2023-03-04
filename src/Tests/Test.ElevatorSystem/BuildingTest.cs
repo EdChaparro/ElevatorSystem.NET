@@ -1,6 +1,5 @@
 using IntrepidProducts.ElevatorSystem.Banks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,26 +10,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests
     public class BuildingTest
     {
         #region Banks
-        [TestMethod]
-        public void ShouldStartAndStopAllBanks()
-        {
-            var mockBank1 = new Mock<IBank>();
-            var mockBank2 = new Mock<IBank>();
-
-            mockBank1.SetupProperty(x => x.Id, Guid.NewGuid());
-            mockBank2.SetupProperty(x => x.Id, Guid.NewGuid());
-
-            var building = new Building(mockBank1.Object, mockBank2.Object);
-
-            building.StartAllElevatorBanks();
-            mockBank1.Verify(x => x.Start(), Times.Once);
-            mockBank2.Verify(x => x.Start(), Times.Once);
-
-            building.StopAllElevatorBanks();
-            mockBank1.Verify(x => x.Stop(), Times.Once);
-            mockBank2.Verify(x => x.Stop(), Times.Once);
-        }
-
         [TestMethod]
         public void ShouldKeepElevatorBankCount()
         {
@@ -102,18 +81,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             Assert.AreEqual(1, building.NumberOfBanks);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ShouldNotPermitBankAdditionsWhileRunning()
-        {
-            var bank = new Bank(2, 1, 4);
-
-            var building = new Building(bank);
-            building.StartAllElevatorBanks();
-
-            //Boom...
-            building.Add(new Bank(1, 1..3));
-        }
         #endregion
 
         #region Floors

@@ -17,6 +17,14 @@ namespace IntrepidProducts.ElevatorService.Banks
 
         public List<RequestedFloorStop> AssignedFloorStops { get; private set; } = new();
 
+        protected override void BeforeServiceLoop()
+        {
+            foreach (var elevator in Bank.Elevators)
+            {
+                elevator.RequestStopAtFloorNumber(Bank.LowestFloorNbr);
+            }
+        }
+
         protected override void ServiceLoop()
         {
             ClearCompletedFloorStops();
@@ -53,7 +61,7 @@ namespace IntrepidProducts.ElevatorService.Banks
             var requestedFloorStops = Bank.GetRequestedFloorStops(direction)
                 .Select(x => x.FloorNbr).ToList();
 
-            return Strategy.AssignElevators(requestedFloorStops, direction).ToList();
+            return Strategy.AssignElevators(requestedFloorStops, direction);
         }
     }
 }

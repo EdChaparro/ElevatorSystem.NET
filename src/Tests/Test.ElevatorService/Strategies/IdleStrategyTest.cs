@@ -1,9 +1,8 @@
+using IntrepidProducts.ElevatorService.Banks;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
-namespace IntrepidProducts.ElevatorSystem.Tests.Banks
+namespace IntrepidProducts.ElevatorService.Tests.Strategies
 {
     [TestClass]
     public class IdleStrategyTest

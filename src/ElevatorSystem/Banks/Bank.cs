@@ -1,15 +1,13 @@
 ﻿using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem.Banks
 {
-    public interface IBank : IHasId, IHasFloors, IEngine //Facilitates Mocking
+    public interface IBank : IHasId, IHasFloors //Facilitates Mocking
     {
         string? Name { get; set; }
         int NumberOfElevators { get; }
@@ -18,9 +16,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     public class Bank : AbstractEntity, IBank
     {
         public Bank() //Parmeterless constructor added to support serialization
-        {
-            _bankEngine = new BankEngine(this);
-        }
+        { }
 
         public Bank(int nbrOfElevators, Range floorRange)
             : this(nbrOfElevators, Enumerable.Range
@@ -38,8 +34,6 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
             AddElevators(nbrOfElevators);
             SetFloorCallButtonObservability();
-
-            _bankEngine = new BankEngine(this);
         }
 
         public string? Name { get; set; }
@@ -273,7 +267,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                 .Any(x => x.IsStoppingAtFloorFromDirection(floorNbr, direction));
         }
 
-        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new HashSet<RequestedFloorStop>();
+        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new ();
 
         public IEnumerable<RequestedFloorStop> GetRequestedFloorStops(Direction direction)
         {
@@ -317,45 +311,6 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         }
         #endregion
 
-        #region IEngine
-        private Thread? _bankEngineThread;
-        private readonly BankEngine _bankEngine;
-
-        public List<RequestedFloorStop> AssignedFloorStops => _bankEngine.AssignedFloorStops.ToList();
-
-        public void Start()
-        {
-            foreach (var elevator in Elevators)
-            {
-                elevator.Start();
-                elevator.RequestStopAtFloorNumber(LowestFloorNbr);
-            }
-
-            _bankEngineThread = new Thread(_bankEngine.Start)
-            {
-                Name = "BankEngineThread"
-            };
-
-            _bankEngineThread.Start();
-        }
-
-        public void Stop()
-        {
-            foreach (var elevator in Elevators)
-            {
-                elevator.RequestStopAtFloorNumber(LowestFloorNbr);
-                elevator.Stop();
-            }
-
-            _bankEngine.Stop();
-
-            if (_bankEngineThread is { IsAlive: true })
-            {
-                _bankEngineThread.Join();        //Wait for shutdown to complete
-            }
-        }
-
-        #endregion
         public override string ToString()
         {
             return $"{NumberOfFloors} serviced by {NumberOfElevators} Elevators";

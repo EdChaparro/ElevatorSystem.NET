@@ -1,8 +1,7 @@
-﻿using IntrepidProducts.ElevatorSystem.Elevators;
-using System.Collections.Generic;
-using System.Linq;
+﻿using IntrepidProducts.ElevatorSystem.Banks;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorSystem.Banks
+namespace IntrepidProducts.ElevatorService.Banks
 {
     /// <summary>
     /// Assigns elevators already in route to pending floor stop calls.

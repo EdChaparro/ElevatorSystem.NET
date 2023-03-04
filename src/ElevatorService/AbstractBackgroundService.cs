@@ -1,6 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-using IntrepidProducts.ElevatorSystem.Elevators;
-
 namespace IntrepidProducts.ElevatorService;
 
 public interface IBackgroundService : IHostedService
@@ -22,6 +19,7 @@ public abstract class AbstractBackgroundService : BackgroundService, IBackground
     public override Task StartAsync(CancellationToken cancellationToken)
     {
         IsRunning = true;
+        BeforeServiceLoop();
         return base.StartAsync(cancellationToken);
     }
 
@@ -39,6 +37,9 @@ public abstract class AbstractBackgroundService : BackgroundService, IBackground
             await Task.Delay(SleepIntervalInMilliseconds, stoppingToken);
         }
     }
+
+    protected virtual void BeforeServiceLoop()
+    {}
 
     protected abstract void ServiceLoop();
 

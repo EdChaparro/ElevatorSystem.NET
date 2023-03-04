@@ -1,11 +1,17 @@
 using IntrepidProducts.ElevatorService.Banks;
 using IntrepidProducts.ElevatorSystem.Banks;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Tests.Banks
 {
     [TestClass]
     public class BankServicesTest
     {
+        public BankServicesTest()
+        {
+            Configuration.EngineSleepIntervalInMilliseconds = 100;
+        }
+
         [TestMethod]
         public void ShouldRegisterElevatorService()
         {
