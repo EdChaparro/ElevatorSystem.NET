@@ -1,6 +1,7 @@
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorService.Tests
+namespace IntrepidProducts.ElevatorService.Tests.Elevators
 {
     [TestClass]
     public class ElevatorServicesTest

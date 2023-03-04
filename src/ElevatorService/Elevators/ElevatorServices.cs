@@ -1,6 +1,6 @@
 using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorService
+namespace IntrepidProducts.ElevatorService.Elevators
 {
     public interface IElevatorServices
     {

@@ -1,7 +1,7 @@
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorService
+namespace IntrepidProducts.ElevatorService.Banks
 {
     //TODO: Consider creating ONE Service to manage multiple Banks
     public class BankService : AbstractBackgroundService

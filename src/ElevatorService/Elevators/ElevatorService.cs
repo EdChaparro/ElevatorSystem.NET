@@ -1,6 +1,6 @@
 using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorService
+namespace IntrepidProducts.ElevatorService.Elevators
 {
     //TODO: Consider creating ONE Service to manage multiple Elevators
     public class ElevatorService : AbstractBackgroundService
@@ -48,7 +48,7 @@ namespace IntrepidProducts.ElevatorService
 
         private void SetDirectionToStopAt(int floorNbr)
         {
-            Elevator.Direction = (floorNbr < Elevator.CurrentFloorNumber) ? Direction.Down : Direction.Up;
+            Elevator.Direction = floorNbr < Elevator.CurrentFloorNumber ? Direction.Down : Direction.Up;
         }
 
         protected override void ServiceLoop()

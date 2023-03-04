@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -8,7 +8,7 @@
     <RootNamespace>IntrepidProducts.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <AssemblyName>IntrepidProducts.$(MSBuildProjectName)</AssemblyName>
     <Platforms>x64</Platforms>
-    <StartupObject>IntrepidProducts.ElevatorService.BankServiceConsoleRunner</StartupObject>
+    <StartupObject>IntrepidProducts.ElevatorService.Banks.BankServiceConsoleRunner</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

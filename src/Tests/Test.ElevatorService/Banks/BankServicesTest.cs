@@ -1,6 +1,7 @@
+using IntrepidProducts.ElevatorService.Banks;
 using IntrepidProducts.ElevatorSystem.Banks;
 
-namespace IntrepidProducts.ElevatorService.Tests
+namespace IntrepidProducts.ElevatorService.Tests.Banks
 {
     [TestClass]
     public class BankServicesTest
@@ -35,7 +36,7 @@ namespace IntrepidProducts.ElevatorService.Tests
         {
             var services = new BankServices();
 
-            var bank = new Bank(2,1..10);
+            var bank = new Bank(2, 1..10);
             services.Register(bank);
             Assert.AreEqual(1, services.Count);
 
@@ -69,9 +70,9 @@ namespace IntrepidProducts.ElevatorService.Tests
         {
             var services = new BankServices();
 
-            var bank1 = new Bank(2,1..10);
-            var bank2 = new Bank(2,1..10);
-            var bank3 = new Bank(2,1..10);
+            var bank1 = new Bank(2, 1..10);
+            var bank2 = new Bank(2, 1..10);
+            var bank3 = new Bank(2, 1..10);
 
             services.Register(bank1, bank2, bank3);
             Assert.AreEqual(3, services.Count);
@@ -91,7 +92,7 @@ namespace IntrepidProducts.ElevatorService.Tests
             var services = new BankServices();
             Assert.AreEqual(0, services.Count);
 
-            var bank = new Bank(2,1..10);
+            var bank = new Bank(2, 1..10);
             services.Register(bank);
 
             Assert.AreEqual(1, services.Count);

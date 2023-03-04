@@ -1,6 +1,6 @@
 using IntrepidProducts.ElevatorSystem.Banks;
 
-namespace IntrepidProducts.ElevatorService;
+namespace IntrepidProducts.ElevatorService.Banks;
 
 public class BankServiceConsoleRunner
 {
