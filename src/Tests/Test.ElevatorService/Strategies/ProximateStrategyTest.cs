@@ -1,10 +1,9 @@
+using IntrepidProducts.ElevatorService.Banks;
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Tests.Elevators;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
-namespace IntrepidProducts.ElevatorSystem.Tests.Banks
+namespace IntrepidProducts.ElevatorService.Tests.Strategies
 {
     [TestClass]
     public class ProximateStrategyTest
@@ -15,12 +14,15 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
             var bank = new Bank(2, 1..10);
             var elevator1 = bank.Elevators.First();
             var elevator2 = bank.Elevators.Last();
+            var services = new ElevatorServices();
 
             elevator1.Name = "Test Elevator 1";
             elevator2.Name = "Test Elevator 2";
 
-            elevator1.Start();
-            elevator2.Start();
+            services.Register(elevator1, elevator2);
+
+            Assert.IsTrue(services.Start(elevator1));
+            Assert.IsTrue(services.Start(elevator2));
 
             Assert.IsTrue(elevator1.RequestStopAtFloorNumber(8).isOk);
             Assert.IsTrue(elevator2.RequestStopAtFloorNumber(5).isOk);
@@ -42,9 +44,9 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
                 .Select(x => x.Id == sRFS.Id).FirstOrDefault();
             Assert.IsNotNull(eRFS);
 
-            ElevatorTest.WaitForElevatorToReachFloor(5, elevator2);
+            TestStrategy.WaitForElevatorToReachFloor(5, elevator2);
             Assert.IsTrue(elevator2.PressButtonForFloorNumber(10));
-            ElevatorTest.WaitForElevatorToReachFloor(10, elevator2);
+            TestStrategy.WaitForElevatorToReachFloor(10, elevator2);
 
             Assert.IsTrue(elevator2.PressButtonForFloorNumber(1));
             bank.PressButtonForFloorNumber(4, Direction.Down);
@@ -57,8 +59,8 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
                 .Select(x => x.Id == sRFS.Id).FirstOrDefault();
             Assert.IsNotNull(eRFS);
 
-            elevator1.Stop();
-            elevator2.Stop();
+            Assert.IsTrue(services.StopAsync(elevator1).Result);
+            Assert.IsTrue(services.StopAsync(elevator2).Result);
         }
 
         [TestMethod]
@@ -89,8 +91,10 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
         {
             var bank = new Bank(1, 1..10);
             var elevator = bank.Elevators.First();
+            var services = new ElevatorServices();
 
-            elevator.Start();
+            services.Register(elevator);
+            Assert.IsTrue(services.Start(elevator));
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(6, Direction.Down));
             Assert.IsTrue(bank.PressButtonForFloorNumber(9, Direction.Up));
@@ -113,7 +117,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
                 (requestedFloorStops, Direction.Up);
             Assert.AreEqual(0, proximateAssignments.Count());
 
-            ElevatorTest.WaitForElevatorToReachFloor(6, elevator);
+            TestStrategy.WaitForElevatorToReachFloor(6, elevator);
             elevator.RequestStopAtFloorNumber(8);
 
             proximateAssignments = proximateStrategy.AssignElevators
@@ -121,7 +125,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
                     .Select(x => x.FloorNbr).ToList(), Direction.Up);
             Assert.AreEqual(1, proximateAssignments.Count());
 
-            elevator.Stop();
+            Assert.IsTrue(services.StopAsync(elevator).Result);
         }
     }
 }

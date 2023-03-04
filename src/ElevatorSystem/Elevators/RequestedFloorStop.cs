@@ -1,6 +1,6 @@
-﻿using System;
+﻿using IntrepidProducts.Common;
+using System;
 using System.Reflection;
-using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {

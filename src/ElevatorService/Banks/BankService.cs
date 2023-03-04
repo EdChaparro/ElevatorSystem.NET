@@ -1,19 +1,13 @@
-﻿using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Service;
-using System.Collections.Generic;
-using System.Linq;
+using IntrepidProducts.ElevatorSystem.Banks;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorSystem.Banks
+namespace IntrepidProducts.ElevatorService.Banks
 {
-    /// <summary>
-    /// Service loop intended to run in an independent thread.
-    /// </summary>
-    public class BankEngine : AbstractEngine
+    //TODO: Consider creating ONE Service to manage multiple Banks
+    public class BankService : AbstractBackgroundService
     {
-        public BankEngine(Bank bank)
+        public BankService(Bank bank) : base(Configuration.EngineSleepIntervalInMilliseconds)
         {
-            SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
-
             Bank = bank;
             Strategy = new IdleStrategy(bank, new ProximateStrategy(bank));  //TODO: use IoC
         }
@@ -21,10 +15,17 @@ namespace IntrepidProducts.ElevatorSystem.Banks
         private Bank Bank { get; }
         private IStrategy Strategy { get; }
 
-        public List<RequestedFloorStop> AssignedFloorStops { get; private set; }
-            = new List<RequestedFloorStop>();
+        public List<RequestedFloorStop> AssignedFloorStops { get; private set; } = new();
 
-        protected override void DoEngineLoop()
+        protected override void BeforeServiceLoop()
+        {
+            foreach (var elevator in Bank.Elevators)
+            {
+                elevator.RequestStopAtFloorNumber(Bank.LowestFloorNbr);
+            }
+        }
+
+        protected override void ServiceLoop()
         {
             ClearCompletedFloorStops();
 
@@ -55,12 +56,12 @@ namespace IntrepidProducts.ElevatorSystem.Banks
             }
         }
 
-        private List<RequestedFloorStop> AssignElevators(Direction direction)
+        private IEnumerable<RequestedFloorStop> AssignElevators(Direction direction)
         {
             var requestedFloorStops = Bank.GetRequestedFloorStops(direction)
                 .Select(x => x.FloorNbr).ToList();
 
-            return Strategy.AssignElevators(requestedFloorStops, direction).ToList();
+            return Strategy.AssignElevators(requestedFloorStops, direction);
         }
     }
 }

@@ -1,29 +1,16 @@
-﻿using IntrepidProducts.ElevatorSystem.Service;
-using System.Linq;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
-namespace IntrepidProducts.ElevatorSystem.Elevators
+namespace IntrepidProducts.ElevatorService.Elevators
 {
-    /// <summary>
-    /// Service loop intended to run in an independent thread.
-    /// </summary>
-    public class ElevatorEngine : AbstractEngine
+    //TODO: Consider creating ONE Service to manage multiple Elevators
+    public class ElevatorService : AbstractBackgroundService
     {
-        public ElevatorEngine(Elevator elevator)
+        public ElevatorService(Elevator elevator) : base(Configuration.EngineSleepIntervalInMilliseconds)
         {
-            SleepIntervalInMilliseconds = Configuration.EngineSleepIntervalInMilliseconds;
-
             Elevator = elevator;
         }
 
         private Elevator Elevator { get; }
-
-        protected override void DoEngineLoop()
-        {
-            if (Elevator.RequestedFloorStops.Any())
-            {
-                NavigateToNextFloorStop();
-            }
-        }
 
         private void NavigateToNextFloorStop()
         {
@@ -61,7 +48,15 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
         private void SetDirectionToStopAt(int floorNbr)
         {
-            Elevator.Direction = (floorNbr < Elevator.CurrentFloorNumber) ? Direction.Down : Direction.Up;
+            Elevator.Direction = floorNbr < Elevator.CurrentFloorNumber ? Direction.Down : Direction.Up;
+        }
+
+        protected override void ServiceLoop()
+        {
+            if (Elevator.RequestedFloorStops.Any())
+            {
+                NavigateToNextFloorStop();
+            }
         }
     }
 }

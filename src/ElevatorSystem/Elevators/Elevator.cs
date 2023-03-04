@@ -1,14 +1,12 @@
-﻿using IntrepidProducts.ElevatorSystem.Buttons;
-using IntrepidProducts.ElevatorSystem.Service;
+﻿using IntrepidProducts.Common;
+using IntrepidProducts.ElevatorSystem.Buttons;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {
-    public interface IElevator : IHasId, IEngine
+    public interface IElevator : IHasId
     { }  //Facilitates Mocking
 
     public class Elevator : AbstractEntity, IElevator
@@ -19,8 +17,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
             FloorRequestPanel = new ElevatorFloorRequestPanel(this);
             FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
-
-            _elevatorEngine = new ElevatorEngine(this);
         }
 
         public Elevator(Range floorRange) : this(Enumerable.Range
@@ -35,7 +31,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
             FloorRequestPanel.PanelButtonPressedEvent += OnPanelButtonPressedEvent;
 
             CurrentFloorNumber = OrderedFloorNumbers.Min();
-            _elevatorEngine = new ElevatorEngine(this);
         }
 
         private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new();
@@ -257,28 +252,6 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
                 new ElevatorFloorNumberChangedEventArgs(Id, floorNumber));
         }
         #endregion
-
-        private Thread? _elevatorEngineThread;
-        private readonly ElevatorEngine _elevatorEngine;
-        public void Start()
-        {
-            _elevatorEngineThread = new Thread(_elevatorEngine.Start)
-            {
-                Name = "ElevatorEngineThread"
-            };
-
-            _elevatorEngineThread.Start();
-        }
-
-        public void Stop()
-        {
-            _elevatorEngine.Stop();
-
-            if (_elevatorEngineThread is { IsAlive: true })
-            {
-                _elevatorEngineThread.Join();        //Wait for shutdown to complete
-            }
-        }
 
         public override string ToString()
         {

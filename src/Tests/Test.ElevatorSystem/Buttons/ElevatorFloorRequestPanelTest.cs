@@ -1,9 +1,7 @@
 ﻿using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorSystem.Tests.Elevators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
@@ -37,44 +35,6 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Buttons
             Assert.AreEqual(1, buttonForFloor1.FloorNbr);
             Assert.AreEqual(2, buttonForFloor2.FloorNbr);
             Assert.AreEqual(3, buttonForFloor3.FloorNbr);
-        }
-
-        [TestMethod]
-        public void ShouldRaiseButtonPressedEvent()
-        {
-            var elevator = new Elevator(1, 2, 3);
-            var panel = elevator.FloorRequestPanel;
-
-            var receivedEvents =
-                new List<PanelButtonPressedEventArgs<ElevatorFloorRequestButton>>();
-
-            panel.PanelButtonPressedEvent += (sender, e)
-                => receivedEvents.Add(e);
-
-            Assert.IsTrue(elevator.PressButtonForFloorNumber(2));
-            Assert.IsTrue(elevator.PressButtonForFloorNumber(3));
-            Assert.AreEqual(2, receivedEvents.Count);
-
-            var firstEvent = receivedEvents.First();
-            var firstButton = firstEvent.Button;
-
-            var secondEvent = receivedEvents.Last();
-            var secondButton = secondEvent.Button;
-
-            Assert.AreEqual(2, firstButton.FloorNbr);
-            Assert.AreEqual(3, secondButton.FloorNbr);
-
-            elevator.Start();
-            Assert.IsTrue(elevator.RequestStopAtFloorNumber(3).isOk);
-            ElevatorTest.WaitForElevatorToReachFloor(3, elevator);
-
-            Assert.IsTrue(elevator.PressButtonForFloorNumber(1));
-
-            Assert.AreEqual(3, receivedEvents.Count);
-            var thirdEvent = receivedEvents.Last();
-            var thirdButton = thirdEvent.Button;
-            Assert.AreEqual(1, thirdButton.FloorNbr);
-            elevator.Stop();
         }
 
         [TestMethod]
