@@ -39,7 +39,7 @@ public abstract class AbstractBackgroundService : BackgroundService, IBackground
     }
 
     protected virtual void BeforeServiceLoop()
-    {}
+    { }
 
     protected abstract void ServiceLoop();
 

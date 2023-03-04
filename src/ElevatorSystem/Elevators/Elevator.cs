@@ -1,8 +1,8 @@
-﻿using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.Common;
+using IntrepidProducts.ElevatorSystem.Buttons;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem.Elevators
 {

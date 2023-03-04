@@ -18,7 +18,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
         public void ShouldRaiseDirectionChangedEvent()
         {
             var e = new Elevator(1..5)
-                { DoorStatus = DoorStatus.Closed };
+            { DoorStatus = DoorStatus.Closed };
 
 
             Assert.AreEqual(Direction.Up, e.Direction);
@@ -52,7 +52,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
         public void ShouldRaiseFloorChangedEvent()
         {
             var e = new Elevator(1..2)
-                { DoorStatus = DoorStatus.Open };
+            { DoorStatus = DoorStatus.Open };
 
             Assert.AreEqual(1, e.CurrentFloorNumber);
 

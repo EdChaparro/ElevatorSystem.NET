@@ -1,7 +1,7 @@
+using IntrepidProducts.ElevatorService.Banks;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using Moq;
-using IntrepidProducts.ElevatorService.Banks;
 
 namespace IntrepidProducts.ElevatorService.Tests.Strategies
 {

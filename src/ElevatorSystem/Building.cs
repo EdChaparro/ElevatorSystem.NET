@@ -1,8 +1,8 @@
-﻿using IntrepidProducts.ElevatorSystem.Banks;
+﻿using IntrepidProducts.Common;
+using IntrepidProducts.ElevatorSystem.Banks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem
 {

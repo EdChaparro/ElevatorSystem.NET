@@ -58,7 +58,7 @@ namespace IntrepidProducts.ElevatorSystem.Tests
             var building = new Building(bank1, bank2);
 
             CollectionAssert.AreEqual
-                (new List<IBank> {bank1, bank2}, building.Banks.ToList());
+                (new List<IBank> { bank1, bank2 }, building.Banks.ToList());
         }
 
         [TestMethod]

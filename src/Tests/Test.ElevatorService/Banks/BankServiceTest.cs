@@ -1,8 +1,8 @@
-﻿using IntrepidProducts.ElevatorSystem.Banks;
-using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorService.Banks;
-using IntrepidProducts.ElevatorService.Tests.Strategies;
+﻿using IntrepidProducts.ElevatorService.Banks;
 using IntrepidProducts.ElevatorService.Elevators;
+using IntrepidProducts.ElevatorService.Tests.Strategies;
+using IntrepidProducts.ElevatorSystem.Banks;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Tests.Banks
 {

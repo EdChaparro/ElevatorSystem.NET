@@ -1,7 +1,7 @@
 #nullable enable
+using IntrepidProducts.ElevatorService.Banks;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
-using IntrepidProducts.ElevatorService.Banks;
 
 namespace IntrepidProducts.ElevatorService.Tests.Strategies
 {

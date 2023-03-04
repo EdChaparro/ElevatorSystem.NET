@@ -1,9 +1,9 @@
-﻿using IntrepidProducts.ElevatorSystem.Buttons;
+﻿using IntrepidProducts.Common;
+using IntrepidProducts.ElevatorSystem.Buttons;
 using IntrepidProducts.ElevatorSystem.Elevators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntrepidProducts.Common;
 
 namespace IntrepidProducts.ElevatorSystem.Banks
 {
@@ -267,7 +267,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                 .Any(x => x.IsStoppingAtFloorFromDirection(floorNbr, direction));
         }
 
-        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new ();
+        private readonly HashSet<RequestedFloorStop> _requestedFloorStops = new();
 
         public IEnumerable<RequestedFloorStop> GetRequestedFloorStops(Direction direction)
         {
