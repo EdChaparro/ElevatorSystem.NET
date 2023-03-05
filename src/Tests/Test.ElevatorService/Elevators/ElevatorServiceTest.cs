@@ -25,7 +25,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
 
             var receivedEvents = new List<ElevatorDirectionChangedEventArgs>();
 
-            e.DirectionChangedEvent += (sender, eArg)
+            e.DirectionChangedEvent += (_, eArg)
                 => receivedEvents.Add(eArg);
 
             var services = new ElevatorServices();
@@ -58,7 +58,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
 
-            e.FloorNumberChangedEvent += (sender, eArg)
+            e.FloorNumberChangedEvent += (_, eArg)
                 => receivedEvents.Add(eArg);
 
             var services = new ElevatorServices();
@@ -92,7 +92,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
 
             var receivedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
 
-            e.FloorNumberChangedEvent += (sender, eArg)
+            e.FloorNumberChangedEvent += (_, eArg)
                 => receivedEvents.Add(eArg);
 
             var services = new ElevatorServices();
@@ -132,7 +132,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsFalse(floor3RequestButton.IsPressed);
 
             var floorNumberChangedEventCount = 0;
-            e.FloorNumberChangedEvent += (sender, eArg)
+            e.FloorNumberChangedEvent += (_, _)
                 =>
             {
                 floorNumberChangedEventCount++;
@@ -238,8 +238,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.AreEqual(1, e.CurrentFloorNumber);
 
             var floorNumberChangedEvents = new List<ElevatorFloorNumberChangedEventArgs>();
-            e.FloorNumberChangedEvent += (sender, e)
-                => floorNumberChangedEvents.Add(e);
+            e.FloorNumberChangedEvent += (_, eArg)
+                => floorNumberChangedEvents.Add(eArg);
 
             var services = new ElevatorServices();
             services.Register(e);
@@ -379,7 +379,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
         {
             var bank = new Bank(2, 1..5);
 
-            var elevators = bank.Elevators;
+            var elevators = bank.Elevators.ToList();
             Assert.AreEqual(2, elevators.Count());
 
             var e1 = elevators.First();
@@ -402,12 +402,12 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var thirdFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(3);
             Assert.IsNotNull(thirdFloorElevatorCallPanel);
 
-            Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.SetPressedTo(true));
-            Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton.IsPressed);
+            Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton?.SetPressedTo(true));
+            Assert.IsTrue(thirdFloorElevatorCallPanel.DownButton?.IsPressed);
 
             e1.RequestStopAtFloorNumber(3);
             TestStrategy.WaitForElevatorToReachFloor(3, e1);
-            Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton.IsPressed);
+            Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton?.IsPressed);
 
             Assert.IsTrue(services.StopAsync(e1).Result);
             Assert.IsTrue(services.StopAsync(e2).Result);
@@ -418,11 +418,10 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
         {
             var bank = new Bank(2, 1..5);
 
-            var elevators = bank.Elevators;
-            Assert.AreEqual(2, elevators.Count());
-
-            var e1 = elevators.First(); //Control Elevators
-            var e2 = elevators.Last();  //  via Adaptors
+            var elevators = bank.Elevators.ToList();
+            Assert.AreEqual(2, elevators.Count);
+            var e1 = elevators.First();
+            var e2 = elevators.Last();
 
             var services = new ElevatorServices();
             services.Register(e1, e2);
@@ -440,11 +439,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var firstFloorElevatorCallPanel = bank.GetFloorElevatorCallPanelFor(1);
             Assert.IsNotNull(firstFloorElevatorCallPanel);
 
-            Assert.IsTrue(firstFloorElevatorCallPanel.UpButton.SetPressedTo(true));
+            Assert.IsTrue(firstFloorElevatorCallPanel.UpButton?.SetPressedTo(true));
 
             e1.RequestStopAtFloorNumber(1);
             TestStrategy.WaitForElevatorToReachFloor(1, e1);
-            Assert.IsFalse(firstFloorElevatorCallPanel.UpButton.IsPressed);
+            Assert.IsFalse(firstFloorElevatorCallPanel.UpButton?.IsPressed);
 
             Assert.IsTrue(services.StopAsync(e1).Result);
             Assert.IsTrue(services.StopAsync(e2).Result);
@@ -459,8 +458,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var receivedEvents =
                 new List<PanelButtonPressedEventArgs<ElevatorFloorRequestButton>>();
 
-            panel.PanelButtonPressedEvent += (sender, e)
-                => receivedEvents.Add(e);
+            panel.PanelButtonPressedEvent += (_, eArg)
+                => receivedEvents.Add(eArg);
 
             Assert.IsTrue(e.PressButtonForFloorNumber(2));
             Assert.IsTrue(e.PressButtonForFloorNumber(3));
