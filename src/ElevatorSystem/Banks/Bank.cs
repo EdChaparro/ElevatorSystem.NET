@@ -15,7 +15,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
     public class Bank : AbstractEntity, IBank
     {
-        public Bank() //Parmeterless constructor added to support serialization
+        public Bank() //Parameter-less constructor added to support serialization
         { }
 
         public Bank(int nbrOfElevators, Range floorRange)
