@@ -58,7 +58,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                 (x => _elevators.Add(x.Key, x.Value));
         }
 
-        public IEnumerable<Elevator> IdleElevators => Elevators.Where(x => x.IsIdle);
+        public IEnumerable<Elevator> IdleElevators => EnabledElevators.Where(x => x.IsIdle);
 
         private void SetObservabilityFor(Elevator elevator)
         {
