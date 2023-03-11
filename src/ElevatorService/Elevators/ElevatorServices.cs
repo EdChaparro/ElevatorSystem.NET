@@ -60,6 +60,11 @@ namespace IntrepidProducts.ElevatorService.Elevators
                 return false;
             }
 
+            if (!elevator.IsEnabled)
+            {
+                return false;
+            }
+
             var (service, cancellationToken) = _serviceDetails[elevator.Id];
             service.StartAsync(cancellationToken);
             return true;

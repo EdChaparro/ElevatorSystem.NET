@@ -118,6 +118,21 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsTrue(services.IsRunning(elevator));
         }
 
+        [TestMethod]
+        public void ShouldNotStartElevatorServiceWhenDisabled()
+        {
+            var services = new ElevatorServices();
+
+            var elevator = new Elevator(1..10);
+            services.Register(elevator);
+
+            elevator.IsEnabled = false;
+
+            Assert.IsFalse(services.IsRunning(elevator));
+            Assert.IsFalse(services.Start(elevator));
+            Assert.IsFalse(services.IsRunning(elevator));
+        }
+
 
         [TestMethod]
         public void ShouldStopElevatorService()
