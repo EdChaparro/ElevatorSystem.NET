@@ -61,7 +61,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsNotNull(service);
             Assert.IsFalse(service.IsRunning);
 
-            services.Start(elevator);
+            Assert.IsTrue(services.Start(elevator));
             Assert.IsTrue(service.IsRunning);
 
             services.UnRegister(elevator);
@@ -114,7 +114,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             services.Register(elevator);
 
             Assert.IsFalse(services.IsRunning(elevator));
-            services.Start(elevator);
+            Assert.IsTrue(services.Start(elevator));
             Assert.IsTrue(services.IsRunning(elevator));
         }
 
@@ -142,7 +142,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var elevator = new Elevator(1..10);
             services.Register(elevator);
 
-            services.Start(elevator);
+            Assert.IsTrue(services.Start(elevator));
             Assert.IsTrue(services.IsRunning(elevator));
 
             var isStopped = services.StopAsync(elevator);
