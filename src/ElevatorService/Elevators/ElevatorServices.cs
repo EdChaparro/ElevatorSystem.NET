@@ -2,21 +2,7 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Elevators
 {
-    public interface IElevatorServices
-    {
-        int Count { get; }
-
-        void Register(params Elevator[] elevators);
-        void UnRegister(params Elevator[] elevators);
-        bool IsRegistered(Elevator elevator);
-
-        bool Start(Elevator elevator);
-        Task<bool> StopAsync(Elevator elevator);
-
-        bool IsRunning(Elevator elevator);
-    }
-
-    public class ElevatorServices : IElevatorServices
+    public class ElevatorServices
     {
         private readonly Dictionary<Guid, (ElevatorService service, CancellationToken cancellationToken)>
             _serviceDetails = new();

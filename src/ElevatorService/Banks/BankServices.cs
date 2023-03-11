@@ -2,22 +2,8 @@ using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorService.Banks
 {
-    public interface IBankServices
-    {
-        int Count { get; }
-
-        void Register(params Bank[] banks);
-        void UnRegister(params Bank[] banks);
-        bool IsRegistered(Bank bank);
-
-        bool Start(Bank bank);
-        Task<bool> StopAsync(Bank bank);
-
-        bool IsRunning(Bank bank);
-    }
-
     //TODO: Create a generic class?
-    public class BankServices : IBankServices
+    public class BankServices
     {
         private readonly Dictionary<Guid, (BankService service, CancellationToken cancellationToken)>
             _serviceDetails = new();
