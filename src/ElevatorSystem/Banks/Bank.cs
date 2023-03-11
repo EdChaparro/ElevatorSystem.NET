@@ -39,8 +39,9 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
         #region Elevators
         private readonly Dictionary<Guid, Elevator> _elevators = new();
-
         public IEnumerable<Elevator> Elevators => _elevators.Values.ToList();
+
+        public IEnumerable<Elevator> EnabledElevators => _elevators.Values.Where(x => x.IsEnabled).ToList();
 
         private void AddElevators(int nbrOfElevators)
         {

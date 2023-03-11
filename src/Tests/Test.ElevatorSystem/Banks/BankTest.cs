@@ -25,6 +25,17 @@ namespace IntrepidProducts.ElevatorSystem.Tests.Banks
         }
 
         [TestMethod]
+        public void ShouldKeepEnabledElevatorCount()
+        {
+            var bank = new Bank(2, 1..2);
+
+            bank.Elevators.First().IsEnabled = false;
+
+            Assert.AreEqual(1, bank.EnabledElevators.Count());
+            Assert.AreEqual(bank.Elevators.Last(), bank.EnabledElevators.First());
+        }
+
+        [TestMethod]
         public void ShouldTrackFloorElevatorCallRequests()
         {
             var bank = new Bank(2, 1..10);
