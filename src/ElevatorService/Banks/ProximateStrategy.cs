@@ -42,17 +42,15 @@ namespace IntrepidProducts.ElevatorService.Banks
             switch (direction)
             {
                 case Direction.Down:
-                    elevators = Bank.Elevators
+                    elevators = Bank.EnabledElevators
                         .Where(x =>
-                            x.IsEnabled &&
                             x.Direction == direction &&
                             x.CurrentFloorNumber > floorNbr)
                         .OrderByDescending(x => x.CurrentFloorNumber);
                     break;
                 default:
-                    elevators = Bank.Elevators
+                    elevators = Bank.EnabledElevators
                         .Where(x =>
-                            x.IsEnabled &&
                             x.Direction == direction &&
                             x.CurrentFloorNumber < floorNbr)
                         .OrderByDescending(x => x.CurrentFloorNumber);
