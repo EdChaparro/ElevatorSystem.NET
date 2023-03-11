@@ -37,6 +37,7 @@ namespace IntrepidProducts.ElevatorService.Banks
 
         protected Elevator? FindIdleElevator(Direction direction)
         {
+            //TODO: Write tests asserting this logic is correct (then consider using MaxBy & MinBy)
             switch (direction)
             {
                 case Direction.Down:
