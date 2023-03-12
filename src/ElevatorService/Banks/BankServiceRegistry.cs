@@ -65,6 +65,7 @@ namespace IntrepidProducts.ElevatorService.Banks
 
                 if (service.IsRunning)
                 {
+                    //TODO: Not a safe way to stop since since we're not going through the Runner
                     service.StopAsync(cancellationToken);
                 }
 

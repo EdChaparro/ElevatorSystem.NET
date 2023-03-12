@@ -8,17 +8,16 @@ namespace IntrepidProducts.ElevatorService.Banks
         public BankServiceRunner(IBankServiceRegistry registry, IServiceRunner<Elevator> elevatorRunner)
         {
             _registry = registry;
-            _elevatoRunner = elevatorRunner;
+            _elevatorRunner = elevatorRunner;
         }
 
         private readonly IBankServiceRegistry _registry;
-        private readonly IServiceRunner<Elevator> _elevatoRunner;
+        private readonly IServiceRunner<Elevator> _elevatorRunner;
 
         private readonly Dictionary<Guid, (IBackgroundService service, CancellationToken cancellationToken)>
             _runningServices = new();
 
         public int Count => _runningServices.Count;
-
 
         public bool Start(Bank bank)
         {
@@ -33,6 +32,12 @@ namespace IntrepidProducts.ElevatorService.Banks
             _runningServices.Add(bank.Id, (service, cancellationToken));
 
             service.StartAsync(cancellationToken);
+
+            foreach (var elevator in bank.EnabledElevators)
+            {
+                _elevatorRunner.Start(elevator);
+            }
+
             return true;
         }
 
@@ -49,6 +54,20 @@ namespace IntrepidProducts.ElevatorService.Banks
             {
                 return true;
             }
+
+            var runningElevators = new List<Elevator>();
+
+            foreach (var elevator in bank.Elevators)
+            {
+                if (_elevatorRunner.IsRunning(elevator))
+                {
+                    runningElevators.Add(elevator);
+                }
+            }
+
+            await Task.WhenAll(
+                runningElevators.Select(x => _elevatorRunner.StopAsync(x))
+            );
 
             await service.StopAsync(cancellationToken);
             _runningServices.Remove(bank.Id);

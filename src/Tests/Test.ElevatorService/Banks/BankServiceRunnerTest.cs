@@ -57,8 +57,9 @@ public class BankServiceRunnerTest
     [TestMethod]
     public void ShouldStartBankService()
     {
-        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
-        var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        var registry = new BankServiceRegistry(elevatorRegistry);
+        var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
         var runner = new BankServiceRunner(registry, elevatorRunner);
 
@@ -71,10 +72,64 @@ public class BankServiceRunnerTest
     }
 
     [TestMethod]
+    public void ShouldStartElevatorServicesWhenBankStarted()
+    {
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        var registry = new BankServiceRegistry(elevatorRegistry);
+        var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+        var bankRunner = new BankServiceRunner(registry, elevatorRunner);
+
+        var bank = new Bank(2, 1..10);
+        registry.Register(bank);
+
+        Assert.IsFalse(bankRunner.IsRunning(bank));
+
+        foreach (var elevator in bank.Elevators)
+        {
+            Assert.IsFalse(elevatorRunner.IsRunning(elevator));
+        }
+
+        bankRunner.Start(bank);
+        Assert.IsTrue(bankRunner.IsRunning(bank));
+
+        foreach (var elevator in bank.Elevators)
+        {
+            Assert.IsTrue(elevatorRunner.IsRunning(elevator));
+        }
+    }
+
+    [TestMethod]
+    public void ShouldOnlyStartElevatorServicesWhenElevatorsIsEnabled()
+    {
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        var registry = new BankServiceRegistry(elevatorRegistry);
+        var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+        Assert.AreEqual(0, elevatorRunner.Count);
+
+        var bankRunner = new BankServiceRunner(registry, elevatorRunner);
+
+        var bank = new Bank(2, 1..10);
+        registry.Register(bank);
+
+        Assert.IsFalse(bankRunner.IsRunning(bank));
+
+        bank.Elevators.First().IsEnabled = false;
+
+        bankRunner.Start(bank);
+        Assert.AreEqual(1, elevatorRunner.Count);
+
+        Assert.IsFalse(elevatorRunner.IsRunning(bank.Elevators.First()));
+        Assert.IsTrue(elevatorRunner.IsRunning(bank.Elevators.Last()));
+    }
+
+    [TestMethod]
     public void ShouldStopBankService()
     {
-        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
-        var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        var registry = new BankServiceRegistry(elevatorRegistry);
+        var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
         var runner = new BankServiceRunner(registry, elevatorRunner);
 
@@ -88,5 +143,36 @@ public class BankServiceRunnerTest
 
         Assert.IsTrue(isStopped.Result);
         Assert.IsFalse(runner.IsRunning(bank));
+    }
+
+    [TestMethod]
+    public void ShouldStopElevatorServicesWhenBankStopped()
+    {
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        var registry = new BankServiceRegistry(elevatorRegistry);
+        var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+        var runner = new BankServiceRunner(registry, elevatorRunner);
+
+        var bank = new Bank(2, 1..10);
+        registry.Register(bank);
+
+        runner.Start(bank);
+        Assert.IsTrue(runner.IsRunning(bank));
+
+        foreach (var elevator in bank.Elevators)
+        {
+            Assert.IsTrue(elevatorRunner.IsRunning(elevator));
+        }
+
+        var isStopped = runner.StopAsync(bank);
+
+        Assert.IsTrue(isStopped.Result);
+        Assert.IsFalse(runner.IsRunning(bank));
+
+        foreach (var elevator in bank.Elevators)
+        {
+            Assert.IsFalse(elevatorRunner.IsRunning(elevator));
+        }
     }
 }

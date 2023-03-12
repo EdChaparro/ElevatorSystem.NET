@@ -24,16 +24,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevatorRegistry = new ElevatorServiceRegistry();
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
-            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
             var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
-
-            elevatorRegistry.Register(elevators[0], elevators[1]);
 
             bankRegistry.Register(bank);
             Assert.IsTrue(bankRunner.Start(bank));
-
-            Assert.IsTrue(elevatorRunner.Start(elevators[0]));
-            Assert.IsTrue(elevatorRunner.Start(elevators[1]));
 
             foreach (var elevator in elevators)
             {
@@ -41,8 +36,6 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
                 Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
             }
 
-            Assert.IsTrue(elevatorRunner.StopAsync(elevators[0]).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(elevators[1]).Result);
             Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
 
@@ -56,18 +49,15 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevatorRegistry = new ElevatorServiceRegistry();
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
-            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
             var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
-
-            elevatorRegistry.Register(elevator);
-            Assert.IsTrue(elevatorRunner.Start(elevator));
 
             bankRegistry.Register(bank);
 
-            var service = bankRegistry.Get(bank) as BankService;    //TODO: Eliminate casting
-            Assert.IsNotNull(service);
+            var bankService = bankRegistry.Get(bank) as BankService;    //TODO: Eliminate casting
+            Assert.IsNotNull(bankService);
 
-            Assert.IsFalse(service.AssignedFloorStops.Any());
+            Assert.IsFalse(bankService.AssignedFloorStops.Any());
 
             Assert.IsTrue(bankRunner.Start(bank));
 
@@ -75,11 +65,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
 
             Thread.Sleep(200);  //Give the Engine a chance to do its thing
 
-            Assert.IsTrue(service.AssignedFloorStops.Any());
+            Assert.IsTrue(bankService.AssignedFloorStops.Any());
 
             TestStrategy.WaitForElevatorToReachFloor(14, elevator, 15);
 
-            Assert.IsFalse(service.AssignedFloorStops.Any());   //Cache should be clear
+            Assert.IsFalse(bankService.AssignedFloorStops.Any());   //Cache should be clear
 
             Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
@@ -97,18 +87,14 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevatorRegistry = new ElevatorServiceRegistry();
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
-            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
             var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
-
-            elevatorRegistry.Register(e1, e2);
-            Assert.IsTrue(elevatorRunner.Start(e1));
-            Assert.IsTrue(elevatorRunner.Start(e2));
-
-            Assert.AreEqual(Direction.Up, e1.Direction);
-            Assert.AreEqual(Direction.Up, e2.Direction);
 
             bankRegistry.Register(bank);
             Assert.IsTrue(bankRunner.Start(bank));
+
+            Assert.AreEqual(Direction.Up, e1.Direction);
+            Assert.AreEqual(Direction.Up, e2.Direction);
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(5, Direction.Down));
 
@@ -126,9 +112,6 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             Assert.IsTrue(e2.IsIdle);  //Should change direction when elevator idle
             Assert.AreEqual(Direction.Up, e2.Direction);
             Assert.AreEqual(5, e2.CurrentFloorNumber);
-
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
 
             Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
