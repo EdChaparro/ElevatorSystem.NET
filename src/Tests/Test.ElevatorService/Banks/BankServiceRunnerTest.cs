@@ -38,7 +38,7 @@ public class BankServiceRunnerTest
     }
 
     [TestMethod]
-    public void ShouldNotStartElevatorServiceUponRegistration()
+    public void ShouldNotStartBankServiceUponRegistration()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
@@ -55,7 +55,7 @@ public class BankServiceRunnerTest
     }
 
     [TestMethod]
-    public void ShouldStartElevatorService()
+    public void ShouldStartBankService()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
@@ -71,7 +71,7 @@ public class BankServiceRunnerTest
     }
 
     [TestMethod]
-    public void ShouldStopElevatorService()
+    public void ShouldStopBankService()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
