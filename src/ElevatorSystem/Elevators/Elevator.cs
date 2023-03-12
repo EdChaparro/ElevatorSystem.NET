@@ -11,7 +11,7 @@ namespace IntrepidProducts.ElevatorSystem.Elevators
 
     public class Elevator : AbstractEntity, IElevator
     {
-        public Elevator() //Parmeterless constructor added to support serialization
+        public Elevator() //Parameter-less constructor added to support serialization
         {
             OrderedFloorNumbers = Enumerable.Empty<int>();
 

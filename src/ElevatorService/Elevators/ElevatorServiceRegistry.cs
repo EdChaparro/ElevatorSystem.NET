@@ -2,21 +2,18 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Elevators
 {
-    public interface IElevatorServices
+    public interface IElevatorServiceRegistry
     {
-        int Count { get; }
-
         void Register(params Elevator[] elevators);
         void UnRegister(params Elevator[] elevators);
+
         bool IsRegistered(Elevator elevator);
+        int Count { get; }
 
-        bool Start(Elevator elevator);
-        Task<bool> StopAsync(Elevator elevator);
-
-        bool IsRunning(Elevator elevator);
+        IBackgroundService? Get(Elevator elevator);
     }
 
-    public class ElevatorServices : IElevatorServices
+    public class ElevatorServiceRegistry : IElevatorServiceRegistry
     {
         private readonly Dictionary<Guid, (ElevatorService service, CancellationToken cancellationToken)>
             _serviceDetails = new();
@@ -65,42 +62,6 @@ namespace IntrepidProducts.ElevatorService.Elevators
         public bool IsRegistered(Elevator elevator)
         {
             return _serviceDetails.ContainsKey(elevator.Id);
-        }
-
-        public bool Start(Elevator elevator)
-        {
-            if (!_serviceDetails.ContainsKey(elevator.Id))
-            {
-                return false;
-            }
-
-            var (service, cancellationToken) = _serviceDetails[elevator.Id];
-            service.StartAsync(cancellationToken);
-            return true;
-        }
-
-        public async Task<bool> StopAsync(Elevator elevator)
-        {
-            if (!_serviceDetails.ContainsKey(elevator.Id))
-            {
-                return false;
-            }
-
-            var (service, cancellationToken) = _serviceDetails[elevator.Id];
-
-            if (!service.IsRunning)
-            {
-                return true;
-            }
-
-            await service.StopAsync(cancellationToken);
-            return true;
-        }
-
-        public bool IsRunning(Elevator elevator)
-        {
-            return _serviceDetails.ContainsKey(elevator.Id) &&
-                   _serviceDetails[elevator.Id].service.IsRunning;
         }
     }
 }

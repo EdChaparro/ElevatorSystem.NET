@@ -21,16 +21,14 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevators = bank.Elevators.ToList();
             Assert.AreEqual(2, elevators.Count());
 
-            var bankServices = new BankServices();
-            bankServices.Register(bank);
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
-            var elevatorServices = new ElevatorServices();
-            elevatorServices.Register(elevators[0], elevators[1]);
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
 
-            Assert.IsTrue(bankServices.Start(bank));
-
-            Assert.IsTrue(elevatorServices.Start(elevators[0]));
-            Assert.IsTrue(elevatorServices.Start(elevators[1]));
+            bankRegistry.Register(bank);
+            Assert.IsTrue(bankRunner.Start(bank));
 
             foreach (var elevator in elevators)
             {
@@ -38,44 +36,41 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
                 Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
             }
 
-            Assert.IsTrue(elevatorServices.StopAsync(elevators[0]).Result);
-            Assert.IsTrue(elevatorServices.StopAsync(elevators[1]).Result);
-            Assert.IsTrue(bankServices.StopAsync(bank).Result);
+            Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
-
 
         [TestMethod]
         public void ShouldTrackAssignedElevators()
         {
-            //TODO: Fix Me -- This test will fail when the Bank has more than one elevator (and other elevator services are not running)
-            var bank = new Bank(1, 1..50);
+            var bank = new Bank(2, 1..50);
             var elevator = bank.Elevators.First(); //First idle elevator will be assigned
 
-            var elevatorServices = new ElevatorServices();
-            elevatorServices.Register(elevator);
-            Assert.IsTrue(elevatorServices.Start(elevator));
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
-            var bankServices = new BankServices();
-            bankServices.Register(bank);
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
 
-            var service = bankServices.Get(bank) as BankService;    //TODO: Eliminate casting
-            Assert.IsNotNull(service);
+            bankRegistry.Register(bank);
 
-            Assert.IsFalse(service.AssignedFloorStops.Any());
+            var bankService = bankRegistry.Get(bank) as BankService;    //TODO: Eliminate casting
+            Assert.IsNotNull(bankService);
 
-            Assert.IsTrue(bankServices.Start(bank));
+            Assert.IsFalse(bankService.AssignedFloorStops.Any());
+
+            Assert.IsTrue(bankRunner.Start(bank));
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(14, Direction.Down));
 
             Thread.Sleep(200);  //Give the Engine a chance to do its thing
 
-            Assert.IsTrue(service.AssignedFloorStops.Any());
+            Assert.IsTrue(bankService.AssignedFloorStops.Any());
 
             TestStrategy.WaitForElevatorToReachFloor(14, elevator, 15);
 
-            Assert.IsFalse(service.AssignedFloorStops.Any());   //Cache should be clear
+            Assert.IsFalse(bankService.AssignedFloorStops.Any());   //Cache should be clear
 
-            Assert.IsTrue(bankServices.StopAsync(bank).Result);
+            Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
 
         [TestMethod]
@@ -88,17 +83,17 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             e1.Name = "Test Elevator 1";
             e2.Name = "Test Elevator 2";
 
-            var elevatorServices = new ElevatorServices();
-            elevatorServices.Register(e1, e2);
-            Assert.IsTrue(elevatorServices.Start(e1));
-            Assert.IsTrue(elevatorServices.Start(e2));
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
+
+            bankRegistry.Register(bank);
+            Assert.IsTrue(bankRunner.Start(bank));
 
             Assert.AreEqual(Direction.Up, e1.Direction);
             Assert.AreEqual(Direction.Up, e2.Direction);
-
-            var bankServices = new BankServices();
-            bankServices.Register(bank);
-            Assert.IsTrue(bankServices.Start(bank));
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(5, Direction.Down));
 
@@ -117,10 +112,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             Assert.AreEqual(Direction.Up, e2.Direction);
             Assert.AreEqual(5, e2.CurrentFloorNumber);
 
-            Assert.IsTrue(elevatorServices.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorServices.StopAsync(e2).Result);
-
-            Assert.IsTrue(bankServices.StopAsync(bank).Result);
+            Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
     }
 }

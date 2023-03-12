@@ -10,12 +10,11 @@ namespace IntrepidProducts.ElevatorSystem.Banks
     public interface IBank : IHasId, IHasFloors //Facilitates Mocking
     {
         string? Name { get; set; }
-        int NumberOfElevators { get; }
     }
 
     public class Bank : AbstractEntity, IBank
     {
-        public Bank() //Parmeterless constructor added to support serialization
+        public Bank() //Parameter-less constructor added to support serialization
         { }
 
         public Bank(int nbrOfElevators, Range floorRange)
@@ -40,8 +39,9 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
         #region Elevators
         private readonly Dictionary<Guid, Elevator> _elevators = new();
-
         public IEnumerable<Elevator> Elevators => _elevators.Values.ToList();
+
+        public IEnumerable<Elevator> EnabledElevators => _elevators.Values.Where(x => x.IsEnabled).ToList();
 
         private void AddElevators(int nbrOfElevators)
         {
@@ -58,7 +58,7 @@ namespace IntrepidProducts.ElevatorSystem.Banks
                 (x => _elevators.Add(x.Key, x.Value));
         }
 
-        public IEnumerable<Elevator> IdleElevators => Elevators.Where(x => x.IsIdle);
+        public IEnumerable<Elevator> IdleElevators => EnabledElevators.Where(x => x.IsIdle);
 
         private void SetObservabilityFor(Elevator elevator)
         {
