@@ -14,7 +14,7 @@ public class BankServiceRegistryTest
     }
 
     [TestMethod]
-    public void ShouldRegisterElevatorService()
+    public void ShouldRegisterBankService()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         Assert.AreEqual(0, registry.Count);
@@ -26,7 +26,7 @@ public class BankServiceRegistryTest
     }
 
     [TestMethod]
-    public void ShouldRegisterMultipleElevatorServices()
+    public void ShouldRegisterMultipleBankServices()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         Assert.AreEqual(0, registry.Count);
@@ -39,7 +39,7 @@ public class BankServiceRegistryTest
     }
 
     [TestMethod]
-    public void ShouldUnRegisterElevatorService()
+    public void ShouldUnRegisterBankService()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
 
@@ -52,7 +52,7 @@ public class BankServiceRegistryTest
     }
 
     [TestMethod]
-    public void ShouldUnRegisterMultipleElevatorServices()
+    public void ShouldUnRegisterMultipleBankervices()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
 
