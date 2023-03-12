@@ -1,3 +1,4 @@
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorService.Banks
@@ -15,6 +16,13 @@ namespace IntrepidProducts.ElevatorService.Banks
 
     public class BankServiceRegistry : IBankServiceRegistry
     {
+        public BankServiceRegistry(IElevatorServiceRegistry elevatorServiceRegistry)
+        {
+            _elevatorServiceRegistry = elevatorServiceRegistry;
+        }
+
+        private readonly IElevatorServiceRegistry _elevatorServiceRegistry;
+
         private readonly Dictionary<Guid, (BankService service, CancellationToken cancellationToken)>
             _serviceDetails = new();
 

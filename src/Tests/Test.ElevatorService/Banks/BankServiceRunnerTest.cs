@@ -1,4 +1,5 @@
 using IntrepidProducts.ElevatorService.Banks;
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 
@@ -15,7 +16,7 @@ public class BankServiceRunnerTest
     [TestMethod]
     public void ShouldStopRunningServiceWhenUnRegistered()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var runner = new BankServiceRunner(registry);
 
         var bank = new Bank(2, 1..10);
@@ -37,7 +38,7 @@ public class BankServiceRunnerTest
     [TestMethod]
     public void ShouldNotStartElevatorServiceUponRegistration()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var runner = new BankServiceRunner(registry);
         Assert.AreEqual(0, registry.Count);
 
@@ -52,7 +53,7 @@ public class BankServiceRunnerTest
     [TestMethod]
     public void ShouldStartElevatorService()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var runner = new BankServiceRunner(registry);
 
         var bank = new Bank(2, 1..10);
@@ -66,7 +67,7 @@ public class BankServiceRunnerTest
     [TestMethod]
     public void ShouldStopElevatorService()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         var runner = new BankServiceRunner(registry);
 
         var bank = new Bank(2, 1..10);

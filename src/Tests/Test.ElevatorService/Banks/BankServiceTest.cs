@@ -21,7 +21,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevators = bank.Elevators.ToList();
             Assert.AreEqual(2, elevators.Count());
 
-            var bankRegistry = new BankServiceRegistry();
+            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
             var bankRunner = new BankServiceRunner(bankRegistry);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
@@ -46,7 +46,6 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             Assert.IsTrue(bankRunner.StopAsync(bank).Result);
         }
 
-
         [TestMethod]
         public void ShouldTrackAssignedElevators()
         {
@@ -54,11 +53,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var bank = new Bank(1, 1..50);
             var elevator = bank.Elevators.First(); //First idle elevator will be assigned
 
-            var bankRegistry = new BankServiceRegistry();
-            var bankRunner = new BankServiceRunner(bankRegistry);
-
             var elevatorRegistry = new ElevatorServiceRegistry();
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            var bankRunner = new BankServiceRunner(bankRegistry);
 
             elevatorRegistry.Register(elevator);
             Assert.IsTrue(elevatorRunner.Start(elevator));
@@ -95,7 +94,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             e1.Name = "Test Elevator 1";
             e2.Name = "Test Elevator 2";
 
-            var bankRegistry = new BankServiceRegistry();
+            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
             var bankRunner = new BankServiceRunner(bankRegistry);
 
             var elevatorRegistry = new ElevatorServiceRegistry();

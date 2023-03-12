@@ -1,4 +1,5 @@
 using IntrepidProducts.ElevatorService.Banks;
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 
@@ -15,7 +16,7 @@ public class BankServiceRegistryTest
     [TestMethod]
     public void ShouldRegisterElevatorService()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         Assert.AreEqual(0, registry.Count);
 
         var bank = new Bank(2, 1..10);
@@ -27,7 +28,7 @@ public class BankServiceRegistryTest
     [TestMethod]
     public void ShouldRegisterMultipleElevatorServices()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
         Assert.AreEqual(0, registry.Count);
 
         var bank1 = new Bank(2, 1..10);
@@ -40,7 +41,7 @@ public class BankServiceRegistryTest
     [TestMethod]
     public void ShouldUnRegisterElevatorService()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
 
         var bank = new Bank(2, 1..10);
         registry.Register(bank);
@@ -53,7 +54,7 @@ public class BankServiceRegistryTest
     [TestMethod]
     public void ShouldUnRegisterMultipleElevatorServices()
     {
-        var registry = new BankServiceRegistry();
+        var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
 
         var bank1 = new Bank(2, 1..10);
         var bank2 = new Bank(2, 1..10);
