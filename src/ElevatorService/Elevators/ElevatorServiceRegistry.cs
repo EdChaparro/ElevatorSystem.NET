@@ -2,8 +2,18 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Elevators
 {
-    [Obsolete("Use Elevator Service Registry and Runner")]
-    public class ElevatorServices
+    public interface IElevatorServiceRegistry
+    {
+        void Register(params Elevator[] elevators);
+        void UnRegister(params Elevator[] elevators);
+
+        bool IsRegistered(Elevator elevator);
+        int Count { get; }
+
+        IBackgroundService? Get(Elevator elevator);
+    }
+
+    public class ElevatorServiceRegistry : IElevatorServiceRegistry
     {
         private readonly Dictionary<Guid, (ElevatorService service, CancellationToken cancellationToken)>
             _serviceDetails = new();
@@ -52,47 +62,6 @@ namespace IntrepidProducts.ElevatorService.Elevators
         public bool IsRegistered(Elevator elevator)
         {
             return _serviceDetails.ContainsKey(elevator.Id);
-        }
-
-        public bool Start(Elevator elevator)
-        {
-            if (!_serviceDetails.ContainsKey(elevator.Id))
-            {
-                return false;
-            }
-
-            if (!elevator.IsEnabled)
-            {
-                return false;
-            }
-
-            var (service, cancellationToken) = _serviceDetails[elevator.Id];
-            service.StartAsync(cancellationToken);
-            return true;
-        }
-
-        public async Task<bool> StopAsync(Elevator elevator)
-        {
-            if (!_serviceDetails.ContainsKey(elevator.Id))
-            {
-                return false;
-            }
-
-            var (service, cancellationToken) = _serviceDetails[elevator.Id];
-
-            if (!service.IsRunning)
-            {
-                return true;
-            }
-
-            await service.StopAsync(cancellationToken);
-            return true;
-        }
-
-        public bool IsRunning(Elevator elevator)
-        {
-            return _serviceDetails.ContainsKey(elevator.Id) &&
-                   _serviceDetails[elevator.Id].service.IsRunning;
         }
     }
 }

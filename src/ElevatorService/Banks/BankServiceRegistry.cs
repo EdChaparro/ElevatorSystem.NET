@@ -2,10 +2,18 @@ using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorService.Banks
 {
-    //TODO: Create a generic class?
+    public interface IBankServiceRegistry
+    {
+        void Register(params Bank[] banks);
+        void UnRegister(params Bank[] banks);
 
-    [Obsolete("Use Bank Service Registry and Runner")]
-    public class BankServices
+        bool IsRegistered(Bank bank);
+        int Count { get; }
+
+        IBackgroundService? Get(Bank bank);
+    }
+
+    public class BankServiceRegistry : IBankServiceRegistry
     {
         private readonly Dictionary<Guid, (BankService service, CancellationToken cancellationToken)>
             _serviceDetails = new();
@@ -54,42 +62,6 @@ namespace IntrepidProducts.ElevatorService.Banks
         public bool IsRegistered(Bank bank)
         {
             return _serviceDetails.ContainsKey(bank.Id);
-        }
-
-        public bool Start(Bank bank)
-        {
-            if (!_serviceDetails.ContainsKey(bank.Id))
-            {
-                return false;
-            }
-
-            var (service, cancellationToken) = _serviceDetails[bank.Id];
-            service.StartAsync(cancellationToken);
-            return true;
-        }
-
-        public async Task<bool> StopAsync(Bank bank)
-        {
-            if (!_serviceDetails.ContainsKey(bank.Id))
-            {
-                return false;
-            }
-
-            var (service, cancellationToken) = _serviceDetails[bank.Id];
-
-            if (!service.IsRunning)
-            {
-                return true;
-            }
-
-            await service.StopAsync(cancellationToken);
-            return true;
-        }
-
-        public bool IsRunning(Bank bank)
-        {
-            return _serviceDetails.ContainsKey(bank.Id) &&
-                   _serviceDetails[bank.Id].service.IsRunning;
         }
     }
 }
