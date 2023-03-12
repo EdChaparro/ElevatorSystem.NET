@@ -17,7 +17,9 @@ public class BankServiceRunnerTest
     public void ShouldStopRunningServiceWhenUnRegistered()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
-        var runner = new BankServiceRunner(registry);
+        var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
+
+        var runner = new BankServiceRunner(registry, elevatorRunner);
 
         var bank = new Bank(2, 1..10);
         registry.Register(bank);
@@ -39,7 +41,9 @@ public class BankServiceRunnerTest
     public void ShouldNotStartElevatorServiceUponRegistration()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
-        var runner = new BankServiceRunner(registry);
+        var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
+
+        var runner = new BankServiceRunner(registry, elevatorRunner);
         Assert.AreEqual(0, registry.Count);
 
         var bank = new Bank(2, 1..10);
@@ -54,7 +58,9 @@ public class BankServiceRunnerTest
     public void ShouldStartElevatorService()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
-        var runner = new BankServiceRunner(registry);
+        var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
+
+        var runner = new BankServiceRunner(registry, elevatorRunner);
 
         var bank = new Bank(2, 1..10);
         registry.Register(bank);
@@ -68,7 +74,9 @@ public class BankServiceRunnerTest
     public void ShouldStopElevatorService()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
-        var runner = new BankServiceRunner(registry);
+        var elevatorRunner = new ElevatorServiceRunner(new ElevatorServiceRegistry());
+
+        var runner = new BankServiceRunner(registry, elevatorRunner);
 
         var bank = new Bank(2, 1..10);
         registry.Register(bank);

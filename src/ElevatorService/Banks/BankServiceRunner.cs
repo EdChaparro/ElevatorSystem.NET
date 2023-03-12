@@ -1,15 +1,18 @@
 using IntrepidProducts.ElevatorSystem.Banks;
+using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Banks
 {
     public class BankServiceRunner : IServiceRunner<Bank>
     {
-        public BankServiceRunner(IBankServiceRegistry registry)
+        public BankServiceRunner(IBankServiceRegistry registry, IServiceRunner<Elevator> elevatorRunner)
         {
             _registry = registry;
+            _elevatoRunner = elevatorRunner;
         }
 
         private readonly IBankServiceRegistry _registry;
+        private readonly IServiceRunner<Elevator> _elevatoRunner;
 
         private readonly Dictionary<Guid, (IBackgroundService service, CancellationToken cancellationToken)>
             _runningServices = new();

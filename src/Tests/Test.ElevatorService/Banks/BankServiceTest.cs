@@ -21,11 +21,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevators = bank.Elevators.ToList();
             Assert.AreEqual(2, elevators.Count());
 
-            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
-            var bankRunner = new BankServiceRunner(bankRegistry);
-
             var elevatorRegistry = new ElevatorServiceRegistry();
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
 
             elevatorRegistry.Register(elevators[0], elevators[1]);
 
@@ -57,7 +57,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
-            var bankRunner = new BankServiceRunner(bankRegistry);
+            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
 
             elevatorRegistry.Register(elevator);
             Assert.IsTrue(elevatorRunner.Start(elevator));
@@ -94,11 +94,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             e1.Name = "Test Elevator 1";
             e2.Name = "Test Elevator 2";
 
-            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
-            var bankRunner = new BankServiceRunner(bankRegistry);
-
             var elevatorRegistry = new ElevatorServiceRegistry();
             var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
+
+            var bankRegistry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
 
             elevatorRegistry.Register(e1, e2);
             Assert.IsTrue(elevatorRunner.Start(e1));
