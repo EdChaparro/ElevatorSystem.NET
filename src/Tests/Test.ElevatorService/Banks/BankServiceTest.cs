@@ -42,8 +42,7 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
         [TestMethod]
         public void ShouldTrackAssignedElevators()
         {
-            //TODO: Fix Me -- This test will fail when the Bank has more than one elevator (and other elevator services are not running)
-            var bank = new Bank(1, 1..50);
+            var bank = new Bank(2, 1..50);
             var elevator = bank.Elevators.First(); //First idle elevator will be assigned
 
             var elevatorRegistry = new ElevatorServiceRegistry();
