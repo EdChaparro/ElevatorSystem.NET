@@ -39,6 +39,11 @@ namespace IntrepidProducts.ElevatorService.Banks
 
                 //TODO: Use IoC
                 _serviceDetails.Add(bank.Id, (new BankService(bank), new CancellationToken()));
+
+                foreach (var elevator in bank.EnabledElevators)
+                {
+                    _elevatorServiceRegistry.Register(elevator);
+                }
             }
         }
 
@@ -64,6 +69,11 @@ namespace IntrepidProducts.ElevatorService.Banks
                 }
 
                 _serviceDetails.Remove(bank.Id);
+
+                foreach (var elevator in bank.Elevators)
+                {
+                    _elevatorServiceRegistry.UnRegister(elevator);
+                }
             }
         }
 

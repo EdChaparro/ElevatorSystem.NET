@@ -26,6 +26,42 @@ public class BankServiceRegistryTest
     }
 
     [TestMethod]
+    public void ShouldRegisterAllBankElevators()
+    {
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        Assert.AreEqual(0, elevatorRegistry.Count);
+
+        var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+        Assert.AreEqual(0, bankRegistry.Count);
+
+        var bank = new Bank(2, 1..10);
+        bankRegistry.Register(bank);
+        Assert.AreEqual(1, bankRegistry.Count);
+        Assert.AreEqual(2, elevatorRegistry.Count);
+    }
+
+    [TestMethod]
+    public void ShouldOnlyRegisterEnabledBankElevators()
+    {
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        Assert.AreEqual(0, elevatorRegistry.Count);
+
+        var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+        Assert.AreEqual(0, bankRegistry.Count);
+
+        var bank = new Bank(2, 1..10);
+        bank.Elevators.First().IsEnabled = false;
+
+        bankRegistry.Register(bank);
+        Assert.AreEqual(1, bankRegistry.Count);
+        Assert.AreEqual(1, elevatorRegistry.Count);
+
+        Assert.IsFalse(elevatorRegistry.IsRegistered(bank.Elevators.First()));
+        Assert.IsTrue(elevatorRegistry.IsRegistered(bank.Elevators.Last()));
+    }
+
+
+    [TestMethod]
     public void ShouldRegisterMultipleBankServices()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
@@ -52,7 +88,7 @@ public class BankServiceRegistryTest
     }
 
     [TestMethod]
-    public void ShouldUnRegisterMultipleBankervices()
+    public void ShouldUnRegisterMultipleBankServices()
     {
         var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
 
@@ -69,5 +105,21 @@ public class BankServiceRegistryTest
         Assert.IsFalse(registry.IsRegistered(bank1));
         Assert.IsTrue(registry.IsRegistered(bank2));
         Assert.IsFalse(registry.IsRegistered(bank3));
+    }
+
+    [TestMethod]
+    public void ShouldUnRegisterBankElevatorsServices()
+    {
+        var elevatorRegistry = new ElevatorServiceRegistry();
+        var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+
+        var bank = new Bank(2, 1..10);
+        bankRegistry.Register(bank);
+        Assert.AreEqual(1, bankRegistry.Count);
+        Assert.AreEqual(2, elevatorRegistry.Count);
+
+        bankRegistry.UnRegister(bank);
+        Assert.AreEqual(0, bankRegistry.Count);
+        Assert.AreEqual(0, elevatorRegistry.Count);
     }
 }
