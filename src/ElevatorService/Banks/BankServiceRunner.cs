@@ -2,7 +2,7 @@ using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorService.Banks
 {
-    public class BankServiceRunner
+    public class BankServiceRunner : IServiceRunner<Bank>
     {
         public BankServiceRunner(IBankServiceRegistry registry)
         {

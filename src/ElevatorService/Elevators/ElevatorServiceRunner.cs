@@ -2,7 +2,7 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 
 namespace IntrepidProducts.ElevatorService.Elevators
 {
-    public class ElevatorServiceRunner
+    public class ElevatorServiceRunner : IServiceRunner<Elevator>
     {
         public ElevatorServiceRunner(IElevatorServiceRegistry registry)
         {
@@ -14,6 +14,7 @@ namespace IntrepidProducts.ElevatorService.Elevators
         private readonly Dictionary<Guid, (IBackgroundService service, CancellationToken cancellationToken)>
             _runningServices = new();
 
+        public int Count => _runningServices.Count;
 
         public bool Start(Elevator elevator)
         {
