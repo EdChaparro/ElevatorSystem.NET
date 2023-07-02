@@ -43,19 +43,39 @@ namespace IntrepidProducts.ElevatorSystem.Banks
 
         public IEnumerable<Elevator> EnabledElevators => _elevators.Values.Where(x => x.IsEnabled).ToList();
 
-        private void AddElevators(int nbrOfElevators)
+        //TODO: Hacky -- improve this
+        //Only to be used for re-hydrating objects from a data-store
+        public void AddElevators(IEnumerable<Elevator> elevators)
         {
             var itemsToAdd = new Dictionary<Guid, Elevator>();
 
-            for (int i = 0; i < nbrOfElevators; i++)
+            foreach (var elevator in elevators)
             {
-                var elevator = new Elevator(OrderedFloorNumbers.ToArray());
+                if (!elevator.OrderedFloorNumbers.SequenceEqual(OrderedFloorNumbers))
+                {
+                    throw new ArgumentException
+                        ($"Invalid Elevator Floor Count, Id = {elevator.Id}");
+                }
+
                 itemsToAdd[elevator.Id] = elevator;
                 SetObservabilityFor(elevator);
             }
 
+            _elevators.Clear();
             itemsToAdd.ToList().ForEach
                 (x => _elevators.Add(x.Key, x.Value));
+        }
+
+        private void AddElevators(int nbrOfElevators)
+        {
+            var elevators = new List<Elevator>();
+
+            for (var i = 0; i < nbrOfElevators; i++)
+            {
+                elevators.Add(new Elevator(OrderedFloorNumbers.ToArray()));
+            }
+
+            AddElevators(elevators);
         }
 
         public IEnumerable<Elevator> IdleElevators => EnabledElevators.Where(x => x.IsIdle);
