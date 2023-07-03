@@ -9,6 +9,8 @@ namespace IntrepidProducts.ElevatorService.Banks
         void UnRegister(params Bank[] banks);
 
         bool IsRegistered(Bank bank);
+        bool IsRegistered(Guid bankId);
+
         int Count { get; }
 
         IBackgroundService? Get(Bank bank);
@@ -78,9 +80,14 @@ namespace IntrepidProducts.ElevatorService.Banks
             }
         }
 
+        public bool IsRegistered(Guid bankId)
+        {
+            return _serviceDetails.ContainsKey(bankId);
+        }
+
         public bool IsRegistered(Bank bank)
         {
-            return _serviceDetails.ContainsKey(bank.Id);
+            return IsRegistered(bank.Id);
         }
     }
 }

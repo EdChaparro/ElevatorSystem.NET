@@ -8,6 +8,8 @@ namespace IntrepidProducts.ElevatorService.Elevators
         void UnRegister(params Elevator[] elevators);
 
         bool IsRegistered(Elevator elevator);
+        bool IsRegistered(Guid elevatorId);
+
         int Count { get; }
 
         IBackgroundService? Get(Elevator elevator);
@@ -59,9 +61,14 @@ namespace IntrepidProducts.ElevatorService.Elevators
             }
         }
 
+        public bool IsRegistered(Guid elevatorId)
+        {
+            return _serviceDetails.ContainsKey(elevatorId);
+        }
+
         public bool IsRegistered(Elevator elevator)
         {
-            return _serviceDetails.ContainsKey(elevator.Id);
+            return IsRegistered(elevator.Id);
         }
     }
 }
