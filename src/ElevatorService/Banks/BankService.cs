@@ -1,3 +1,4 @@
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Banks;
 using IntrepidProducts.ElevatorSystem.Elevators;
 
@@ -6,22 +7,40 @@ namespace IntrepidProducts.ElevatorService.Banks
     //TODO: Consider creating ONE Service to manage multiple Banks
     public class BankService : AbstractBackgroundService
     {
-        public BankService(Bank bank) : base(Configuration.EngineSleepIntervalInMilliseconds)
+        public BankService(Bank bank, IElevatorServiceRegistry elevatorRegistry)
+            : base(Configuration.EngineSleepIntervalInMilliseconds)
         {
             Bank = bank;
+            _elevatorRegistry = elevatorRegistry;
+
             Strategy = new IdleStrategy(bank, new ProximateStrategy(bank));  //TODO: use IoC
         }
 
         private Bank Bank { get; }
+        private readonly IElevatorServiceRegistry _elevatorRegistry;
         private IStrategy Strategy { get; }
 
         public List<RequestedFloorStop> AssignedFloorStops { get; private set; } = new();
 
-        protected override void BeforeServiceLoop()
+        protected override void BeforeStart()
         {
-            foreach (var elevator in Bank.Elevators)
+
+            foreach (var elevator in Bank.EnabledElevators)
             {
+                var elevatorService = _elevatorRegistry.Get(elevator.Id);
+
+                elevatorService?.StartAsync(CancellationToken);
                 elevator.RequestStopAtFloorNumber(Bank.LowestFloorNbr);
+            }
+        }
+
+        protected override void BeforeStop()
+        {
+            foreach (var elevator in Bank.EnabledElevators)
+            {
+                var elevatorService = _elevatorRegistry.Get(elevator.Id);
+
+                elevatorService?.StopAsync(CancellationToken);
             }
         }
 

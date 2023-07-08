@@ -40,7 +40,8 @@ namespace IntrepidProducts.ElevatorService.Banks
                 }
 
                 //TODO: Use IoC
-                _serviceDetails.Add(bank.Id, (new BankService(bank), new CancellationToken()));
+                _serviceDetails.Add(bank.Id,
+                    (new BankService(bank, _elevatorServiceRegistry), new CancellationToken()));
 
                 foreach (var elevator in bank.EnabledElevators)
                 {

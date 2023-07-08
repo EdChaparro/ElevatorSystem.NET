@@ -1,3 +1,4 @@
+using IntrepidProducts.ElevatorService.Elevators;
 using IntrepidProducts.ElevatorSystem.Banks;
 
 namespace IntrepidProducts.ElevatorService.Banks;
@@ -10,8 +11,8 @@ public class BankServiceConsoleRunner
 
         var service = GetEngineFor(bank);
 
-        var cancellationToken = new CancellationToken();
-        service.StartAsync(cancellationToken);
+        //var cancellationToken = new CancellationToken();
+        service.StartAsync();
 
         Console.WriteLine("Bank Engine started directly, waiting 5 second before shutdown");
         Console.WriteLine($"IsRunning: {service.IsRunning}");
@@ -19,13 +20,20 @@ public class BankServiceConsoleRunner
         Thread.Sleep(5000);
 
         Console.WriteLine("Shutting down Engine");
-        service.StopAsync(cancellationToken);
+        service.StopAsync();
 
         Console.WriteLine($"IsRunning: {service.IsRunning}");
     }
 
     public static IBackgroundService GetEngineFor(Bank bank)
     {
-        return new BankService(bank);
+        var elevatorServiceRegistry = new ElevatorServiceRegistry();
+
+        foreach (var elevator in bank.EnabledElevators)
+        {
+            elevatorServiceRegistry.Register(elevator);
+        }
+
+        return new BankService(bank, elevatorServiceRegistry);
     }
 }

@@ -3,6 +3,8 @@ namespace IntrepidProducts.ElevatorService;
 public interface IBackgroundService : IHostedService
 {
     bool IsRunning { get; }
+    Task StartAsync();
+    Task StopAsync();
 }
 
 public abstract class AbstractBackgroundService : BackgroundService, IBackgroundService
@@ -15,12 +17,26 @@ public abstract class AbstractBackgroundService : BackgroundService, IBackground
     protected int SleepIntervalInMilliseconds { get; set; }
 
     public bool IsRunning { get; private set; }
+    protected CancellationToken CancellationToken { get; set; }
+
+    public Task StartAsync()
+    {
+        return StartAsync(new CancellationToken());
+    }
 
     public override Task StartAsync(CancellationToken cancellationToken)
     {
+        CancellationToken = cancellationToken;
+
         IsRunning = true;
-        BeforeServiceLoop();
+        BeforeStart();
         return base.StartAsync(cancellationToken);
+    }
+
+    public Task StopAsync()
+    {
+        BeforeStop();
+        return StopAsync(CancellationToken);
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)
@@ -38,7 +54,10 @@ public abstract class AbstractBackgroundService : BackgroundService, IBackground
         }
     }
 
-    protected virtual void BeforeServiceLoop()
+    protected virtual void BeforeStart()
+    { }
+
+    protected virtual void BeforeStop()
     { }
 
     protected abstract void ServiceLoop();

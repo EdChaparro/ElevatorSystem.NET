@@ -12,6 +12,7 @@ namespace IntrepidProducts.ElevatorService.Elevators
 
         int Count { get; }
 
+        IBackgroundService? Get(Guid elevatorId);
         IBackgroundService? Get(Elevator elevator);
     }
 
@@ -36,9 +37,14 @@ namespace IntrepidProducts.ElevatorService.Elevators
             }
         }
 
+        public IBackgroundService? Get(Guid elevatorId)
+        {
+            return _serviceDetails.ContainsKey(elevatorId) ? _serviceDetails[elevatorId].service : null;
+        }
+
         public IBackgroundService? Get(Elevator elevator)
         {
-            return _serviceDetails.ContainsKey(elevator.Id) ? _serviceDetails[elevator.Id].service : null;
+            return Get(elevator.Id);
         }
 
         public void UnRegister(params Elevator[] elevators)
