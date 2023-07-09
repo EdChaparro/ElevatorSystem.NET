@@ -29,10 +29,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
                 => receivedEvents.Add(eArg);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             e.RequestStopAtFloorNumber(4);
             Assert.AreEqual(0, receivedEvents.Count);
@@ -47,7 +50,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.AreEqual(Direction.Down, directionEvent.Direction);
             Assert.AreEqual(e.Id, directionEvent.ElevatorId);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -64,10 +68,12 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
                 => receivedEvents.Add(eArg);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
-
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsFalse(e.RequestStopAtFloorNumber(1).isOk); //No event generated;
             Assert.AreEqual(0, receivedEvents.Count);   //already at 1st floor
@@ -81,7 +87,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.AreEqual(2, floorEvent.CurrentFloorNbr);
             Assert.AreEqual(e.Id, floorEvent.ElevatorId);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -100,10 +107,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
                 => receivedEvents.Add(eArg);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsTrue(e.RequestStopAtFloorNumber(2).isOk);
             TestStrategy.WaitForElevatorToReachFloor(2, e);
@@ -113,7 +123,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsFalse(e.RequestStopAtFloorNumber(3).isOk);  //Additional event
             Assert.AreEqual(1, receivedEvents.Count);   // not raised
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         #region Updates Floor Request Buttons
@@ -127,11 +138,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             };
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
 
-            Assert.IsTrue(elevatorRunner.Start(e));
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.AreEqual(1, e.CurrentFloorNumber);
             var ePanel = e.FloorRequestPanel;
@@ -152,7 +165,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.AreEqual(2, floorNumberChangedEventCount); //Confirm we got expected events
             Assert.IsFalse(floor3RequestButton.IsPressed);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -164,10 +178,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             };
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             e.RequestStopAtFloorNumber(4);
             Assert.AreEqual(Direction.Up, e.Direction);
@@ -181,7 +198,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsFalse(floor2RequestButton.SetPressedTo(true));
             Assert.IsFalse(floor2RequestButton.IsPressed);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
         #endregion
 
@@ -192,11 +210,18 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var e2 = new Elevator(1..7);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e1, e2);
-            Assert.IsTrue(elevatorRunner.Start(e1));
-            Assert.IsTrue(elevatorRunner.Start(e2));
+
+            var e1Service = elevatorRegistry.Get(e1);
+            Assert.IsNotNull(e1Service);
+            e1Service.StartAsync();
+            Assert.IsTrue(e1Service.IsRunning);
+
+            var e2Service = elevatorRegistry.Get(e2);
+            Assert.IsNotNull(e2Service);
+            e2Service.StartAsync();
+            Assert.IsTrue(e2Service.IsRunning);
 
             Assert.IsTrue(e1.RequestStopAtFloorNumber(5).isOk);
             Assert.IsTrue(e2.RequestStopAtFloorNumber(7).isOk);
@@ -212,10 +237,12 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsFalse(e1.IsStoppingAtFloorFromDirection(2, Direction.Down));
             Assert.IsTrue(e2.IsStoppingAtFloorFromDirection(2, Direction.Down));
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
-        }
+            e1Service.StopAsync();
+            Assert.IsFalse(e1Service.IsRunning);
 
+            e2Service.StopAsync();
+            Assert.IsFalse(e2Service.IsRunning);
+        }
 
         [TestMethod]
         public void ShouldUpdateRequestedFloorStopsListOnDoorOpen()
@@ -232,15 +259,19 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
                 e.RequestedFloorStops.Select(x => x.FloorNbr).ToList());
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             TestStrategy.WaitForElevatorToReachFloor(7, e);
             Assert.IsFalse(e.RequestedFloorStops.Any());
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -256,10 +287,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
                 => floorNumberChangedEvents.Add(eArg);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsTrue(e.RequestStopAtFloorNumber(5).isOk);
             TestStrategy.WaitForElevatorToReachFloor(5, e);
@@ -275,7 +309,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             //Door opens on arrival to floor destination
             Assert.AreEqual(DoorStatus.Open, e.DoorStatus);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -287,16 +322,20 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.AreEqual(1, e.CurrentFloorNumber);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsTrue(e.PressButtonForFloorNumber(5));
             TestStrategy.WaitForElevatorToReachFloor(5, e);
             Assert.AreEqual(5, e.CurrentFloorNumber);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -305,10 +344,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var e = new Elevator(1..9);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsTrue(e.IsIdle);
 
@@ -319,7 +361,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             e.DoorStatus = DoorStatus.Closed;
             Assert.IsTrue(e.IsIdle);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -339,24 +382,32 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
                 bank.GetRequestedFloorStops(Direction.Down).Select(x => x.FloorNbr).ToList());
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e1);
-            Assert.IsTrue(elevatorRunner.Start(e1));
+            var e1Service = elevatorRegistry.Get(e1);
+            Assert.IsNotNull(e1Service);
+            e1Service.StartAsync();
+            Assert.IsTrue(e1Service.IsRunning);
 
             e1.RequestStopAtFloorNumber(5);
             TestStrategy.WaitForElevatorToReachFloor(5, e1);
             Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Up).Any());
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
+            e1Service.StopAsync();
+            Assert.IsFalse(e1Service.IsRunning);
 
             elevatorRegistry.Register(e2);
-            Assert.IsTrue(elevatorRunner.Start(e2));
+            var e2Service = elevatorRegistry.Get(e2);
+            Assert.IsNotNull(e2Service);
+            e2Service.StartAsync();
+            Assert.IsTrue(e2Service.IsRunning);
 
             e2.RequestStopAtFloorNumber(9);
             TestStrategy.WaitForElevatorToReachFloor(9, e2, 20);
             Assert.AreEqual(Direction.Down, e2.Direction);
             Assert.IsFalse(bank.GetRequestedFloorStops(Direction.Down).Any());
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
+
+            e2Service.StopAsync();
+            Assert.IsFalse(e2Service.IsRunning);
         }
 
         [TestMethod]
@@ -368,13 +419,23 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var e3 = bank.Elevators.ElementAt(2);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e1, e2, e3);
 
-            Assert.IsTrue(elevatorRunner.Start(e1));
-            Assert.IsTrue(elevatorRunner.Start(e2));
-            Assert.IsTrue(elevatorRunner.Start(e3));
+            var e1Service = elevatorRegistry.Get(e1);
+            Assert.IsNotNull(e1Service);
+            e1Service.StartAsync();
+            Assert.IsTrue(e1Service.IsRunning);
+
+            var e2Service = elevatorRegistry.Get(e2);
+            Assert.IsNotNull(e2Service);
+            e2Service.StartAsync();
+            Assert.IsTrue(e2Service.IsRunning);
+
+            var e3Service = elevatorRegistry.Get(e3);
+            Assert.IsNotNull(e3Service);
+            e3Service.StartAsync();
+            Assert.IsTrue(e3Service.IsRunning);
 
             Assert.IsTrue(e1.RequestStopAtFloorNumber(8).isOk);
             Assert.IsTrue(e2.RequestStopAtFloorNumber(9).isOk);
@@ -393,9 +454,14 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.IsTrue(bank.IsElevatorStoppingAtFloorFromDirection(3, Direction.Down));
             Assert.IsTrue(bank.IsElevatorStoppingAtFloorFromDirection(5, Direction.Up));
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e3).Result);
+            e1Service.StopAsync();
+            Assert.IsFalse(e1Service.IsRunning);
+
+            e2Service.StopAsync();
+            Assert.IsFalse(e2Service.IsRunning);
+
+            e3Service.StopAsync();
+            Assert.IsFalse(e3Service.IsRunning);
         }
 
         [TestMethod]
@@ -410,15 +476,22 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var e2 = elevators.Last();
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e1, e2);
 
-            Assert.IsTrue(elevatorRunner.Start(e1));
+            var e1Service = elevatorRegistry.Get(e1);
+            Assert.IsNotNull(e1Service);
+            e1Service.StartAsync();
+            Assert.IsTrue(e1Service.IsRunning);
+
             Assert.IsTrue(e1.RequestStopAtFloorNumber(5).isOk);
             TestStrategy.WaitForElevatorToReachFloor(5, e1);
 
-            Assert.IsTrue(elevatorRunner.Start(e2));
+            var e2Service = elevatorRegistry.Get(e2);
+            Assert.IsNotNull(e2Service);
+            e2Service.StartAsync();
+            Assert.IsTrue(e2Service.IsRunning);
+
             Assert.IsTrue(e2.RequestStopAtFloorNumber(1).isOk);
             TestStrategy.WaitForElevatorToReachFloor(1, e2);
 
@@ -435,8 +508,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             TestStrategy.WaitForElevatorToReachFloor(3, e1);
             Assert.IsFalse(thirdFloorElevatorCallPanel.DownButton?.IsPressed);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
+            e1Service.StopAsync();
+            Assert.IsFalse(e1Service.IsRunning);
+
+            e2Service.StopAsync();
+            Assert.IsFalse(e2Service.IsRunning);
         }
 
         [TestMethod]
@@ -450,16 +526,23 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var e2 = elevators.Last();
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e1, e2);
 
-            Assert.IsTrue(elevatorRunner.Start(e1));
+            var e1Service = elevatorRegistry.Get(e1);
+            Assert.IsNotNull(e1Service);
+            e1Service.StartAsync();
+            Assert.IsTrue(e1Service.IsRunning);
+
             e1.RequestStopAtFloorNumber(5);
             TestStrategy.WaitForElevatorToReachFloor(5, e1);
             Assert.AreEqual(5, e1.CurrentFloorNumber);
 
-            Assert.IsTrue(elevatorRunner.Start(e2));
+            var e2Service = elevatorRegistry.Get(e2);
+            Assert.IsNotNull(e2Service);
+            e2Service.StartAsync();
+            Assert.IsTrue(e2Service.IsRunning);
+
             e2.RequestStopAtFloorNumber(2);
             TestStrategy.WaitForElevatorToReachFloor(2, e2);
             Assert.AreEqual(2, e2.CurrentFloorNumber);
@@ -473,8 +556,11 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             TestStrategy.WaitForElevatorToReachFloor(1, e1);
             Assert.IsFalse(firstFloorElevatorCallPanel.UpButton?.IsPressed);
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
+            e1Service.StopAsync();
+            Assert.IsFalse(e1Service.IsRunning);
+
+            e2Service.StopAsync();
+            Assert.IsFalse(e2Service.IsRunning);
         }
 
         [TestMethod]
@@ -503,10 +589,13 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             Assert.AreEqual(3, secondButton.FloorNbr);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e);
-            Assert.IsTrue(elevatorRunner.Start(e));
+
+            var service = elevatorRegistry.Get(e);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsTrue(e.RequestStopAtFloorNumber(3).isOk);
             TestStrategy.WaitForElevatorToReachFloor(3, e);
@@ -517,7 +606,9 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var thirdEvent = receivedEvents.Last();
             var thirdButton = thirdEvent.Button;
             Assert.AreEqual(1, thirdButton.FloorNbr);
-            Assert.IsTrue(elevatorRunner.StopAsync(e).Result);
+
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -529,13 +620,23 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             var e3 = bank.Elevators.ElementAt(2);
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             elevatorRegistry.Register(e1, e2, e3);
 
-            Assert.IsTrue(elevatorRunner.Start(e1));
-            Assert.IsTrue(elevatorRunner.Start(e2));
-            Assert.IsTrue(elevatorRunner.Start(e3));
+            var e1Service = elevatorRegistry.Get(e1);
+            Assert.IsNotNull(e1Service);
+            e1Service.StartAsync();
+            Assert.IsTrue(e1Service.IsRunning);
+
+            var e2Service = elevatorRegistry.Get(e2);
+            Assert.IsNotNull(e2Service);
+            e2Service.StartAsync();
+            Assert.IsTrue(e2Service.IsRunning);
+
+            var e3Service = elevatorRegistry.Get(e3);
+            Assert.IsNotNull(e3Service);
+            e3Service.StartAsync();
+            Assert.IsTrue(e3Service.IsRunning);
 
             Assert.IsTrue(e3.RequestStopAtFloorNumber(9).isOk);
             TestStrategy.WaitForElevatorToReachFloor(9, e3);
@@ -547,9 +648,101 @@ namespace IntrepidProducts.ElevatorService.Tests.Elevators
             CollectionAssert.AreEqual(new[] { 3, 7 },
                 bank.PendingUpFloorStops.Select(x => x.FloorNbr).ToList());
 
-            Assert.IsTrue(elevatorRunner.StopAsync(e1).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e2).Result);
-            Assert.IsTrue(elevatorRunner.StopAsync(e3).Result);
+            e1Service.StopAsync();
+            Assert.IsFalse(e1Service.IsRunning);
+
+            e2Service.StopAsync();
+            Assert.IsFalse(e2Service.IsRunning);
+
+            e3Service.StopAsync();
+            Assert.IsFalse(e3Service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldStopRunningServiceWhenUnRegistered()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+
+            var elevator = new Elevator(1..10);
+            elevatorRegistry.Register(elevator);
+
+            var service = elevatorRegistry.Get(elevator);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
+
+            elevatorRegistry.UnRegister(elevator);
+            Assert.AreEqual(0, elevatorRegistry.Count);
+
+            Assert.IsFalse(service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldNotStartElevatorServiceUponRegistration()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+
+            Assert.AreEqual(0, elevatorRegistry.Count);
+
+            var elevator = new Elevator(1..10);
+            elevatorRegistry.Register(elevator);
+
+            var service = elevatorRegistry.Get(elevator);
+            Assert.IsNotNull(service);
+            Assert.IsFalse(service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldStartElevatorService()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+
+            var elevator = new Elevator(1..10);
+            elevatorRegistry.Register(elevator);
+
+            var service = elevatorRegistry.Get(elevator);
+            Assert.IsNotNull(service);
+
+            Assert.IsFalse(service.IsRunning);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
+
+            service.StopAsync();
+        }
+
+        [TestMethod]
+        public void ShouldNotStartElevatorServiceWhenDisabled()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+
+            var elevator = new Elevator(1..10);
+            elevatorRegistry.Register(elevator);
+
+            elevator.IsEnabled = false;
+
+            var service = elevatorRegistry.Get(elevator);
+            Assert.IsNotNull(service);
+
+            service.StartAsync();
+
+            Assert.IsFalse(service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldStopElevatorService()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+
+            var elevator = new Elevator(1..10);
+            elevatorRegistry.Register(elevator);
+
+            var service = elevatorRegistry.Get(elevator);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
+
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
     }
 }

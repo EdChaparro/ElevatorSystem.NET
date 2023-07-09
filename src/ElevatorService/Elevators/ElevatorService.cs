@@ -12,6 +12,11 @@ namespace IntrepidProducts.ElevatorService.Elevators
 
         private Elevator Elevator { get; }
 
+        protected override bool IsOkToStart()
+        {
+            return Elevator.IsEnabled;
+        }
+
         private void NavigateToNextFloorStop()
         {
             if (Elevator.DoorStatus == DoorStatus.Open)

@@ -22,13 +22,14 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             Assert.AreEqual(2, elevators.Count());
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             var bankRegistry = new BankServiceRegistry(elevatorRegistry);
-            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
 
             bankRegistry.Register(bank);
-            Assert.IsTrue(bankRunner.Start(bank));
+            var service = bankRegistry.Get(bank);
+            Assert.IsNotNull(service);
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             foreach (var elevator in elevators)
             {
@@ -36,7 +37,8 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
                 Assert.AreEqual(DoorStatus.Open, elevator.DoorStatus);
             }
 
-            Assert.IsTrue(bankRunner.StopAsync(bank).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -46,31 +48,30 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             var elevator = bank.Elevators.First(); //First idle elevator will be assigned
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             var bankRegistry = new BankServiceRegistry(elevatorRegistry);
-            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
-
             bankRegistry.Register(bank);
 
-            var bankService = bankRegistry.Get(bank) as BankService;    //TODO: Eliminate casting
-            Assert.IsNotNull(bankService);
+            var service = bankRegistry.Get(bank) as BankService;    //TODO: Eliminate casting
+            Assert.IsNotNull(service);
 
-            Assert.IsFalse(bankService.AssignedFloorStops.Any());
+            Assert.IsFalse(service.AssignedFloorStops.Any());
 
-            Assert.IsTrue(bankRunner.Start(bank));
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.IsTrue(bank.PressButtonForFloorNumber(14, Direction.Down));
 
             Thread.Sleep(200);  //Give the Engine a chance to do its thing
 
-            Assert.IsTrue(bankService.AssignedFloorStops.Any());
+            Assert.IsTrue(service.AssignedFloorStops.Any());
 
             TestStrategy.WaitForElevatorToReachFloor(14, elevator, 15);
 
-            Assert.IsFalse(bankService.AssignedFloorStops.Any());   //Cache should be clear
+            Assert.IsFalse(service.AssignedFloorStops.Any());   //Cache should be clear
 
-            Assert.IsTrue(bankRunner.StopAsync(bank).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
         }
 
         [TestMethod]
@@ -84,13 +85,15 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             e2.Name = "Test Elevator 2";
 
             var elevatorRegistry = new ElevatorServiceRegistry();
-            var elevatorRunner = new ElevatorServiceRunner(elevatorRegistry);
 
             var bankRegistry = new BankServiceRegistry(elevatorRegistry);
-            var bankRunner = new BankServiceRunner(bankRegistry, elevatorRunner);
-
             bankRegistry.Register(bank);
-            Assert.IsTrue(bankRunner.Start(bank));
+
+            var service = bankRegistry.Get(bank) as BankService;    //TODO: Eliminate casting
+            Assert.IsNotNull(service);
+
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
 
             Assert.AreEqual(Direction.Up, e1.Direction);
             Assert.AreEqual(Direction.Up, e2.Direction);
@@ -112,7 +115,178 @@ namespace IntrepidProducts.ElevatorService.Tests.Banks
             Assert.AreEqual(Direction.Up, e2.Direction);
             Assert.AreEqual(5, e2.CurrentFloorNumber);
 
-            Assert.IsTrue(bankRunner.StopAsync(bank).Result);
+            service.StopAsync();
+            Assert.IsFalse(service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldStopRunningServiceWhenUnRegistered()
+        {
+            var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
+
+            var bank = new Bank(2, 1..10);
+            registry.Register(bank);
+
+            var service = registry.Get(bank);
+            Assert.IsNotNull(service);
+            Assert.IsFalse(service.IsRunning);
+
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
+
+            registry.UnRegister(bank);
+            Assert.AreEqual(0, registry.Count);
+
+            Assert.IsFalse(service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldNotStartBankServiceUponRegistration()
+        {
+            var registry = new BankServiceRegistry(new ElevatorServiceRegistry());
+            Assert.AreEqual(0, registry.Count);
+
+            var bank = new Bank(2, 1..10);
+            registry.Register(bank);
+
+            Assert.AreEqual(1, registry.Count);
+
+            var service = registry.Get(bank);
+            Assert.IsNotNull(service);
+            Assert.IsFalse(service.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldStartBankService()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var registry = new BankServiceRegistry(elevatorRegistry);
+
+            var bank = new Bank(2, 1..10);
+            registry.Register(bank);
+
+            var service = registry.Get(bank);
+            Assert.IsNotNull(service);
+            Assert.IsFalse(service.IsRunning);
+
+            service.StartAsync();
+            Assert.IsTrue(service.IsRunning);
+
+            service.StopAsync();
+        }
+
+        [TestMethod]
+        public void ShouldStartElevatorServicesWhenBankStarted()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+
+            var bank = new Bank(2, 1..10);
+            bankRegistry.Register(bank);
+
+            var bankService = bankRegistry.Get(bank);
+            Assert.IsNotNull(bankService);
+            Assert.IsFalse(bankService.IsRunning);
+
+            foreach (var elevator in bank.Elevators)
+            {
+                var elevatorService = elevatorRegistry.Get(elevator);
+                Assert.IsNotNull(elevatorService);
+                Assert.IsFalse(elevatorService.IsRunning);
+            }
+
+            bankService.StartAsync();
+            Assert.IsTrue(bankService.IsRunning);
+
+            foreach (var elevator in bank.Elevators)
+            {
+                var elevatorService = elevatorRegistry.Get(elevator);
+                Assert.IsNotNull(elevatorService);
+                Assert.IsTrue(elevatorService.IsRunning);
+            }
+
+            bankService.StopAsync();
+        }
+
+        [TestMethod]
+        public void ShouldOnlyStartElevatorServicesWhenElevatorIsEnabled()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+
+            var bank = new Bank(2, 1..10);
+            bankRegistry.Register(bank);
+
+            var bankService = bankRegistry.Get(bank);
+            Assert.IsNotNull(bankService);
+            Assert.IsFalse(bankService.IsRunning);
+
+            bank.Elevators.First().IsEnabled = false;
+
+            bankService.StartAsync();
+
+            var elevatorService = elevatorRegistry.Get(bank.Elevators.First());
+            Assert.IsNotNull(elevatorService); //Never registered because the Elevator is Disabled
+            Assert.IsFalse(elevatorService.IsRunning);
+
+            elevatorService = elevatorRegistry.Get(bank.Elevators.Last());
+            Assert.IsNotNull(elevatorService);
+            Assert.IsTrue(elevatorService.IsRunning);
+
+            bankService.StopAsync();
+        }
+
+        [TestMethod]
+        public void ShouldStopBankService()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+
+            var bank = new Bank(2, 1..10);
+            bankRegistry.Register(bank);
+
+            var bankService = bankRegistry.Get(bank);
+            Assert.IsNotNull(bankService);
+            Assert.IsFalse(bankService.IsRunning);
+
+            bankService.StartAsync();
+            Assert.IsTrue(bankService.IsRunning);
+
+            bankService.StopAsync();
+            Assert.IsFalse(bankService.IsRunning);
+        }
+
+        [TestMethod]
+        public void ShouldStopElevatorServicesWhenBankStopped()
+        {
+            var elevatorRegistry = new ElevatorServiceRegistry();
+            var bankRegistry = new BankServiceRegistry(elevatorRegistry);
+
+            var bank = new Bank(2, 1..10);
+            bankRegistry.Register(bank);
+
+            var bankService = bankRegistry.Get(bank);
+            Assert.IsNotNull(bankService);
+
+            bankService.StartAsync();
+            Assert.IsTrue(bankService.IsRunning);
+
+            foreach (var elevator in bank.Elevators)
+            {
+                var elevatorService = elevatorRegistry.Get(elevator);
+                Assert.IsNotNull(elevatorService);
+                Assert.IsTrue(elevatorService.IsRunning);
+            }
+
+            bankService.StopAsync();
+            Assert.IsFalse(bankService.IsRunning);
+
+            foreach (var elevator in bank.Elevators)
+            {
+                var elevatorService = elevatorRegistry.Get(elevator);
+                Assert.IsNotNull(elevatorService);
+                Assert.IsFalse(elevatorService.IsRunning);
+            }
         }
     }
 }
