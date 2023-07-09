@@ -12,8 +12,11 @@ namespace IntrepidProducts.ElevatorService.Elevators
 
         int Count { get; }
 
-        IBackgroundService? Get(Guid elevatorId);
         IBackgroundService? Get(Elevator elevator);
+        IBackgroundService? Get(Guid elevatorId);
+
+        bool IsRunning(Guid bankId);
+
     }
 
     public class ElevatorServiceRegistry : IElevatorServiceRegistry
@@ -75,6 +78,13 @@ namespace IntrepidProducts.ElevatorService.Elevators
         public bool IsRegistered(Elevator elevator)
         {
             return IsRegistered(elevator.Id);
+        }
+
+        public bool IsRunning(Guid elevatorId)
+        {
+            var service = Get(elevatorId);
+
+            return service?.IsRunning ?? false;
         }
     }
 }
