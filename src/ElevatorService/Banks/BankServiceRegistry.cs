@@ -14,6 +14,10 @@ namespace IntrepidProducts.ElevatorService.Banks
         int Count { get; }
 
         IBackgroundService? Get(Bank bank);
+
+        IBackgroundService? Get(Guid bankId);
+
+        bool IsRunning(Guid bankId);
     }
 
     public class BankServiceRegistry : IBankServiceRegistry
@@ -50,9 +54,14 @@ namespace IntrepidProducts.ElevatorService.Banks
             }
         }
 
+        public IBackgroundService? Get(Guid bankId)
+        {
+            return _serviceDetails.ContainsKey(bankId) ? _serviceDetails[bankId].service : null;
+        }
+
         public IBackgroundService? Get(Bank bank)
         {
-            return _serviceDetails.ContainsKey(bank.Id) ? _serviceDetails[bank.Id].service : null;
+            return Get(bank.Id);
         }
 
         public void UnRegister(params Bank[] banks)
@@ -89,6 +98,13 @@ namespace IntrepidProducts.ElevatorService.Banks
         public bool IsRegistered(Bank bank)
         {
             return IsRegistered(bank.Id);
+        }
+
+        public bool IsRunning(Guid bankId)
+        {
+            var service = Get(bankId);
+
+            return service?.IsRunning ?? false;
         }
     }
 }
