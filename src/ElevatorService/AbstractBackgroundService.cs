@@ -21,7 +21,17 @@ public abstract class AbstractBackgroundService : BackgroundService, IBackground
 
     public Task StartAsync()
     {
+        if (!IsOkToStart())
+        {
+            return Task.CompletedTask;
+        }
+
         return StartAsync(new CancellationToken());
+    }
+
+    protected virtual bool IsOkToStart()
+    {
+        return true;
     }
 
     public override Task StartAsync(CancellationToken cancellationToken)
