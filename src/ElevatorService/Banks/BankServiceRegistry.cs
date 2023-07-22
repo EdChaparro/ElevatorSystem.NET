@@ -13,9 +13,9 @@ namespace IntrepidProducts.ElevatorService.Banks
 
         int Count { get; }
 
-        IBackgroundService? Get(Bank bank);
+        IEntityBackgroundService<Bank>? Get(Bank bank);
 
-        IBackgroundService? Get(Guid bankId);
+        IEntityBackgroundService<Bank>? Get(Guid bankId);
 
         bool IsRunning(Guid bankId);
     }
@@ -54,12 +54,12 @@ namespace IntrepidProducts.ElevatorService.Banks
             }
         }
 
-        public IBackgroundService? Get(Guid bankId)
+        public IEntityBackgroundService<Bank>? Get(Guid bankId)
         {
             return _serviceDetails.ContainsKey(bankId) ? _serviceDetails[bankId].service : null;
         }
 
-        public IBackgroundService? Get(Bank bank)
+        public IEntityBackgroundService<Bank>? Get(Bank bank)
         {
             return Get(bank.Id);
         }

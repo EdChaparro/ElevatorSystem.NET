@@ -3,7 +3,7 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 namespace IntrepidProducts.ElevatorService.Elevators
 {
     //TODO: Consider creating ONE Service to manage multiple Elevators
-    public class ElevatorService : AbstractBackgroundService
+    public class ElevatorService : AbstractBackgroundService, IEntityBackgroundService<Elevator>
     {
         public ElevatorService(Elevator elevator) : base(Configuration.EngineSleepIntervalInMilliseconds)
         {
@@ -11,6 +11,7 @@ namespace IntrepidProducts.ElevatorService.Elevators
         }
 
         private Elevator Elevator { get; }
+        public Elevator Entity => Elevator;
 
         protected override bool IsOkToStart()
         {
