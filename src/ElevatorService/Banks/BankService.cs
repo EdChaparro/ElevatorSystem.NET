@@ -5,7 +5,7 @@ using IntrepidProducts.ElevatorSystem.Elevators;
 namespace IntrepidProducts.ElevatorService.Banks
 {
     //TODO: Consider creating ONE Service to manage multiple Banks
-    public class BankService : AbstractBackgroundService
+    public class BankService : AbstractBackgroundService, IEntityBackgroundService<Bank>
     {
         public BankService(Bank bank, IElevatorServiceRegistry elevatorRegistry)
             : base(Configuration.EngineSleepIntervalInMilliseconds)
@@ -17,6 +17,9 @@ namespace IntrepidProducts.ElevatorService.Banks
         }
 
         private Bank Bank { get; }
+        public Bank Entity => Bank;
+
+
         private readonly IElevatorServiceRegistry _elevatorRegistry;
         private IStrategy Strategy { get; }
 

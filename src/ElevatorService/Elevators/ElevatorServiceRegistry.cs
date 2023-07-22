@@ -12,8 +12,8 @@ namespace IntrepidProducts.ElevatorService.Elevators
 
         int Count { get; }
 
-        IBackgroundService? Get(Elevator elevator);
-        IBackgroundService? Get(Guid elevatorId);
+        IEntityBackgroundService<Elevator>? Get(Elevator elevator);
+        IEntityBackgroundService<Elevator>? Get(Guid elevatorId);
 
         bool IsRunning(Guid bankId);
 
@@ -40,12 +40,12 @@ namespace IntrepidProducts.ElevatorService.Elevators
             }
         }
 
-        public IBackgroundService? Get(Guid elevatorId)
+        public IEntityBackgroundService<Elevator>? Get(Guid elevatorId)
         {
             return _serviceDetails.ContainsKey(elevatorId) ? _serviceDetails[elevatorId].service : null;
         }
 
-        public IBackgroundService? Get(Elevator elevator)
+        public IEntityBackgroundService<Elevator>? Get(Elevator elevator)
         {
             return Get(elevator.Id);
         }
